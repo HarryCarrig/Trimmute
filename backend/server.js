@@ -1,11 +1,10 @@
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs-extra");
-const path = require("path");
-
 const app = express();
-app.use(cors());
+
+app.use(cors());           // allow all origins for now
 app.use(express.json());
+
 
 // ---------- PERSISTENT BOOKINGS SETUP ----------
 
@@ -173,29 +172,7 @@ app.post("/bookings", async (req, res) => {
     });
   }
 
-  app.delete("/bookings/:id", (req, res) => {
-  const id = req.params.id;
 
-  const originalLength = bookings.length;
-  bookings = bookings.filter((b) => String(b.id) !== String(id));
-
-  if (bookings.length === originalLength) {
-    return res.status(404).json({ error: "Booking not found" });
-  }
-
-  // Save to file so it persists
-  try {
-    const fs = require("fs");
-    fs.writeFileSync(
-      "./data/bookings.json",
-      JSON.stringify(bookings, null, 2)
-    );
-  } catch (err) {
-    console.error("Failed to save bookings:", err);
-  }
-
-  return res.status(204).send();
-});
 
   const id = bookings.length ? bookings[bookings.length - 1].id + 1 : 1;
 
