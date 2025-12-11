@@ -23,23 +23,29 @@ const MyBookings: React.FC<MyBookingsProps> = ({ onBack }) => {
     null
   );
 
-  async function loadBookings() {
-    try {
-      setError("");
-      setLoading(true);
-      const res = await fetch(BOOKINGS_URL);
-      if (!res.ok) {
-        throw new Error(`Failed to load bookings (HTTP ${res.status})`);
-      }
-      const data = await res.json();
-      setBookings(data || []);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message ?? "Failed to load bookings.");
-    } finally {
-      setLoading(false);
+async function loadBookings() {
+  setError("");
+  setLoading(true);
+
+  try {
+    const res = await fetch(BOOKINGS_URL);
+
+    // If backend was asleep, retry once after a delay
+    if (!res.ok) {
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      const retry = await fetch(BOOKINGS_URL);
+      if (!retry.ok) throw new Error("Failed to fetch bookings");
+      setBookings(await retry.json());
+    } else {
+      setBookings(await res.json());
     }
+  } catch (err: any) {
+    setError(err.message ?? "Failed to fetch");
+  } finally {
+    setLoading(false);
   }
+}
+
 
   useEffect(() => {
     loadBookings();
