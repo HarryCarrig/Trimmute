@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.mjs"
+  }
+}

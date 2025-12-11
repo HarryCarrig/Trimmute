@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Shop {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  imageUrl  String?
+  basePrice Int
+  styles    Json
+  slots     Slot[]
+  bookings  Booking[]
+}
+
+model Slot {
+  id        String   @id @default(cuid())
+  shopId    String
+  startsAt  DateTime
+  mins      Int
+  isBooked  Boolean  @default(false)
+
+  shop      Shop     @relation(fields: [shopId], references: [id])
+  booking   Booking?
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  shopId    String
+  slotId    String
+  customer  String?
+  createdAt DateTime @default(now())
+
+  shop   Shop @relation(fields: [shopId], references: [id])
+  slot   Slot @relation(fields: [slotId], references: [id])
+
+  @@unique([slotId])
+}

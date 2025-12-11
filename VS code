@@ -1,0 +1,4 @@
+mkdir trimmute-backend
+cd trimmute-backend
+ls
+npm init -y
