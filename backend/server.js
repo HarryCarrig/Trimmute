@@ -1,7 +1,10 @@
+// redeploy trigger
+
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
-const path = require("path");   // 👈 ADD THIS LINE
+// no need for path any more
+
 
 const app = express();
 
@@ -12,7 +15,8 @@ app.use(express.json());
 
 // ---------- PERSISTENT BOOKINGS SETUP ----------
 
-const BOOKINGS_FILE = path.join(__dirname, "data", "bookings.json");
+const BOOKINGS_FILE = "./data/bookings.json";
+
 
 // Load existing bookings from file (or create file if missing)
 let bookings = [];
