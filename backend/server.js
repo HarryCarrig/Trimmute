@@ -1,9 +1,13 @@
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
+const path = require("path");   // 👈 ADD THIS LINE
+
 const app = express();
 
-app.use(cors());           // allow all origins for now
+app.use(cors());
 app.use(express.json());
+
 
 
 // ---------- PERSISTENT BOOKINGS SETUP ----------
