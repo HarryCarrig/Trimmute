@@ -2,14 +2,18 @@
 
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs");
-// no need for path any more
+const fs = require("fs-extra");
 
+// no need for path any more
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Trimmute backend is running 🔥");
+});
 
 
 
