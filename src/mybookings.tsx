@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-const BOOKINGS_URL = "http://localhost:3000/bookings";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
+const BOOKINGS_URL = `${API_BASE_URL}/bookings`;
 
 type Booking = {
   id: string | number;

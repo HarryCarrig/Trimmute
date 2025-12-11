@@ -1,6 +1,12 @@
+/// <reference types="vite/client" />
+
 import React, { useState, useEffect } from "react";
 
-const BOOKINGS_URL = "http://localhost:3000/bookings";
+const API_BASE_URL =
+  import.meta?.env?.VITE_API_BASE_URL || "https://trimmute.onrender.com";
+
+const BOOKINGS_URL = `${API_BASE_URL}/bookings`;
+
 
 type Booking = {
   id: number;
