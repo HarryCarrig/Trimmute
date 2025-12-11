@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const BOOKINGS_URL = "http://localhost:3000/bookings";
+const BOOKINGS_URL = "https://trimmute.onrender.com/bookings";
 
 type BarberDetailProps = {
   shop: {
