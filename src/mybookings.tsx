@@ -1,7 +1,13 @@
+/// <reference types="vite/client" />
+
 import React, { useEffect, useState } from "react";
 
+/// <reference types="vite/client" />
+
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  import.meta?.env?.VITE_API_BASE_URL || "https://trimmute.onrender.com";
+
+const BARBERS_URL = `${API_BASE_URL}/barbers`;
 
 const BOOKINGS_URL = `${API_BASE_URL}/bookings`;
 
@@ -50,9 +56,11 @@ async function loadBookings() {
 }
 
 
-  useEffect(() => {
-    loadBookings();
-  }, []);
+useEffect(() => {
+  console.log("MyBookings mounted. Fetching:", BOOKINGS_URL);
+  loadBookings();
+}, []);
+
 
   async function handleCancel(id: string | number) {
     const confirmCancel = window.confirm(
