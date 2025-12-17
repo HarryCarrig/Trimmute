@@ -60,7 +60,7 @@ const barbers = [
   basePricePence: 2500,
   styles: ["Silent cut available", "Skin fade"],
   silentCutAvailable: true,
-imageUrl: "https://images.unsplash.com/photo-1599382103077-fb3a39e30c54?auto=format&fit=crop&w=600&q=80"
+imageUrl: "https://placehold.co/600x400?text=Trimmute+Barbers"
 },
 
   {
