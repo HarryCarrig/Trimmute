@@ -111,6 +111,8 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
       setError("Please choose a time slot.");
       return;
     }
+setError("");
+setMessage("");
 
     try {
       const res = await fetch(BOOKINGS_URL, {
@@ -124,6 +126,13 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
           time: selectedTime,
         }),
       });
+      
+if (res.status === 409) {
+  const data = await res.json().catch(() => null);
+  setError(data?.error ?? "That time slot is already booked. Pick another time.");
+  return;
+}
+
 
       if (!res.ok) {
         throw new Error(`Booking failed (HTTP ${res.status})`);
