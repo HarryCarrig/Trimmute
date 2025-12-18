@@ -15,6 +15,13 @@ app.get("/", (req, res) => {
   res.send("Trimmute backend is running 🔥");
 });
 
+app.get("/debug", (req, res) => {
+  res.json({
+    ok: true,
+    routes: ["GET /", "GET /barbers", "GET /barbers/near", "GET /bookings", "POST /bookings", "DELETE /bookings/:id"],
+    time: new Date().toISOString(),
+  });
+});
 
 
 // ---------- PERSISTENT BOOKINGS SETUP ----------
