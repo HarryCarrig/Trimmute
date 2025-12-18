@@ -138,55 +138,30 @@ function distanceKm(lat1, lng1, lat2, lng2) {
 // ---------- ROUTES ----------
 
 // All barbers
-app.get("/barbers", (req, res) => {
-  res.json(barbers);
-});
-
-// Barbers near coordinates
-app.get("/barbers/near", (req, res) => {
-  const { lat, lng } = req.query;
-
-  if (!lat || !lng) {
-    return res
-      .status(400)
-      .json({ error: "Query parameters 'lat' and 'lng' are required" });
-  }
-
-  const userLat = parseFloat(lat);
-  const userLng = parseFloat(lng);
-
-  if (Number.isNaN(userLat) || Number.isNaN(userLng)) {
-    return res
-      .status(400)
-      .json({ error: "Invalid 'lat' or 'lng' query parameter" });
-  }
-
-  const withDistance = barbers.map((b) => {
-    const distance = distanceKm(userLat, userLng, b.lat, b.lng);
-    return {
-      ...b,
-      distanceKm: distance,
-    };
-  });
-
-  withDistance.sort((a, b) => a.distanceKm - b.distanceKm);
-
-  res.json(withDistance);
-});
-
 // Create a booking (PERSISTENT)
 app.post("/bookings", async (req, res) => {
   const { barberId, barberName, date, time, customerName } = req.body;
 
-  if (!barberId || !date || !time) {
+  // ✅ Required fields
+  if (!barberId || !date || !time || !customerName) {
     return res.status(400).json({
-      error: "Fields 'barberId', 'date', and 'time' are required",
+      error: "Fields 'barberId', 'date', 'time', and 'customerName' are required",
     });
   }
 
+  // 🔒 Prevent double-booking: same barberId + date + time
+  const clash = bookings.find(
+    (b) => String(b.barberId) === String(barberId) && b.date === date && b.time === time
+  );
 
+  if (clash) {
+    return res.status(409).json({
+      error: "That time slot is already booked",
+    });
+  }
 
-  const id = bookings.length ? bookings[bookings.length - 1].id + 1 : 1;
+  // ✅ Safer ID generation (handles deletes / unsorted arrays)
+  const id = bookings.reduce((max, b) => Math.max(max, b.id || 0), 0) + 1;
 
   const booking = {
     id,
@@ -203,6 +178,7 @@ app.post("/bookings", async (req, res) => {
 
   res.status(201).json(booking);
 });
+
 
 // Get bookings (optional filter)
 app.get("/bookings", (req, res) => {
