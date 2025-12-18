@@ -143,6 +143,42 @@ function distanceKm(lat1, lng1, lat2, lng2) {
 }
 
 // ---------- ROUTES ----------
+// All barbers
+app.get("/barbers", (req, res) => {
+  res.json(barbers);
+});
+
+// Barbers near coordinates
+app.get("/barbers/near", (req, res) => {
+  const { lat, lng } = req.query;
+
+  if (!lat || !lng) {
+    return res
+      .status(400)
+      .json({ error: "Query parameters 'lat' and 'lng' are required" });
+  }
+
+  const userLat = parseFloat(lat);
+  const userLng = parseFloat(lng);
+
+  if (Number.isNaN(userLat) || Number.isNaN(userLng)) {
+    return res
+      .status(400)
+      .json({ error: "Invalid 'lat' or 'lng' query parameter" });
+  }
+
+  const withDistance = barbers.map((b) => {
+    const distance = distanceKm(userLat, userLng, b.lat, b.lng);
+    return {
+      ...b,
+      distanceKm: distance,
+    };
+  });
+
+  withDistance.sort((a, b) => a.distanceKm - b.distanceKm);
+
+  res.json(withDistance);
+});
 
 // All barbers
 // Create a booking (PERSISTENT)
