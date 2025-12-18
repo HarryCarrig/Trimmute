@@ -20,8 +20,12 @@ type Shop = {
 // 👇 added "bookings" here
 type View = "home" | "barber" | "detail" | "bookings";
 
-const BACKEND_URL = "https://trimmute.onrender.com/barbers";
-const BACKEND_NEAR_URL = "https://trimmute.onrender.com/barbers/near";
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
+
+const BACKEND_URL = `${API_BASE}/barbers`;
+const BACKEND_NEAR_URL = `${API_BASE}/barbers/near`;
+
 
 export default function App() {
   const [view, setView] = useState<View>("home");
