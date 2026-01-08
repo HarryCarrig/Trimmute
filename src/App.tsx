@@ -462,15 +462,16 @@ export default function App() {
                   setView("detail");
                 }}
                 style={{
-                  display: "flex",
-                  gap: "1rem",
-                  padding: "1rem",
-                  borderRadius: "10px",
-                  border: "1px solid #e5e5e5",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.04)",
-                  marginBottom: "0.75rem",
-                  alignItems: "center",
-                  cursor: "pointer",
+             display: "flex",
+  gap: "1rem",
+  padding: "1rem",
+  borderRadius: "18px",
+  backgroundColor: THEME.surface,
+  border: `1px solid ${THEME.border}`,
+  boxShadow: "0 18px 35px rgba(0,0,0,0.35)",
+  marginBottom: "0.9rem",
+  alignItems: "center",
+  cursor: "pointer",
                 }}
               >
                 {/* Avatar / image box */}
