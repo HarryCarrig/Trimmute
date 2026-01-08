@@ -474,40 +474,57 @@ export default function App() {
   cursor: "pointer",
                 }}
               >
-                {/* Avatar / image box */}
-                <div
-                  style={{
-                    width: "90px",
-                    height: "90px",
-                    borderRadius: "8px",
-                    backgroundColor: "#e5e7eb",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    fontWeight: 600,
-                    color: "#374151",
-                    fontSize: "0.85rem",
-                    textAlign: "center",
-                    padding: "0.25rem",
-                  }}
-                >
-                  {shop.imageUrl ? (
-                    <img
-                      src={shop.imageUrl}
-                      alt={shop.name}
-                      crossOrigin="anonymous"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  ) : (
-                    <span>{shop.name}</span>
-                  )}
-                </div>
+  {/* Avatar / image box */}
+<div
+  style={{
+    width: "92px",
+    height: "92px",
+    borderRadius: "16px",
+    backgroundColor: "rgba(255,255,255,0.06)",
+    border: "1px solid rgba(255,255,255,0.10)",
+    boxShadow: "0 10px 24px rgba(0,0,0,0.35)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    overflow: "hidden",
+  }}
+>
+  {shop.imageUrl ? (
+    <img
+      src={shop.imageUrl}
+      alt={shop.name}
+      crossOrigin="anonymous"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        borderRadius: "14px",
+        filter: "saturate(1.05) contrast(1.05)",
+      }}
+    />
+  ) : (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "rgba(255,255,255,0.75)",
+        fontWeight: 800,
+        fontSize: "0.8rem",
+        textAlign: "center",
+        padding: "0.6rem",
+        background:
+          "linear-gradient(135deg, rgba(45,212,191,0.22), rgba(56,189,248,0.10))",
+      }}
+    >
+      {shop.name}
+    </div>
+  )}
+</div>
+
 
                 <div style={{ flex: 1 }}>
                   <h3 style={{ marginBottom: "0.25rem" }}>{shop.name}</h3>
@@ -532,19 +549,23 @@ export default function App() {
 
                   <div style={{ fontSize: "0.85rem", color: "#374151" }}>
                     {shop.styles.includes("Silent cut available") && (
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "0.15rem 0.4rem",
-                          borderRadius: "999px",
-                          backgroundColor: "#dcfce7",
-                          color: "#166534",
-                          marginRight: "0.4rem",
-                          fontSize: "0.8rem",
-                        }}
-                      >
-                        🔇 Silent cut available
-                      </span>
+                 <span
+  style={{
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "0.4rem",
+    padding: "0.22rem 0.6rem",
+    borderRadius: "999px",
+    backgroundColor: "rgba(45, 212, 191, 0.14)", // teal tint
+    color: "#99f6e4", // teal-200
+    border: "1px solid rgba(45, 212, 191, 0.28)",
+    fontSize: "0.78rem",
+    fontWeight: 700,
+  }}
+>
+  🔇 Silent cut available
+</span>
+
                     )}
                   </div>
 
