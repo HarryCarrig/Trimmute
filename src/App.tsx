@@ -219,6 +219,99 @@ export default function App() {
 
       {showHome && !showDetail && !showBookings && (
         <>
+        {/* TOP BUTTONS */}
+<div
+  style={{
+    display: "flex",
+    gap: "0.75rem",
+    marginBottom: "1.25rem",
+    flexWrap: "wrap",
+    alignItems: "center",
+  }}
+>
+  {/* Primary actions */}
+  <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+    <button
+      onClick={() => {
+        setSelectedShop(null);
+        setView("home");
+        loadShops();
+      }}
+      style={{
+        padding: "0.55rem 1rem",
+        backgroundColor: "#2563eb",
+        color: "white",
+        border: "1px solid #1d4ed8",
+        borderRadius: "10px",
+        cursor: "pointer",
+        fontWeight: 600,
+        boxShadow: "0 6px 16px rgba(37, 99, 235, 0.18)",
+      }}
+    >
+      🔄 Reload barbers
+    </button>
+
+    <button
+      onClick={() => {
+        setSelectedShop(null);
+        setView("home");
+        loadShopsNearMe();
+      }}
+      style={{
+        padding: "0.55rem 1rem",
+        backgroundColor: "#2563eb",
+        color: "white",
+        border: "1px solid #1d4ed8",
+        borderRadius: "10px",
+        cursor: "pointer",
+        fontWeight: 600,
+        boxShadow: "0 6px 16px rgba(37, 99, 235, 0.18)",
+      }}
+    >
+      📍 Use my location
+    </button>
+  </div>
+
+  {/* Secondary actions */}
+  <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+    <button
+      onClick={() => {
+        setSelectedShop(null);
+        setView("barber");
+      }}
+      style={{
+        padding: "0.55rem 1rem",
+        backgroundColor: "white",
+        color: "#111827",
+        border: "1px solid #d1d5db",
+        borderRadius: "10px",
+        cursor: "pointer",
+        fontWeight: 600,
+      }}
+    >
+      ✂️ Barber mode
+    </button>
+
+    <button
+      onClick={() => {
+        setSelectedShop(null);
+        setView("bookings");
+      }}
+      style={{
+        padding: "0.55rem 1rem",
+        backgroundColor: "white",
+        color: "#111827",
+        border: "1px solid #d1d5db",
+        borderRadius: "10px",
+        cursor: "pointer",
+        fontWeight: 600,
+      }}
+    >
+      📅 My bookings
+    </button>
+  </div>
+</div>
+
           {/* Search row */}
           <div
             style={{
