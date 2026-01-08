@@ -1,18 +1,29 @@
-console.log("RUNNING FILE:", __filename);
+// backend/server.js
 
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
+console.log("RUNNING FILE:", __filename);
+
 const express = require("express");
 const cors = require("cors");
-
-const IS_PROD = process.env.NODE_ENV === "production";
-// If you want /db-test & /debug available on Render, set ALLOW_DEBUG=true in Render env vars
-const ALLOW_DEBUG = !IS_PROD || process.env.ALLOW_DEBUG === "true";
 
 const pool = require("./db");
 
 const app = express();
+
+// ---------------- ENV FLAGS ----------------
+const IS_PROD = process.env.NODE_ENV === "production";
+const ENABLE_DB_TEST =
+  String(process.env.ENABLE_DB_TEST || "").toLowerCase() === "true";
+
+// /debug & /bookings-db-test should NOT be public unless you allow it explicitly
+const ALLOW_DEBUG = !IS_PROD || String(process.env.ALLOW_DEBUG || "").toLowerCase() === "true";
+
+console.log("IS_PROD =", IS_PROD);
+console.log("ENABLE_DB_TEST =", ENABLE_DB_TEST);
+console.log("ALLOW_DEBUG =", ALLOW_DEBUG);
+console.log("Has DATABASE_URL =", !!process.env.DATABASE_URL);
 
 // ---------------- CORS ----------------
 const allowedOrigins = [
@@ -24,8 +35,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, cb) => {
-      // allow curl/postman/no-origin requests
-      if (!origin) return cb(null, true);
+      if (!origin) return cb(null, true); // allow curl/postman
       if (allowedOrigins.includes(origin)) return cb(null, true);
       return cb(new Error(`Not allowed by CORS: ${origin}`));
     },
@@ -34,21 +44,41 @@ app.use(
   })
 );
 
-// IMPORTANT: avoid "/*" (it can crash path-to-regexp on some setups)
+// IMPORTANT: don't use "/*"
 app.options(/.*/, cors());
 
 app.use(express.json());
 
-// ---------------- Basic routes ----------------
+// ---------------- BASIC ROUTES ----------------
 app.get("/", (req, res) => {
   res.send("Trimmute backend is running 🔥");
 });
 
+// ---------------- DB TEST ROUTE (OPTIONAL) ----------------
+if (ENABLE_DB_TEST) {
+  app.get("/db-test", async (req, res) => {
+    try {
+      const result = await pool.query("select 1 as ok");
+      res.json({ connected: true, ok: result.rows[0].ok });
+    } catch (err) {
+      console.error("DB TEST ERROR:", err);
+      res.status(500).json({ connected: false, error: err.message });
+    }
+  });
+}
+
+// ---------------- DEBUG ROUTES (OPTIONAL) ----------------
 if (ALLOW_DEBUG) {
   app.get("/debug", (req, res) => {
     res.json({
       ok: true,
-      env: { IS_PROD, ALLOW_DEBUG, hasDatabaseUrl: !!process.env.DATABASE_URL },
+      env: {
+        IS_PROD,
+        ENABLE_DB_TEST,
+        ALLOW_DEBUG,
+        hasDatabaseUrl: !!process.env.DATABASE_URL,
+        allowedOrigins,
+      },
       routes: [
         "GET /",
         "GET /barbers",
@@ -56,31 +86,33 @@ if (ALLOW_DEBUG) {
         "GET /bookings",
         "POST /bookings",
         "DELETE /bookings/:id",
-        "GET /db-test (debug)",
-        "GET /bookings-db-test (debug)",
+        ENABLE_DB_TEST ? "GET /db-test" : "(db-test disabled)",
+        "GET /bookings-db-test",
       ],
       time: new Date().toISOString(),
     });
   });
 
-  app.get("/db-test", async (req, res) => {
-    try {
-      const result = await pool.query("select 1 as ok");
-      res.json({ connected: true, ok: result.rows[0].ok });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ connected: false, error: err.message });
-    }
-  });
-
   app.get("/bookings-db-test", async (req, res) => {
     try {
       const result = await pool.query(
-        "select * from public.bookings order by id desc limit 5"
+        `select
+           id,
+           barber_id as "barberId",
+           barber_name as "barberName",
+           customer_name as "customerName",
+           date::text as "date",
+           time::text as "time",
+           is_silent as "isSilent",
+           requirements,
+           created_at as "createdAt"
+         from public.bookings
+         order by id desc
+         limit 10`
       );
       res.json({ ok: true, rows: result.rows });
     } catch (err) {
-      console.error(err);
+      console.error("BOOKINGS DB TEST ERROR:", err);
       res.status(500).json({ ok: false, error: err.message });
     }
   });
@@ -171,9 +203,7 @@ function distanceKm(lat1, lng1, lat2, lng2) {
 }
 
 // ---------- BARBER ROUTES ----------
-app.get("/barbers", (req, res) => {
-  res.json(barbers);
-});
+app.get("/barbers", (req, res) => res.json(barbers));
 
 app.get("/barbers/near", (req, res) => {
   const { lat, lng } = req.query;
@@ -222,8 +252,7 @@ app.post("/bookings", async (req, res) => {
     });
   }
 
-  const cleanName =
-    typeof customerName === "string" ? customerName.trim() : "";
+  const cleanName = typeof customerName === "string" ? customerName.trim() : "";
   if (!cleanName) {
     return res.status(400).json({ error: "customerName cannot be empty" });
   }
@@ -267,7 +296,7 @@ app.post("/bookings", async (req, res) => {
     if (err && err.code === "23505") {
       return res.status(409).json({ error: "That time slot is already booked" });
     }
-    console.error(err);
+    console.error("CREATE BOOKING ERROR:", err);
     return res.status(500).json({ error: err.message || "Server error" });
   }
 });
@@ -298,7 +327,6 @@ app.get("/bookings", async (req, res) => {
       params.push(barberId);
       where.push(`barber_id = $${params.length}`);
     }
-
     if (date) {
       params.push(date);
       where.push(`date = $${params.length}`);
@@ -310,7 +338,7 @@ app.get("/bookings", async (req, res) => {
     const result = await pool.query(sql, params);
     return res.json(result.rows);
   } catch (err) {
-    console.error(err);
+    console.error("LIST BOOKINGS ERROR:", err);
     return res.status(500).json({ error: err.message || "Server error" });
   }
 });
@@ -334,13 +362,11 @@ app.delete("/bookings/:id", async (req, res) => {
 
     return res.status(204).send();
   } catch (err) {
-    console.error(err);
+    console.error("DELETE BOOKING ERROR:", err);
     return res.status(500).json({ error: err.message || "Server error" });
   }
 });
 
 // ---------- START SERVER ----------
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
