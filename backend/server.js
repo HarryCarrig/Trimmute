@@ -1,75 +1,105 @@
-// redeploy trigger
+console.log("RUNNING FILE:", __filename);
+
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs-extra");
 
-// no need for path any more
+const IS_PROD = process.env.NODE_ENV === "production";
+// If you want /db-test & /debug available on Render, set ALLOW_DEBUG=true in Render env vars
+const ALLOW_DEBUG = !IS_PROD || process.env.ALLOW_DEBUG === "true";
+
+const pool = require("./db");
 
 const app = express();
 
-app.use(cors());
+// ---------------- CORS ----------------
+const allowedOrigins = [
+  "http://localhost:5173", // Vite dev
+  "http://localhost:3000", // local backend direct
+  process.env.FRONTEND_URL, // e.g. https://trimmute.vercel.app
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // allow curl/postman/no-origin requests
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.includes(origin)) return cb(null, true);
+      return cb(new Error(`Not allowed by CORS: ${origin}`));
+    },
+    methods: ["GET", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
+
+// IMPORTANT: avoid "/*" (it can crash path-to-regexp on some setups)
+app.options(/.*/, cors());
+
 app.use(express.json());
 
+// ---------------- Basic routes ----------------
 app.get("/", (req, res) => {
   res.send("Trimmute backend is running 🔥");
 });
 
-app.get("/debug", (req, res) => {
-  res.json({
-    ok: true,
-    routes: ["GET /", "GET /barbers", "GET /barbers/near", "GET /bookings", "POST /bookings", "DELETE /bookings/:id"],
-    time: new Date().toISOString(),
+if (ALLOW_DEBUG) {
+  app.get("/debug", (req, res) => {
+    res.json({
+      ok: true,
+      env: { IS_PROD, ALLOW_DEBUG, hasDatabaseUrl: !!process.env.DATABASE_URL },
+      routes: [
+        "GET /",
+        "GET /barbers",
+        "GET /barbers/near",
+        "GET /bookings",
+        "POST /bookings",
+        "DELETE /bookings/:id",
+        "GET /db-test (debug)",
+        "GET /bookings-db-test (debug)",
+      ],
+      time: new Date().toISOString(),
+    });
   });
-});
 
-
-// ---------- PERSISTENT BOOKINGS SETUP ----------
-
-const BOOKINGS_FILE = "./data/bookings.json";
-
-
-// Load existing bookings from file (or create file if missing)
-let bookings = [];
-(async () => {
-  try {
-    if (await fs.pathExists(BOOKINGS_FILE)) {
-      bookings = await fs.readJSON(BOOKINGS_FILE);
-      console.log(`Loaded ${bookings.length} bookings from file`);
-    } else {
-      await fs.writeJSON(BOOKINGS_FILE, []);
-      console.log("Created empty bookings file");
+  app.get("/db-test", async (req, res) => {
+    try {
+      const result = await pool.query("select 1 as ok");
+      res.json({ connected: true, ok: result.rows[0].ok });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ connected: false, error: err.message });
     }
-  } catch (err) {
-    console.error("Failed to load bookings:", err);
-  }
-})();
+  });
 
-async function saveBookings() {
-  try {
-    await fs.writeJSON(BOOKINGS_FILE, bookings, { spaces: 2 });
-  } catch (err) {
-    console.error("Failed to save bookings:", err);
-  }
+  app.get("/bookings-db-test", async (req, res) => {
+    try {
+      const result = await pool.query(
+        "select * from public.bookings order by id desc limit 5"
+      );
+      res.json({ ok: true, rows: result.rows });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ ok: false, error: err.message });
+    }
+  });
 }
 
 // ---------- BARBERS DATA ----------
-
-// Real-ish UK coordinates
 const barbers = [
- {
-  id: 1,
-  name: "Silent Snips",
-  address: "12 Quiet Lane, London SW1A 1AA",
-  postcode: "SW1A 1AA",
-  lat: 51.5014,
-  lng: -0.1419,
-  basePricePence: 2500,
-  styles: ["Silent cut available", "Skin fade"],
-  silentCutAvailable: true,
-imageUrl: "https://placehold.co/600x400?text=Trimmute+Barbers"
-},
-
+  {
+    id: 1,
+    name: "Silent Snips",
+    address: "12 Quiet Lane, London SW1A 1AA",
+    postcode: "SW1A 1AA",
+    lat: 51.5014,
+    lng: -0.1419,
+    basePricePence: 2500,
+    styles: ["Silent cut available", "Skin fade"],
+    silentCutAvailable: true,
+    imageUrl: "https://placehold.co/600x400?text=Trimmute+Barbers",
+  },
   {
     id: 2,
     name: "Trim & Chill",
@@ -121,13 +151,11 @@ imageUrl: "https://placehold.co/600x400?text=Trimmute+Barbers"
 ];
 
 // ---------- DISTANCE HELPERS ----------
-
 function toRad(x) {
   return (x * Math.PI) / 180;
 }
-
 function distanceKm(lat1, lng1, lat2, lng2) {
-  const R = 6371; // km
+  const R = 6371;
   const dLat = toRad(lat2 - lat1);
   const dLng = toRad(lng2 - lng1);
 
@@ -142,13 +170,11 @@ function distanceKm(lat1, lng1, lat2, lng2) {
   return R * c;
 }
 
-// ---------- ROUTES ----------
-// All barbers
+// ---------- BARBER ROUTES ----------
 app.get("/barbers", (req, res) => {
   res.json(barbers);
 });
 
-// Barbers near coordinates
 app.get("/barbers/near", (req, res) => {
   const { lat, lng } = req.query;
 
@@ -162,106 +188,158 @@ app.get("/barbers/near", (req, res) => {
   const userLng = parseFloat(lng);
 
   if (Number.isNaN(userLat) || Number.isNaN(userLng)) {
-    return res
-      .status(400)
-      .json({ error: "Invalid 'lat' or 'lng' query parameter" });
+    return res.status(400).json({ error: "Invalid 'lat' or 'lng'" });
   }
 
-  const withDistance = barbers.map((b) => {
-    const distance = distanceKm(userLat, userLng, b.lat, b.lng);
-    return {
+  const withDistance = barbers
+    .map((b) => ({
       ...b,
-      distanceKm: distance,
-    };
-  });
-
-  withDistance.sort((a, b) => a.distanceKm - b.distanceKm);
+      distanceKm: distanceKm(userLat, userLng, b.lat, b.lng),
+    }))
+    .sort((a, b) => a.distanceKm - b.distanceKm);
 
   res.json(withDistance);
 });
 
-// All barbers
-// Create a booking (PERSISTENT)
+// ---------------- BOOKINGS (SUPABASE / POSTGRES) ----------------
+
+// Create booking (supports isSilent + requirements)
 app.post("/bookings", async (req, res) => {
-  const { barberId, barberName, date, time, customerName } = req.body;
-
-  // ✅ Required fields
-  if (!barberId || !date || !time || !customerName) {
-    return res.status(400).json({
-      error: "Fields 'barberId', 'date', 'time', and 'customerName' are required",
-    });
-  }
-
-  // 🔒 Prevent double-booking: same barberId + date + time
-  const clash = bookings.find(
-    (b) => String(b.barberId) === String(barberId) && b.date === date && b.time === time
-  );
-
-  if (clash) {
-    return res.status(409).json({
-      error: "That time slot is already booked",
-    });
-  }
-
-  // ✅ Safer ID generation (handles deletes / unsorted arrays)
-  const id = bookings.reduce((max, b) => Math.max(max, b.id || 0), 0) + 1;
-
-  const booking = {
-    id,
+  const {
     barberId,
-    barberName: barberName ?? null,
-    customerName: customerName ?? null,
+    barberName,
     date,
     time,
-    createdAt: new Date().toISOString(),
-  };
+    customerName,
+    isSilent = false,
+    requirements = null,
+  } = req.body;
 
-  bookings.push(booking);
-  await saveBookings();
+  if (!barberId || !date || !time || !customerName) {
+    return res.status(400).json({
+      error:
+        "Fields 'barberId', 'date', 'time', and 'customerName' are required",
+    });
+  }
 
-  res.status(201).json(booking);
+  const cleanName =
+    typeof customerName === "string" ? customerName.trim() : "";
+  if (!cleanName) {
+    return res.status(400).json({ error: "customerName cannot be empty" });
+  }
+
+  const cleanRequirements =
+    typeof requirements === "string" && requirements.trim()
+      ? requirements.trim()
+      : null;
+
+  try {
+    const result = await pool.query(
+      `
+      insert into public.bookings
+        (barber_id, barber_name, customer_name, date, time, is_silent, requirements)
+      values
+        ($1, $2, $3, $4, $5, $6, $7)
+      returning
+        id,
+        barber_id as "barberId",
+        barber_name as "barberName",
+        customer_name as "customerName",
+        date::text as "date",
+        time::text as "time",
+        is_silent as "isSilent",
+        requirements as "requirements",
+        created_at as "createdAt"
+      `,
+      [
+        barberId,
+        barberName ?? null,
+        cleanName,
+        date,
+        time,
+        Boolean(isSilent),
+        cleanRequirements,
+      ]
+    );
+
+    return res.status(201).json(result.rows[0]);
+  } catch (err) {
+    if (err && err.code === "23505") {
+      return res.status(409).json({ error: "That time slot is already booked" });
+    }
+    console.error(err);
+    return res.status(500).json({ error: err.message || "Server error" });
+  }
 });
 
-
-// Get bookings (optional filter)
-app.get("/bookings", (req, res) => {
+// List bookings (optional filters)
+app.get("/bookings", async (req, res) => {
   const { barberId, date } = req.query;
 
-  let result = bookings;
+  try {
+    let sql = `
+      select
+        id,
+        barber_id as "barberId",
+        barber_name as "barberName",
+        customer_name as "customerName",
+        date::text as "date",
+        time::text as "time",
+        is_silent as "isSilent",
+        requirements,
+        created_at as "createdAt"
+      from public.bookings
+    `;
 
-  if (barberId) {
-    result = result.filter(
-      (b) => String(b.barberId) === String(barberId)
-    );
+    const params = [];
+    const where = [];
+
+    if (barberId) {
+      params.push(barberId);
+      where.push(`barber_id = $${params.length}`);
+    }
+
+    if (date) {
+      params.push(date);
+      where.push(`date = $${params.length}`);
+    }
+
+    if (where.length) sql += ` where ` + where.join(" and ");
+    sql += ` order by created_at desc`;
+
+    const result = await pool.query(sql, params);
+    return res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message || "Server error" });
   }
-
-  if (date) {
-    result = result.filter((b) => b.date === date);
-  }
-
-  res.json(result);
 });
 
-// Cancel a booking (PERSISTENT)
+// Cancel booking
 app.delete("/bookings/:id", async (req, res) => {
   const id = Number(req.params.id);
   if (Number.isNaN(id)) {
     return res.status(400).json({ error: "Invalid booking id" });
   }
 
-  const exists = bookings.some((b) => b.id === id);
-  if (!exists) {
-    return res.status(404).json({ error: "Booking not found" });
+  try {
+    const result = await pool.query(
+      `delete from public.bookings where id = $1 returning id`,
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    return res.status(204).send();
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message || "Server error" });
   }
-
-  bookings = bookings.filter((b) => b.id !== id);
-  await saveBookings();
-
-  res.status(204).send();
 });
 
 // ---------- START SERVER ----------
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);

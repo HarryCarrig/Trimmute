@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-const BOOKINGS_URL = "https://trimmute.onrender.com/bookings";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
+
+const BOOKINGS_URL = `${API_BASE_URL}/bookings`;
+
 
 type BarberDetailProps = {
   shop: {
@@ -19,6 +23,7 @@ type BarberDetailProps = {
 };
 
 const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
+
   const [bookingDate, setBookingDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [customerName, setCustomerName] = useState("");
@@ -111,8 +116,6 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
       setError("Please choose a time slot.");
       return;
     }
-setError("");
-setMessage("");
 
     try {
       const res = await fetch(BOOKINGS_URL, {
@@ -140,11 +143,13 @@ if (res.status === 409) {
 
       const data = await res.json();
 
-      setMessage(
-        `Silent cut booked at ${shop.name} for ${
-          data.customerName || "you"
-        } on ${data.date} at ${data.time}.`
-      );
+// use the values the user picked (always clean + no timezone weirdness)
+setMessage(
+  `Silent cut booked at ${shop.name} for ${
+    customerName.trim() || "you"
+  } on ${bookingDate} at ${selectedTime}.`
+);
+
     } catch (err: any) {
       console.error(err);
       setError(err.message ?? "Failed to confirm booking.");

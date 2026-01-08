@@ -37,7 +37,10 @@ async function loadBookings() {
   setLoading(true);
 
   try {
-    const res = await fetch(BOOKINGS_URL);
+  const res = await fetch(BOOKINGS_URL, {
+  cache: "no-store",
+});
+
 
     // If backend was asleep, retry once after a delay
     if (!res.ok) {
