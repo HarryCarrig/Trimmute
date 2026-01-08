@@ -90,11 +90,15 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
         }
         const data = await res.json();
 
-        const times = Array.isArray(data)
-          ? data.map((b: any) => String(b.time)).filter(Boolean)
-          : [];
+const times = Array.isArray(data)
+  ? data
+      .map((b: any) => String(b.time || ""))      // "15:30:00"
+      .map((t: string) => t.slice(0, 5))          // -> "15:30"
+      .filter(Boolean)
+  : [];
 
-        setBookedTimes(times);
+setBookedTimes(times);
+
 
         if (times.includes(selectedTime)) setSelectedTime("");
       } catch (e) {
@@ -435,28 +439,33 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
               const disabled = isBooked || isBooking || loadingTimes;
 
               return (
-                <button
-                  key={slot}
-                  type="button"
-                  onClick={() => setSelectedTime(slot)}
-                  disabled={disabled}
-                  style={{
-                    padding: "0.35rem 0.75rem",
-                    borderRadius: "999px",
-                    border: isSelected ? "2px solid #2563eb" : "1px solid #d1d5db",
-                    backgroundColor: isBooked
-                      ? "#f3f4f6"
-                      : isSelected
-                      ? "#dbeafe"
-                      : "white",
-                    cursor: disabled ? "not-allowed" : "pointer",
-                    fontSize: "0.85rem",
-                    opacity: disabled ? 0.55 : 1,
-                  }}
-                  title={isBooked ? "Already booked" : undefined}
-                >
-                  {slot}
-                </button>
+          <button
+  key={slot}
+  type="button"
+  onClick={() => setSelectedTime(slot)}
+  disabled={isBooked}
+  style={{
+    padding: "0.35rem 0.75rem",
+    borderRadius: "999px",
+    border: isSelected ? "2px solid #2563eb" : "1px solid #d1d5db",
+
+    backgroundColor: isBooked
+      ? "#111827"      // blacked out
+      : isSelected
+      ? "#dbeafe"
+      : "white",
+
+    color: isBooked ? "white" : "black",
+
+    cursor: isBooked ? "not-allowed" : "pointer",
+    fontSize: "0.85rem",
+    opacity: isBooked ? 0.75 : 1,
+  }}
+  title={isBooked ? "Already booked" : undefined}
+>
+  {slot}
+</button>
+
               );
             })}
           </div>
