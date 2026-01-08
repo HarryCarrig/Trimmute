@@ -363,13 +363,15 @@ padding: "0.6rem 1.2rem",
               <button
                 onClick={searchByPostcode}
                 style={{
-                 padding: "0.35rem 0.8rem",
-    backgroundColor: "#0ea5e9",
+     padding: "0.45rem 1rem",
+    backgroundColor: "#dc2626", // red-600
     color: "white",
-    border: "none",
-    borderRadius: "6px",
+    border: "1px solid #b91c1c",
+    borderRadius: "10px",
     cursor: "pointer",
+    fontWeight: 700,
     fontSize: "0.9rem",
+    boxShadow: "0 8px 16px rgba(220, 38, 38, 0.25)",
                 }}
               >
                 Search postcode
