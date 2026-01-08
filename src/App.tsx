@@ -229,7 +229,7 @@ export default function App() {
           }}
           style={{
             padding: "0.5rem 1rem",
-            backgroundColor: "#7c3aed",
+            backgroundColor: "#2563eb",
             color: "white",
             border: "none",
             borderRadius: "6px",
@@ -246,9 +246,9 @@ export default function App() {
           }}
           style={{
             padding: "0.5rem 1rem",
-            backgroundColor: "#10b981",
-            color: "white",
-            border: "none",
+            backgroundColor: "transparent",
+            color: "#374151",
+            border: "1px solid #d1d5db",
             borderRadius: "6px",
             cursor: "pointer",
           }}
@@ -264,9 +264,9 @@ export default function App() {
           }}
           style={{
             padding: "0.5rem 1rem",
-            backgroundColor: "#f97316",
-            color: "white",
-            border: "none",
+            backgroundColor: "transparent",
+            color: "#374151",
+            border: "1px solid #d1d5db",
             borderRadius: "6px",
             cursor: "pointer",
           }}
