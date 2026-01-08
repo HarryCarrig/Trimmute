@@ -192,11 +192,11 @@ export default function App() {
   return (
 <div
   style={{
-    padding: "1.5rem",
+     padding: "1.5rem",
     maxWidth: 700,
     margin: "0 auto",
-    backgroundColor: "#f3f4f6", // light grey
-    minHeight: "100vh",
+    backgroundColor: "#f5f6f8",
+    minHeight: "100vh"
   }}
 >
 
@@ -247,15 +247,15 @@ export default function App() {
         loadShops();
       }}
       style={{
-padding: "0.6rem 1.2rem",
-  backgroundColor: "#dc2626", // red-600
+ padding: "0.6rem 1.2rem",
+  backgroundColor: "#dc2626",
   color: "white",
-  border: "1px solid #b91c1c",
-  borderRadius: "14px",
+  border: "none",
+  borderRadius: "999px",
   cursor: "pointer",
-  fontWeight: 700,
-  fontSize: "0.95rem",
-  boxShadow: "0 10px 20px rgba(220, 38, 38, 0.25)",
+  fontWeight: 600,
+  fontSize: "0.9rem",
+  boxShadow: "0 6px 16px rgba(220,38,38,0.25)",
       }}
     >
       🔄 Reload barbers
@@ -268,15 +268,15 @@ padding: "0.6rem 1.2rem",
         loadShopsNearMe();
       }}
       style={{
-    padding: "0.6rem 1.2rem",
-  backgroundColor: "#dc2626", // red-600
+ padding: "0.6rem 1.2rem",
+  backgroundColor: "#dc2626",
   color: "white",
-  border: "1px solid #b91c1c",
-  borderRadius: "14px",
+  border: "none",
+  borderRadius: "999px",
   cursor: "pointer",
-  fontWeight: 700,
-  fontSize: "0.95rem",
-  boxShadow: "0 10px 20px rgba(220, 38, 38, 0.25)",
+  fontWeight: 600,
+  fontSize: "0.9rem",
+  boxShadow: "0 6px 16px rgba(220,38,38,0.25)",
       }}
     >
       📍 Use my location
@@ -291,13 +291,13 @@ padding: "0.6rem 1.2rem",
         setView("barber");
       }}
       style={{
-  padding: "0.45rem 0.9rem",
-  backgroundColor: "white",
-  color: "#374151",
+  padding: "0.5rem 1.1rem",
+  backgroundColor: "#ffffff",
+  color: "#1f2937",
   border: "1px solid #d1d5db",
-  borderRadius: "10px",
+  borderRadius: "999px",
   cursor: "pointer",
-  fontWeight: 600,
+  fontWeight: 500,
   fontSize: "0.85rem",
       }}
     >
@@ -310,13 +310,13 @@ padding: "0.6rem 1.2rem",
         setView("bookings");
       }}
       style={{
-  padding: "0.45rem 0.9rem",
-  backgroundColor: "white",
-  color: "#374151",
+  padding: "0.5rem 1.1rem",
+  backgroundColor: "#ffffff",
+  color: "#1f2937",
   border: "1px solid #d1d5db",
-  borderRadius: "10px",
+  borderRadius: "999px",
   cursor: "pointer",
-  fontWeight: 600,
+  fontWeight: 500,
   fontSize: "0.85rem",
       }}
     >
