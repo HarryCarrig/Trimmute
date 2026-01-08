@@ -449,12 +449,12 @@ setBookedTimes(times);
     borderRadius: "999px",
     border: isSelected ? "2px solid #2563eb" : "1px solid #d1d5db",
 
-    backgroundColor: isBooked
-      ? "#e5e7eb"
-     // blacked out
-      : isSelected
-      ? "#74777cff"
-      : "white",
+  backgroundColor: isBooked
+  ? "#e5e7eb"
+  : isSelected
+  ? "#dbeafe"
+  : "white",
+
 
     color: isBooked ? "white" : "black",
 
