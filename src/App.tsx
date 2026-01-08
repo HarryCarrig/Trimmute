@@ -291,13 +291,14 @@ padding: "0.6rem 1.2rem",
         setView("barber");
       }}
       style={{
-        padding: "0.55rem 1rem",
-        backgroundColor: "white",
-        color: "#111827",
-        border: "1px solid #d1d5db",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: 600,
+  padding: "0.45rem 0.9rem",
+  backgroundColor: "white",
+  color: "#374151",
+  border: "1px solid #d1d5db",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: 600,
+  fontSize: "0.85rem",
       }}
     >
       ✂️ Barber mode
@@ -309,13 +310,14 @@ padding: "0.6rem 1.2rem",
         setView("bookings");
       }}
       style={{
-        padding: "0.55rem 1rem",
-        backgroundColor: "white",
-        color: "#111827",
-        border: "1px solid #d1d5db",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: 600,
+  padding: "0.45rem 0.9rem",
+  backgroundColor: "white",
+  color: "#374151",
+  border: "1px solid #d1d5db",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: 600,
+  fontSize: "0.85rem",
       }}
     >
       📅 My bookings
