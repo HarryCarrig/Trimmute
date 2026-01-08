@@ -247,14 +247,15 @@ export default function App() {
         loadShops();
       }}
       style={{
-        padding: "0.55rem 1rem",
-        backgroundColor: "#2563eb",
-        color: "white",
-        border: "1px solid #1d4ed8",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: 600,
-        boxShadow: "0 6px 16px rgba(37, 99, 235, 0.18)",
+padding: "0.6rem 1.2rem",
+  backgroundColor: "#dc2626", // red-600
+  color: "white",
+  border: "1px solid #b91c1c",
+  borderRadius: "14px",
+  cursor: "pointer",
+  fontWeight: 700,
+  fontSize: "0.95rem",
+  boxShadow: "0 10px 20px rgba(220, 38, 38, 0.25)",
       }}
     >
       🔄 Reload barbers
@@ -267,7 +268,7 @@ export default function App() {
         loadShopsNearMe();
       }}
       style={{
-padding: "0.6rem 1.2rem",
+    padding: "0.6rem 1.2rem",
   backgroundColor: "#dc2626", // red-600
   color: "white",
   border: "1px solid #b91c1c",
@@ -290,15 +291,13 @@ padding: "0.6rem 1.2rem",
         setView("barber");
       }}
       style={{
- padding: "0.6rem 1.2rem",
-  backgroundColor: "#dc2626", // red-600
-  color: "white",
-  border: "1px solid #b91c1c",
-  borderRadius: "14px",
-  cursor: "pointer",
-  fontWeight: 700,
-  fontSize: "0.95rem",
-  boxShadow: "0 10px 20px rgba(220, 38, 38, 0.25)",
+        padding: "0.55rem 1rem",
+        backgroundColor: "white",
+        color: "#111827",
+        border: "1px solid #d1d5db",
+        borderRadius: "10px",
+        cursor: "pointer",
+        fontWeight: 600,
       }}
     >
       ✂️ Barber mode
