@@ -23,6 +23,27 @@ type View = "home" | "barber" | "detail" | "bookings";
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
 
+  const THEME = {
+  bg: "#0b1220",            // deep slate background
+  surface: "#111a2e",       // card surface
+  surface2: "#0f172a",      // slightly darker surface
+  border: "rgba(255,255,255,0.10)",
+  text: "#e5e7eb",
+  muted: "#aab3c5",
+
+  primary: "#0ea5a4",       // teal
+  primaryHover: "#0891b2",
+  primaryText: "#062225",
+
+  secondary: "rgba(255,255,255,0.06)",
+  secondaryHover: "rgba(255,255,255,0.10)",
+
+  chipBg: "rgba(34,197,94,0.14)", // green chip background
+  chipText: "#86efac",
+
+  danger: "#fb7185",
+};
+
 const BACKEND_URL = `${API_BASE}/barbers`;
 const BACKEND_NEAR_URL = `${API_BASE}/barbers/near`;
 
@@ -192,18 +213,24 @@ export default function App() {
   return (
 <div
   style={{
-     padding: "1.5rem",
-    maxWidth: 700,
+    padding: "1.75rem",
+    maxWidth: 820,
     margin: "0 auto",
-    backgroundColor: "#f5f6f8",
-    minHeight: "100vh"
+    minHeight: "100vh",
+    background: `radial-gradient(1200px 800px at 20% 0%, rgba(14,165,164,0.18), transparent 60%),
+                 radial-gradient(900px 600px at 90% 10%, rgba(56,189,248,0.12), transparent 55%),
+                 ${THEME.bg}`,
+    color: THEME.text,
   }}
 >
 
-      <h1 style={{ marginBottom: "0.5rem" }}>Trimmute</h1>
-      <p style={{ marginBottom: "1rem" }}>
-        Silent-friendly barbers, no awkward small talk.
-      </p>
+   <h1 style={{ marginBottom: "0.35rem", fontSize: "2rem", letterSpacing: "-0.02em" }}>
+  Trimmute
+</h1>
+<p style={{ marginBottom: "1.25rem", color: THEME.muted }}>
+  Silent-friendly barbers, no awkward small talk.
+</p>
+
 
 
       {showBarberMode && <BarberMode />}
@@ -228,7 +255,7 @@ export default function App() {
 
       {showHome && !showDetail && !showBookings && (
         <>
-        {/* TOP BUTTONS */}
+{/* TOP BUTTONS */}
 <div
   style={{
     display: "flex",
@@ -236,114 +263,138 @@ export default function App() {
     marginBottom: "1.25rem",
     flexWrap: "wrap",
     alignItems: "center",
+    padding: "0.9rem",
+    borderRadius: "16px",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    border: `1px solid ${THEME.border}`,
+    backdropFilter: "blur(6px)",
   }}
 >
-  {/* Primary actions */}
-  <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-    <button
-      onClick={() => {
-        setSelectedShop(null);
-        setView("home");
-        loadShops();
-      }}
-      style={{
- padding: "0.6rem 1.2rem",
-  backgroundColor: "#dc2626",
-  color: "white",
-  border: "none",
-  borderRadius: "999px",
-  cursor: "pointer",
-  fontWeight: 600,
-  fontSize: "0.9rem",
-  boxShadow: "0 6px 16px rgba(220,38,38,0.25)",
-      }}
-    >
-      🔄 Reload barbers
-    </button>
+  <button
+    onClick={() => {
+      setSelectedShop(null);
+      setView("home");
+      loadShops();
+    }}
+    style={{
+      padding: "0.65rem 1.1rem",
+      background: `linear-gradient(180deg, ${THEME.primary}, ${THEME.primaryHover})`,
+      color: "white",
+      border: "none",
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontWeight: 700,
+      fontSize: "0.9rem",
+      boxShadow: "0 10px 22px rgba(14,165,164,0.22)",
+      display: "flex",
+      gap: "0.5rem",
+      alignItems: "center",
+    }}
+  >
+    🔄 <span>Reload</span>
+  </button>
 
-    <button
-      onClick={() => {
-        setSelectedShop(null);
-        setView("home");
-        loadShopsNearMe();
-      }}
-      style={{
- padding: "0.6rem 1.2rem",
-  backgroundColor: "#dc2626",
-  color: "white",
-  border: "none",
-  borderRadius: "999px",
-  cursor: "pointer",
-  fontWeight: 600,
-  fontSize: "0.9rem",
-  boxShadow: "0 6px 16px rgba(220,38,38,0.25)",
-      }}
-    >
-      📍 Use my location
-    </button>
-  </div>
+  <button
+    onClick={() => {
+      setSelectedShop(null);
+      setView("home");
+      loadShopsNearMe();
+    }}
+    style={{
+      padding: "0.65rem 1.1rem",
+      background: `linear-gradient(180deg, ${THEME.primary}, ${THEME.primaryHover})`,
+      color: "white",
+      border: "none",
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontWeight: 700,
+      fontSize: "0.9rem",
+      boxShadow: "0 10px 22px rgba(14,165,164,0.22)",
+      display: "flex",
+      gap: "0.5rem",
+      alignItems: "center",
+    }}
+  >
+    📍 <span>Near me</span>
+  </button>
 
-  {/* Secondary actions */}
-  <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-    <button
-      onClick={() => {
-        setSelectedShop(null);
-        setView("barber");
-      }}
-      style={{
-  padding: "0.5rem 1.1rem",
-  backgroundColor: "#ffffff",
-  color: "#1f2937",
-  border: "1px solid #d1d5db",
-  borderRadius: "999px",
-  cursor: "pointer",
-  fontWeight: 500,
-  fontSize: "0.85rem",
-      }}
-    >
-      ✂️ Barber mode
-    </button>
+  <div style={{ flex: 1 }} />
 
-    <button
-      onClick={() => {
-        setSelectedShop(null);
-        setView("bookings");
-      }}
-      style={{
-  padding: "0.5rem 1.1rem",
-  backgroundColor: "#ffffff",
-  color: "#1f2937",
-  border: "1px solid #d1d5db",
-  borderRadius: "999px",
-  cursor: "pointer",
-  fontWeight: 500,
-  fontSize: "0.85rem",
-      }}
-    >
-      📅 My bookings
-    </button>
-  </div>
+  <button
+    onClick={() => {
+      setSelectedShop(null);
+      setView("barber");
+    }}
+    style={{
+      padding: "0.55rem 1rem",
+      backgroundColor: THEME.secondary,
+      color: THEME.text,
+      border: `1px solid ${THEME.border}`,
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontWeight: 600,
+      fontSize: "0.85rem",
+      display: "flex",
+      gap: "0.5rem",
+      alignItems: "center",
+    }}
+  >
+    ✂️ Barber mode
+  </button>
+
+  <button
+    onClick={() => {
+      setSelectedShop(null);
+      setView("bookings");
+    }}
+    style={{
+      padding: "0.55rem 1rem",
+      backgroundColor: THEME.secondary,
+      color: THEME.text,
+      border: `1px solid ${THEME.border}`,
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontWeight: 600,
+      fontSize: "0.85rem",
+      display: "flex",
+      gap: "0.5rem",
+      alignItems: "center",
+    }}
+  >
+    📅 My bookings
+  </button>
 </div>
 
           {/* Search row */}
           <div
             style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "0.75rem",
-              marginBottom: "1rem",
-              alignItems: "center",
-            }}
+         display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "0.9rem",
+    marginBottom: "1.1rem",
+    padding: "1rem",
+    borderRadius: "16px",
+    backgroundColor: THEME.surface2,
+    border: `1px solid ${THEME.border}`,
+  }}
           >
             <div>
               <label>
                 Search by area or postcode:{" "}
                 <input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="e.g. SW1A or Manchester"
-                  style={{ padding: "0.25rem 0.5rem" }}
-                />
+         value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  placeholder="e.g. SW1A or Manchester"
+  style={{
+    padding: "0.65rem 0.8rem",
+    borderRadius: "12px",
+    border: `1px solid ${THEME.border}`,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    color: THEME.text,
+    outline: "none",
+    minWidth: 260,
+  }}
+/>
               </label>
             </div>
 
@@ -351,30 +402,36 @@ export default function App() {
               <label>
                 Or enter full postcode:{" "}
                 <input
-                  value={postcode}
-                  onChange={(e) => setPostcode(e.target.value)}
-                  placeholder="e.g. SW1A 1AA"
-                  style={{
-                    padding: "0.25rem 0.5rem",
-                    marginRight: "0.5rem",
-                  }}
-                />
+            value={postcode}
+  onChange={(e) => setPostcode(e.target.value)}
+  placeholder="e.g. SW1A 1AA"
+  style={{
+    padding: "0.65rem 0.8rem",
+    borderRadius: "12px",
+    border: `1px solid ${THEME.border}`,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    color: THEME.text,
+    outline: "none",
+    minWidth: 200,
+    marginRight: "0.6rem",
+  }}
+/>
               </label>
               <button
-                onClick={searchByPostcode}
-                style={{
-     padding: "0.45rem 1rem",
-    backgroundColor: "#dc2626", // red-600
+        onClick={searchByPostcode}
+  style={{
+    padding: "0.7rem 1.1rem",
+    background: `linear-gradient(180deg, ${THEME.primary}, ${THEME.primaryHover})`,
     color: "white",
-    border: "1px solid #b91c1c",
-    borderRadius: "10px",
+    border: "none",
+    borderRadius: "12px",
     cursor: "pointer",
-    fontWeight: 700,
+    fontWeight: 800,
     fontSize: "0.9rem",
-    boxShadow: "0 8px 16px rgba(220, 38, 38, 0.25)",
-                }}
-              >
-                Search postcode
+    boxShadow: "0 10px 22px rgba(14,165,164,0.18)",
+  }}
+>
+  Search postcode
               </button>
             </div>
           </div>
