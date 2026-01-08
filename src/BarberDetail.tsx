@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
@@ -29,6 +30,9 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const [customerName, setCustomerName] = useState("");
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
+
+  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
+const [loadingTimes, setLoadingTimes] = useState(false);
 
   const hasDistance =
     typeof shop.distanceKm === "number" && !Number.isNaN(shop.distanceKm);
@@ -68,6 +72,46 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   ];
 
   const todayStr = new Date().toISOString().split("T")[0];
+
+  useEffect(() => {
+  async function loadBooked() {
+ if (!bookingDate) {
+  setBookedTimes([]);
+  setLoadingTimes(false);
+  return;
+}
+
+
+    try {
+      setLoadingTimes(true);
+      const url = `${BOOKINGS_URL}?barberId=${encodeURIComponent(
+        shop.id
+      )}&date=${encodeURIComponent(bookingDate)}`;
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to load bookings (HTTP ${res.status})`);
+      const data = await res.json();
+
+      // backend returns [{ time: "09:00", ... }]
+      const times = Array.isArray(data)
+        ? data.map((b: any) => String(b.time)).filter(Boolean)
+        : [];
+
+      setBookedTimes(times);
+
+      // if user had picked a time that is now booked, clear it
+      if (times.includes(selectedTime)) setSelectedTime("");
+    } catch (e) {
+      console.error(e);
+      // fail soft: don’t block booking UI
+      setBookedTimes([]);
+    } finally {
+      setLoadingTimes(false);
+    }
+  }
+
+  loadBooked();
+}, [bookingDate, shop.id, selectedTime]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Treat Silent Snips (id "1") as the flagship real shop
   const isSilentSnips = shop.id === "1" || shop.name === "Silent Snips";
@@ -148,6 +192,10 @@ setMessage(
   `Silent cut booked at ${shop.name} for ${
     customerName.trim() || "you"
   } on ${bookingDate} at ${selectedTime}.`
+);
+
+setBookedTimes((prev) =>
+  prev.includes(selectedTime) ? prev : [...prev, selectedTime]
 );
 
     } catch (err: any) {
@@ -383,24 +431,27 @@ setMessage(
           >
             {timeSlots.map((slot) => {
               const isSelected = selectedTime === slot;
+              const isBooked = bookedTimes.includes(slot);
               return (
-                <button
-                  key={slot}
-                  type="button"
-                  onClick={() => setSelectedTime(slot)}
-                  style={{
-                    padding: "0.35rem 0.75rem",
-                    borderRadius: "999px",
-                    border: isSelected
-                      ? "2px solid #2563eb"
-                      : "1px solid #d1d5db",
-                    backgroundColor: isSelected ? "#dbeafe" : "white",
-                    cursor: "pointer",
-                    fontSize: "0.85rem",
-                  }}
-                >
-                  {slot}
-                </button>
+       <button
+  key={slot}
+  type="button"
+  onClick={() => setSelectedTime(slot)}
+  disabled={isBooked}
+  style={{
+    padding: "0.35rem 0.75rem",
+    borderRadius: "999px",
+    border: isSelected ? "2px solid #2563eb" : "1px solid #d1d5db",
+    backgroundColor: isBooked ? "#f3f4f6" : isSelected ? "#dbeafe" : "white",
+    cursor: isBooked ? "not-allowed" : "pointer",
+    fontSize: "0.85rem",
+    opacity: isBooked ? 0.55 : 1,
+  }}
+  title={isBooked ? "Already booked" : undefined}
+>
+  {slot}
+</button>
+
               );
             })}
           </div>
