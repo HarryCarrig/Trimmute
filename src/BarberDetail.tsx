@@ -450,7 +450,7 @@ setBookedTimes(times);
     border: isSelected ? "2px solid #2563eb" : "1px solid #d1d5db",
 
     backgroundColor: isBooked
-      ? "#111827"      // blacked out
+      ? "#61697bff"      // blacked out
       : isSelected
       ? "#dbeafe"
       : "white",
