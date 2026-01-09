@@ -233,80 +233,131 @@ app.get("/barbers/near", (req, res) => {
 
 // ---------------- BOOKINGS (SUPABASE / POSTGRES) ----------------
 
-// Create booking (supports isSilent + requirements)
+const crypto = require("crypto");
+
+// helper to read Bearer token
+function getBearerToken(req) {
+  const h = req.headers.authorization || "";
+  const m = h.match(/^Bearer\s+(.+)$/i);
+  return m ? m[1].trim() : "";
+}
+
+// =====================
+// CREATE BOOKING
+// =====================
 app.post("/bookings", async (req, res) => {
-  const {
-    barberId,
-    barberName,
-    date,
-    time,
-    customerName,
-    isSilent = false,
-    requirements = null,
-  } = req.body;
-
-  if (!barberId || !date || !time || !customerName) {
-    return res.status(400).json({
-      error:
-        "Fields 'barberId', 'date', 'time', and 'customerName' are required",
-    });
-  }
-
-  const cleanName = typeof customerName === "string" ? customerName.trim() : "";
-  if (!cleanName) {
-    return res.status(400).json({ error: "customerName cannot be empty" });
-  }
-
-  const cleanRequirements =
-    typeof requirements === "string" && requirements.trim()
-      ? requirements.trim()
-      : null;
-
   try {
+    const {
+      barberId,
+      barberName,
+      customerName,
+      date,
+      time,
+      isSilent = true,
+      requirements = null,
+      customerToken,
+    } = req.body || {};
+
+    if (!barberId || !date || !time) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const token =
+      (typeof customerToken === "string" && customerToken.trim()) ||
+      crypto.randomUUID();
+
+    // prevent double booking
+    const existing = await pool.query(
+      `select id from public.bookings
+       where barber_id=$1 and date=$2 and time=$3
+       limit 1`,
+      [String(barberId), date, time]
+    );
+
+    if (existing.rows.length > 0) {
+      return res
+        .status(409)
+        .json({ error: "That time slot is already booked" });
+    }
+
     const result = await pool.query(
-      `
-      insert into public.bookings
-        (barber_id, barber_name, customer_name, date, time, is_silent, requirements)
-      values
-        ($1, $2, $3, $4, $5, $6, $7)
-      returning
+      `insert into public.bookings
+        (barber_id, barber_name, customer_name, date, time, is_silent, requirements, customer_token)
+       values
+        ($1,$2,$3,$4,$5,$6,$7,$8)
+       returning
         id,
         barber_id as "barberId",
         barber_name as "barberName",
         customer_name as "customerName",
         date::text as "date",
         time::text as "time",
-        is_silent as "isSilent",
-        requirements as "requirements",
-        created_at as "createdAt"
-      `,
+        created_at as "createdAt",
+        customer_token as "customerToken"`,
       [
-        barberId,
+        String(barberId),
         barberName ?? null,
-        cleanName,
+        customerName ?? null,
         date,
         time,
-        Boolean(isSilent),
-        cleanRequirements,
+        !!isSilent,
+        requirements,
+        token,
       ]
     );
 
-    return res.status(201).json(result.rows[0]);
+    res.json(result.rows[0]);
   } catch (err) {
-    if (err && err.code === "23505") {
-      return res.status(409).json({ error: "That time slot is already booked" });
-    }
-    console.error("CREATE BOOKING ERROR:", err);
-    return res.status(500).json({ error: err.message || "Server error" });
+    console.error("POST /bookings error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
-// List bookings (optional filters)
-app.get("/bookings", async (req, res) => {
-  const { barberId, date } = req.query;
-
+// =====================
+// CUSTOMER: MY BOOKINGS
+// =====================
+app.get("/my-bookings", async (req, res) => {
   try {
-    let sql = `
+    const token = getBearerToken(req);
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const result = await pool.query(
+      `select
+         id,
+         barber_id as "barberId",
+         barber_name as "barberName",
+         customer_name as "customerName",
+         date::text as "date",
+         time::text as "time",
+         created_at as "createdAt"
+       from public.bookings
+       where customer_token=$1
+       order by date desc, time desc`,
+      [token]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("GET /my-bookings error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// =====================
+// BARBER: LIST BOOKINGS (TEMP MVP – API KEY)
+// =====================
+app.get("/bookings", async (req, res) => {
+  try {
+    const token = getBearerToken(req);
+    if (token !== process.env.BARBER_API_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { date } = req.query;
+
+    let query = `
       select
         id,
         barber_id as "barberId",
@@ -314,58 +365,46 @@ app.get("/bookings", async (req, res) => {
         customer_name as "customerName",
         date::text as "date",
         time::text as "time",
-        is_silent as "isSilent",
-        requirements,
         created_at as "createdAt"
       from public.bookings
     `;
-
     const params = [];
-    const where = [];
 
-    if (barberId) {
-      params.push(barberId);
-      where.push(`barber_id = $${params.length}`);
-    }
     if (date) {
+      query += " where date=$1";
       params.push(date);
-      where.push(`date = $${params.length}`);
     }
 
-    if (where.length) sql += ` where ` + where.join(" and ");
-    sql += ` order by created_at desc`;
+    query += " order by time asc";
 
-    const result = await pool.query(sql, params);
-    return res.json(result.rows);
+    const result = await pool.query(query, params);
+    res.json(result.rows);
   } catch (err) {
-    console.error("LIST BOOKINGS ERROR:", err);
-    return res.status(500).json({ error: err.message || "Server error" });
+    console.error("GET /bookings error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Cancel booking
+// =====================
+// BARBER: CANCEL BOOKING
+// =====================
 app.delete("/bookings/:id", async (req, res) => {
-  const id = Number(req.params.id);
-  if (Number.isNaN(id)) {
-    return res.status(400).json({ error: "Invalid booking id" });
-  }
-
   try {
-    const result = await pool.query(
-      `delete from public.bookings where id = $1 returning id`,
-      [id]
-    );
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Booking not found" });
+    const token = getBearerToken(req);
+    if (token !== process.env.BARBER_API_KEY) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    return res.status(204).send();
+    const { id } = req.params;
+
+    await pool.query(`delete from public.bookings where id=$1`, [id]);
+    res.status(204).end();
   } catch (err) {
-    console.error("DELETE BOOKING ERROR:", err);
-    return res.status(500).json({ error: err.message || "Server error" });
+    console.error("DELETE /bookings error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
+
 
 // ---------- START SERVER ----------
 const PORT = process.env.PORT || 3000;
