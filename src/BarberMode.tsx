@@ -32,7 +32,12 @@ export default function BarberMode() {
       setLoading(true);
 
       const url = `${BOOKINGS_URL}?date=${encodeURIComponent(selectedDate)}`;
-      const res = await fetch(url);
+const res = await fetch(url, {
+  headers: {
+    Authorization: `Bearer ${import.meta.env.VITE_BARBER_API_KEY}`,
+  },
+});
+
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
       }
@@ -53,9 +58,13 @@ export default function BarberMode() {
     try {
       setError("");
 
-      const res = await fetch(`${BOOKINGS_URL}/${id}`, {
-        method: "DELETE",
-      });
+const res = await fetch(`${BOOKINGS_URL}/${id}`, {
+  method: "DELETE",
+  headers: {
+    Authorization: `Bearer ${import.meta.env.VITE_BARBER_API_KEY}`,
+  },
+});
+
 
       if (!res.ok && res.status !== 204) {
         throw new Error(`Failed to cancel booking (HTTP ${res.status})`);
