@@ -191,7 +191,13 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
         throw new Error(`Booking failed (HTTP ${res.status})`);
       }
 
-      await res.json();
+const data = await res.json();
+
+// ✅ save the token so "My bookings" works on this device
+if (data?.customerToken) {
+  localStorage.setItem("trimmute_customer_token", data.customerToken);
+}
+
 
       setMessage(
         `Silent cut booked at ${shop.name} for ${

@@ -2,22 +2,19 @@
 
 import React, { useEffect, useState } from "react";
 
-/// <reference types="vite/client" />
-
 const API_BASE_URL =
   import.meta?.env?.VITE_API_BASE_URL || "https://trimmute.onrender.com";
 
-const BARBERS_URL = `${API_BASE_URL}/barbers`;
-
-const BOOKINGS_URL = `${API_BASE_URL}/bookings`;
+const MY_BOOKINGS_URL = `${API_BASE_URL}/my-bookings`;
 
 type Booking = {
   id: string | number;
   barberId: string | number;
-  barberName: string;
-  customerName: string;
+  barberName: string | null;
+  customerName: string | null;
   date: string;
   time: string;
+  createdAt?: string;
 };
 
 type MyBookingsProps = {
@@ -28,69 +25,58 @@ const MyBookings: React.FC<MyBookingsProps> = ({ onBack }) => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
-  const [cancellingId, setCancellingId] = useState<string | number | null>(
-    null
-  );
 
-async function loadBookings() {
-  setError("");
-  setLoading(true);
-
-  try {
-  const res = await fetch(BOOKINGS_URL, {
-  cache: "no-store",
-});
-
-
-    // If backend was asleep, retry once after a delay
-    if (!res.ok) {
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      const retry = await fetch(BOOKINGS_URL);
-      if (!retry.ok) throw new Error("Failed to fetch bookings");
-      setBookings(await retry.json());
-    } else {
-      setBookings(await res.json());
-    }
-  } catch (err: any) {
-    setError(err.message ?? "Failed to fetch");
-  } finally {
-    setLoading(false);
-  }
-}
-
-
-useEffect(() => {
-  console.log("MyBookings mounted. Fetching:", BOOKINGS_URL);
-  loadBookings();
-}, []);
-
-
-  async function handleCancel(id: string | number) {
-    const confirmCancel = window.confirm(
-      "Cancel this booking? This cannot be undone."
-    );
-    if (!confirmCancel) return;
+  async function loadBookings() {
+    setError("");
+    setLoading(true);
 
     try {
-      setError("");
-      setCancellingId(id);
+      const token = localStorage.getItem("trimmute_customer_token");
 
-      const res = await fetch(`${BOOKINGS_URL}/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok && res.status !== 204 && res.status !== 404) {
-        throw new Error(`Failed to cancel booking (HTTP ${res.status})`);
+      if (!token) {
+        setBookings([]);
+        setError("No bookings found on this device yet.");
+        return;
       }
 
-      setBookings((prev) => prev.filter((b) => String(b.id) !== String(id)));
+      const res = await fetch(MY_BOOKINGS_URL, {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // If backend was asleep, retry once after a delay
+      if (!res.ok) {
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+
+        const retry = await fetch(MY_BOOKINGS_URL, {
+          cache: "no-store",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!retry.ok) throw new Error(`Failed to fetch bookings (HTTP ${retry.status})`);
+
+        const data = await retry.json();
+        setBookings(Array.isArray(data) ? data : []);
+        return;
+      }
+
+      const data = await res.json();
+      setBookings(Array.isArray(data) ? data : []);
     } catch (err: any) {
-      console.error(err);
-      setError(err.message ?? "Failed to cancel booking.");
+      setError(err?.message ?? "Failed to fetch");
+      setBookings([]);
     } finally {
-      setCancellingId(null);
+      setLoading(false);
     }
   }
+
+  useEffect(() => {
+    loadBookings();
+  }, []);
 
   return (
     <div style={{ marginTop: "1rem" }}>
@@ -112,8 +98,11 @@ useEffect(() => {
       <h2 style={{ marginBottom: "0.75rem" }}>My bookings</h2>
 
       {loading && <p>Loading your bookings…</p>}
+
       {error && (
-        <p style={{ color: "red", fontSize: "0.9rem" }}>{error}</p>
+        <p style={{ color: "red", fontSize: "0.9rem" }}>
+          {error}
+        </p>
       )}
 
       {!loading && !error && bookings.length === 0 && (
@@ -136,31 +125,35 @@ useEffect(() => {
             }}
           >
             <div>
-              <div style={{ fontWeight: 600 }}>{b.barberName}</div>
-              <div style={{ fontSize: "0.9rem", color: "#4b5563" }}>
-                {b.date} at {b.time}
+              <div style={{ fontWeight: 600 }}>
+                {b.barberName ?? `Barber #${b.barberId}`}
               </div>
+
+              <div style={{ fontSize: "0.9rem", color: "#4b5563" }}>
+                {b.date} at {String(b.time).slice(0, 5)}
+              </div>
+
               <div style={{ fontSize: "0.85rem", color: "#6b7280" }}>
-                Booked for {b.customerName}
+                Booked for {b.customerName ?? "(no name given)"}
               </div>
             </div>
 
             <button
               type="button"
-              onClick={() => handleCancel(b.id)}
-              disabled={cancellingId === b.id}
+              disabled
+              title="Customer cancel is not enabled yet"
               style={{
                 padding: "0.35rem 0.9rem",
-                backgroundColor: "#ef4444",
+                backgroundColor: "#9ca3af",
                 color: "white",
                 border: "none",
                 borderRadius: "999px",
-                cursor: "pointer",
+                cursor: "not-allowed",
                 fontSize: "0.85rem",
-                opacity: cancellingId === b.id ? 0.7 : 1,
+                opacity: 0.85,
               }}
             >
-              {cancellingId === b.id ? "Cancelling..." : "Cancel"}
+              Cancel
             </button>
           </div>
         ))}
