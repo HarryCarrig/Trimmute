@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Avatar from "./components/Avatar";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
@@ -90,15 +91,14 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
         }
         const data = await res.json();
 
-const times = Array.isArray(data)
-  ? data
-      .map((b: any) => String(b.time || ""))      // "15:30:00"
-      .map((t: string) => t.slice(0, 5))          // -> "15:30"
-      .filter(Boolean)
-  : [];
+        const times = Array.isArray(data)
+          ? data
+              .map((b: any) => String(b.time || "")) // "15:30:00"
+              .map((t: string) => t.slice(0, 5)) // -> "15:30"
+              .filter(Boolean)
+          : [];
 
-setBookedTimes(times);
-
+        setBookedTimes(times);
 
         if (times.includes(selectedTime)) setSelectedTime("");
       } catch (e) {
@@ -199,7 +199,7 @@ setBookedTimes(times);
         } on ${bookingDate} at ${selectedTime}.`
       );
 
-      // lock the slot instantly (your Step D)
+      // lock the slot instantly
       setBookedTimes((prev) =>
         prev.includes(selectedTime) ? prev : [...prev, selectedTime]
       );
@@ -214,19 +214,12 @@ setBookedTimes(times);
 
   return (
     <div style={{ marginTop: "1rem" }}>
+      {/* ✅ FIXED: back button text always visible */}
       <button
         onClick={onBack}
-        style={{
-          padding: "0.4rem 0.9rem",
-          backgroundColor: "#e5e7eb",
-          border: "none",
-          borderRadius: "999px",
-          cursor: "pointer",
-          fontSize: "0.9rem",
-          marginBottom: "1rem",
-        }}
+        className="px-4 py-2 rounded-md bg-slate-900 text-white hover:bg-slate-800 transition mb-4"
       >
-        ← Back to results
+        ← Back to search
       </button>
 
       {/* Hero card */}
@@ -242,39 +235,8 @@ setBookedTimes(times);
           alignItems: "center",
         }}
       >
-        {/* Image / avatar */}
-        <div
-          style={{
-            width: "120px",
-            height: "120px",
-            borderRadius: "12px",
-            backgroundColor: "#e5e7eb",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            fontWeight: 600,
-            color: "#374151",
-            fontSize: "0.9rem",
-            textAlign: "center",
-            padding: "0.25rem",
-          }}
-        >
-          {shop.imageUrl ? (
-            <img
-              src={shop.imageUrl}
-              alt={shop.name}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: "12px",
-              }}
-            />
-          ) : (
-            <span>{shop.name}</span>
-          )}
-        </div>
+        {/* ✅ FIXED: use shared Avatar component (prevents reversion) */}
+        <Avatar image={shop.imageUrl ?? undefined} name={shop.name} />
 
         <div style={{ flex: 1 }}>
           <h2 style={{ marginBottom: "0.35rem", fontSize: "1.5rem" }}>
@@ -432,41 +394,38 @@ setBookedTimes(times);
               </span>
             )}
           </p>
+
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
             {timeSlots.map((slot) => {
               const isSelected = selectedTime === slot;
               const isBooked = bookedTimes.includes(slot);
-              const disabled = isBooked || isBooking || loadingTimes;
 
               return (
-          <button
-  key={slot}
-  type="button"
-  onClick={() => setSelectedTime(slot)}
-  disabled={isBooked}
-  style={{
-    padding: "0.35rem 0.75rem",
-    borderRadius: "999px",
-    border: isSelected ? "2px solid #2563eb" : "1px solid #d1d5db",
-
-  backgroundColor: isBooked
-  ? "#8a8d93ff"
-  : isSelected
-  ? "#dbeafe"
-  : "white",
-
-
-    color: isBooked ? "white" : "black",
-
-    cursor: isBooked ? "not-allowed" : "pointer",
-    fontSize: "0.85rem",
-    opacity: isBooked ? 0.75 : 1,
-  }}
-  title={isBooked ? "Already booked" : undefined}
->
-  {slot}
-</button>
-
+                <button
+                  key={slot}
+                  type="button"
+                  onClick={() => setSelectedTime(slot)}
+                  disabled={isBooked || isBooking || loadingTimes}
+                  style={{
+                    padding: "0.35rem 0.75rem",
+                    borderRadius: "999px",
+                    border: isSelected
+                      ? "2px solid #2563eb"
+                      : "1px solid #d1d5db",
+                    backgroundColor: isBooked
+                      ? "#8a8d93ff"
+                      : isSelected
+                      ? "#dbeafe"
+                      : "white",
+                    color: isBooked ? "white" : "black",
+                    cursor: isBooked ? "not-allowed" : "pointer",
+                    fontSize: "0.85rem",
+                    opacity: isBooked ? 0.75 : 1,
+                  }}
+                  title={isBooked ? "Already booked" : undefined}
+                >
+                  {slot}
+                </button>
               );
             })}
           </div>
