@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BarberMode from "./BarberMode";
 import BarberDetail from "./BarberDetail";
-import silentSnipsImg from "./assets/silent-snips.jpg";
 import MyBookings from "./mybookings";
 
 
@@ -70,7 +69,7 @@ export default function App() {
 
       const raw: any[] = await res.json();
 
- const mapped: Shop[] = raw.map((b, index) => {
+const mapped: Shop[] = raw.map((b, index) => {
   const id = String(b.id ?? index);
   const name = String(b.name ?? "");
 
@@ -81,22 +80,17 @@ export default function App() {
     name,
     address: b.address ?? b.city ?? "Unknown area",
 
-    // ✅ Always give Silent Snips the imported image
-    // ✅ For others: only use b.imageUrl if it’s a real string
+    // ✅ Force Silent Snips to have NO image so it matches others
     imageUrl:
       isSilentSnips
-        ? silentSnipsImg
+        ? null
         : typeof b.imageUrl === "string" && b.imageUrl.trim()
         ? b.imageUrl
         : null,
 
     basePrice: b.basePrice ?? b.basePricePence ?? 2000,
-
     styles:
-      b.styles ??
-      (b.silentCutAvailable || isSilentSnips
-        ? ["Silent cut available"]
-        : []),
+      b.styles ?? (b.silentCutAvailable ? ["Silent cut available"] : []),
 
     distanceKm: b.distanceKm,
     postcode: b.postcode,
@@ -104,6 +98,7 @@ export default function App() {
     lng: typeof b.lng === "number" ? b.lng : undefined,
   };
 });
+
 
 
       setShops(mapped);
@@ -134,9 +129,13 @@ export default function App() {
         id: String(b.id ?? index),
         name: b.name,
         address: b.address ?? b.city ?? "Unknown area",
-        imageUrl:
-          b.imageUrl ??
-          (b.id === 1 || b.name === "Silent Snips" ? silentSnipsImg : null),
+imageUrl:
+  (String(b.id ?? index) === "1" || b.name === "Silent Snips")
+    ? null
+    : (typeof b.imageUrl === "string" && b.imageUrl.trim()
+        ? b.imageUrl
+        : null),
+
         basePrice: b.basePrice ?? b.basePricePence ?? 2000,
         styles:
           b.styles ??
