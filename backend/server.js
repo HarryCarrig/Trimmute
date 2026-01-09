@@ -43,11 +43,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // ✅ preflight fix
+app.options(/.*/, cors(corsOptions)); // ✅ works reliably (preflight)
 
-
-// IMPORTANT: don't use "/*"
-app.options(/.*/, cors());
 
 app.use(express.json());
 
