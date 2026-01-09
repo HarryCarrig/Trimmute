@@ -4,6 +4,7 @@ import BarberDetail from "./BarberDetail";
 import silentSnipsImg from "./assets/silent-snips.jpg";
 import MyBookings from "./mybookings";
 
+
 type Shop = {
   id: string;
   name: string;
@@ -69,22 +70,41 @@ export default function App() {
 
       const raw: any[] = await res.json();
 
-      const mapped: Shop[] = raw.map((b, index) => ({
-        id: String(b.id ?? index),
-        name: b.name,
-        address: b.address ?? b.city ?? "Unknown area",
-        imageUrl:
-          b.imageUrl ??
-          (b.id === 1 || b.name === "Silent Snips" ? silentSnipsImg : null),
-        basePrice: b.basePrice ?? b.basePricePence ?? 2000,
-        styles:
-          b.styles ??
-          (b.silentCutAvailable ? ["Silent cut available"] : []),
-        distanceKm: b.distanceKm,
-        postcode: b.postcode,
-        lat: typeof b.lat === "number" ? b.lat : undefined,
-        lng: typeof b.lng === "number" ? b.lng : undefined,
-      }));
+ const mapped: Shop[] = raw.map((b, index) => {
+  const id = String(b.id ?? index);
+  const name = String(b.name ?? "");
+
+  const isSilentSnips = id === "1" || name === "Silent Snips";
+
+  return {
+    id,
+    name,
+    address: b.address ?? b.city ?? "Unknown area",
+
+    // ✅ Always give Silent Snips the imported image
+    // ✅ For others: only use b.imageUrl if it’s a real string
+    imageUrl:
+      isSilentSnips
+        ? silentSnipsImg
+        : typeof b.imageUrl === "string" && b.imageUrl.trim()
+        ? b.imageUrl
+        : null,
+
+    basePrice: b.basePrice ?? b.basePricePence ?? 2000,
+
+    styles:
+      b.styles ??
+      (b.silentCutAvailable || isSilentSnips
+        ? ["Silent cut available"]
+        : []),
+
+    distanceKm: b.distanceKm,
+    postcode: b.postcode,
+    lat: typeof b.lat === "number" ? b.lat : undefined,
+    lng: typeof b.lng === "number" ? b.lng : undefined,
+  };
+});
+
 
       setShops(mapped);
       setView("home");
