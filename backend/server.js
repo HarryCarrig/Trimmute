@@ -26,23 +26,25 @@ console.log("ALLOW_DEBUG =", ALLOW_DEBUG);
 console.log("Has DATABASE_URL =", !!process.env.DATABASE_URL);
 
 // ---------------- CORS ----------------
+
 const allowedOrigins = [
-  "http://localhost:5173", // Vite dev
-  "http://localhost:3000", // local backend direct
+  "http://localhost:5173",
   process.env.FRONTEND_URL, // e.g. https://trimmute.vercel.app
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      if (!origin) return cb(null, true); // allow curl/postman
-      if (allowedOrigins.includes(origin)) return cb(null, true);
-      return cb(new Error(`Not allowed by CORS: ${origin}`));
-    },
-    methods: ["GET", "POST", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true); // allow curl/postman
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error(`Not allowed by CORS: ${origin}`));
+  },
+  methods: ["GET", "POST", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"], // ✅ FIX
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // ✅ preflight fix
+
 
 // IMPORTANT: don't use "/*"
 app.options(/.*/, cors());
