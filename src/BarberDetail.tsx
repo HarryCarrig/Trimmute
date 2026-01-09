@@ -264,21 +264,12 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
           </div>
 
           <div style={{ marginBottom: "0.35rem" }}>
-            {isSilent && (
-              <span
-                style={{
-                  display: "inline-block",
-                  padding: "0.15rem 0.45rem",
-                  borderRadius: "999px",
-                  backgroundColor: "#dcfce7",
-                  color: "#166534",
-                  marginRight: "0.4rem",
-                  fontSize: "0.8rem",
-                }}
-              >
-                🔇 Silent cut available
-              </span>
-            )}
+{isSilent && (
+  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-400/15 text-teal-200 border border-teal-300/25 text-xs">
+    🔇 Silent cut available
+  </span>
+)}
+
             {hasDistance && (
               <span
                 style={{

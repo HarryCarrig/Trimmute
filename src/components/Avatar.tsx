@@ -5,11 +5,15 @@ type AvatarProps = {
 };
 
 export default function Avatar({ image, name, size = 90 }: AvatarProps) {
-  const initials = name
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
+const initials = name
+  .toUpperCase()
+  .replace(/[^A-Z\s]/g, " ")   // turn symbols (&, -, etc) into spaces
+  .trim()
+  .split(/\s+/)                 // split on one-or-more spaces
+  .slice(0, 2)
+  .map((w) => w[0])
+  .join("") || "TM";
+
 
   return (
     <div
