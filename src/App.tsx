@@ -56,6 +56,7 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [postcode, setPostcode] = useState("");
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
+const [demoMode, setDemoMode] = useState(false);
 
   async function loadShops() {
     try {
@@ -218,11 +219,17 @@ imageUrl:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const visibleShops = shops.filter((shop) => {
-    if (!searchTerm.trim()) return true;
-    const q = searchTerm.trim().toLowerCase();
-    return shop.address.toLowerCase().includes(q);
-  });
+const visibleShops = shops.filter((shop) => {
+  // ✅ Step A: demo mode = only show the test shop
+  if (demoMode) {
+    return shop.id === "1" || shop.name === "Silent Snips";
+  }
+
+  if (!searchTerm.trim()) return true;
+  const q = searchTerm.trim().toLowerCase();
+  return shop.address.toLowerCase().includes(q);
+});
+
 
   const showHome = view === "home";
   const showBarberMode = view === "barber";
