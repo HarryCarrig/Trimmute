@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import BarberMode from "./BarberMode";
 import BarberDetail from "./BarberDetail";
 import MyBookings from "./mybookings";
+import logo from "./assets/trimmute-logo.png";
 
 
 
@@ -250,11 +251,21 @@ const visibleShops = shops.filter((shop) => {
     color: THEME.text,
   }}
 >
+<div style={{ marginBottom: "0.75rem" }}>
+<img
+  src={logo}
+  alt="Trimmute"
+  style={{
+    height: "52nppx",
+    maxHeight: "38px",
+    display: "block",
+    filter: "invert(70%) sepia(100%) saturate(400%) hue-rotate(140deg)",
+  }}
+/>
 
-   <h1 style={{ marginBottom: "0.35rem", fontSize: "2rem", letterSpacing: "-0.02em" }}>
-  Trimmute
-</h1>
-<p style={{ marginBottom: "1.25rem", color: THEME.muted }}>
+</div>
+
+<p style={{ marginBottom: "0.9rem", color: THEME.muted }}>
   Silent-friendly barbers, no awkward small talk.
 </p>
 
