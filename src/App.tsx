@@ -4,6 +4,7 @@ import BarberDetail from "./BarberDetail";
 import MyBookings from "./mybookings";
 
 
+
 type Shop = {
   id: string;
   name: string;

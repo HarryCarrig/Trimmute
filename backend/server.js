@@ -230,6 +230,32 @@ app.get("/barbers/near", (req, res) => {
   res.json(withDistance);
 });
 
+// Public: returns booked time slots for a barber on a date (NO personal data)
+app.get("/availability", async (req, res) => {
+  try {
+    const { barberId, date } = req.query;
+    if (!barberId || !date) {
+      return res.status(400).json({ error: "barberId and date are required" });
+    }
+
+    const result = await pool.query(
+      `SELECT time
+       FROM bookings
+       WHERE barber_id = $1 AND date = $2
+       ORDER BY time ASC`,
+      [barberId, date]
+    );
+
+    const bookedTimes = result.rows.map(r => r.time);
+
+    res.json({ barberId, date, bookedTimes });
+  } catch (e) {
+    console.error("availability error:", e);
+    res.status(500).json({ error: "server error" });
+  }
+});
+
+
 // ---------------- BOOKINGS (SUPABASE / POSTGRES) ----------------
 
 const crypto = require("crypto");

@@ -6,6 +6,8 @@ const API_BASE_URL =
 
 const BOOKINGS_URL = `${API_BASE_URL}/bookings`;
 
+const AVAILABILITY_URL = `${API_BASE_URL}/availability`;
+
 type BarberDetailProps = {
   shop: {
     id: string;
@@ -81,22 +83,24 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
 
       try {
         setLoadingTimes(true);
-        const url = `${BOOKINGS_URL}?barberId=${encodeURIComponent(
-          shop.id
-        )}&date=${encodeURIComponent(bookingDate)}`;
+const url =
+  `${AVAILABILITY_URL}?barberId=${encodeURIComponent(shop.id)}` +
+  `&date=${encodeURIComponent(bookingDate)}`;
+
 
         const res = await fetch(url);
         if (!res.ok) {
           throw new Error(`Failed to load bookings (HTTP ${res.status})`);
         }
-        const data = await res.json();
 
-        const times = Array.isArray(data)
-          ? data
-              .map((b: any) => String(b.time || "")) // "15:30:00"
-              .map((t: string) => t.slice(0, 5)) // -> "15:30"
-              .filter(Boolean)
-          : [];
+const data = await res.json();
+
+const times = Array.isArray(data?.bookedTimes)
+  ? data.bookedTimes
+      .map((t: any) => String(t || "").slice(0, 5)) // "15:30:00" -> "15:30"
+      .filter(Boolean)
+  : [];
+
 
         setBookedTimes(times);
 
@@ -110,7 +114,7 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
     }
 
     loadBooked();
-  }, [bookingDate, shop.id, selectedTime]); // eslint-disable-line react-hooks/exhaustive-deps
+}, [bookingDate, shop.id, selectedTime, AVAILABILITY_URL]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ✅ NEW: canConfirm (includes !isBooking to prevent double-submit)
   const canConfirm =
