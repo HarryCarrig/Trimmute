@@ -28,6 +28,7 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const [bookingDate, setBookingDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [customerName, setCustomerName] = useState("");
+  const [wantsSilent, setWantsSilent] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
 
@@ -180,6 +181,7 @@ const times = Array.isArray(data?.bookedTimes)
           customerName: customerName.trim(),
           date: bookingDate,
           time: selectedTime,
+          isSilent: wantsSilent,
         }),
       });
 
@@ -369,6 +371,38 @@ if (data?.customerToken) {
             />
           </label>
         </div>
+
+{/* Silent preference */}
+<div style={{ marginBottom: "0.75rem" }}>
+  <label
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "0.6rem",
+      fontSize: "0.95rem",
+      color: "#e5e7eb",
+      userSelect: "none",
+    }}
+  >
+    <input
+      type="checkbox"
+      checked={wantsSilent}
+      onChange={(e) => setWantsSilent(e.target.checked)}
+      disabled={isBooking}
+      style={{
+        width: "18px",
+        height: "18px",
+        accentColor: "#22c55e", // you can change this later
+        cursor: isBooking ? "not-allowed" : "pointer",
+      }}
+    />
+    I prefer a quiet / no small talk cut
+  </label>
+
+  <div style={{ marginTop: "0.35rem", fontSize: "0.85rem", color: "#94a3b8" }}>
+    This preference will be shared with your barber before the appointment.
+  </div>
+</div>
 
         {/* Date picker */}
         <div style={{ marginBottom: "0.75rem" }}>
