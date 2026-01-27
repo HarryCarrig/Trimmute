@@ -468,7 +468,7 @@ const visibleShops = shops.filter((shop) => {
     padding: "0.8rem 1.1rem",
     borderRadius: "12px",
     border: `1px solid ${THEME.border}`,
-    background: THEME.primary,          // 👈 key line (or your gradient)
+   background: `linear-gradient(180deg, ${THEME.primary}, ${THEME.primaryHover})`,
     color: "#ffffff",
     fontWeight: 700,
     cursor: "pointer",
