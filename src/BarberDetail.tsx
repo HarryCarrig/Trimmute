@@ -28,14 +28,15 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const [bookingDate, setBookingDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [customerName, setCustomerName] = useState("");
-  const [wantsSilent, setWantsSilent] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const [loadingTimes, setLoadingTimes] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
- const [isSilentRequest, setIsSilentRequest] = useState(true); // default ON for Silent Snips
+const isSilentSnips = shop.id === "1" || shop.name === "Silent Snips";
+const [isSilentRequest, setIsSilentRequest] = useState(isSilentSnips);
 const [requirements, setRequirements] = useState("");
+
 
 
   const hasDistance =
@@ -122,9 +123,6 @@ const times = Array.isArray(data?.bookedTimes)
   // ✅ NEW: canConfirm (includes !isBooking to prevent double-submit)
   const canConfirm =
     customerName.trim() && bookingDate && selectedTime && !isBooking;
-
-  // Treat Silent Snips (id "1") as the flagship real shop
-  const isSilentSnips = shop.id === "1" || shop.name === "Silent Snips";
 
   const aboutText = isSilentSnips
     ? "Silent Snips is Trimmute’s flagship silent-first barbershop in central London. Lights low, music soft, no forced small talk – just sharp fades, clean tapers and a calm, neurodivergent-friendly space where you can fully switch off."
@@ -388,18 +386,19 @@ if (data?.customerToken) {
       userSelect: "none",
     }}
   >
-    <input
-      type="checkbox"
-      checked={wantsSilent}
-      onChange={(e) => setWantsSilent(e.target.checked)}
-      disabled={isBooking}
-      style={{
-        width: "18px",
-        height: "18px",
-        accentColor: "#22c55e", // you can change this later
-        cursor: isBooking ? "not-allowed" : "pointer",
-      }}
-    />
+<input
+  type="checkbox"
+  checked={isSilentRequest}
+  onChange={(e) => setIsSilentRequest(e.target.checked)}
+  disabled={isBooking}
+  style={{
+    width: "18px",
+    height: "18px",
+    accentColor: "#22c55e",
+    cursor: isBooking ? "not-allowed" : "pointer",
+  }}
+/>
+
     I prefer a quiet / no small talk cut
   </label>
 
@@ -464,29 +463,30 @@ if (data?.customerToken) {
   </p>
 </div>
 
-{/* Requirements / notes */}
-<div style={{ marginBottom: "0.75rem" }}>
-  <label style={{ fontSize: "0.95rem", display: "block", marginBottom: "0.35rem" }}>
-    Requirements (optional):
-  </label>
-  <textarea
-    value={requirements}
-    onChange={(e) => setRequirements(e.target.value)}
-    placeholder="e.g. low fade, keep length on top, no razor, please be quiet"
-    rows={3}
-    style={{
-      width: "100%",
-      padding: "0.6rem 0.75rem",
-      borderRadius: "12px",
-      border: "1px solid #d1d5db",
-      background: "rgba(255,255,255,0.06)",
-      color: "white",
-      outline: "none",
-      resize: "vertical",
-    }}
-    disabled={isBooking}
-  />
-</div>
+{/* Requirements (only if silent requested) */}
+{isSilentRequest && (
+  <div style={{ marginBottom: "0.75rem" }}>
+    <label style={{ fontSize: "0.95rem", display: "block", marginBottom: "0.35rem" }}>
+      Requirements (optional):
+    </label>
+    <textarea
+      value={requirements}
+      onChange={(e) => setRequirements(e.target.value)}
+      placeholder="e.g. fringe length, clippers only, no mirror, sensitive skin"
+      rows={3}
+      disabled={isBooking}
+      style={{
+        width: "100%",
+        padding: "0.5rem",
+        borderRadius: "8px",
+        border: "1px solid rgba(255,255,255,0.15)",
+        backgroundColor: "rgba(255,255,255,0.06)",
+        color: "#e5e7eb",
+      }}
+    />
+  </div>
+)}
+
 
         {/* Time slots */}
         <div style={{ marginBottom: "0.75rem" }}>
