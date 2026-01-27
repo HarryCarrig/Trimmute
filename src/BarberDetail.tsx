@@ -407,7 +407,24 @@ Request a silent appointment
   </div>
 </div>
 
-{/* Requirements / notes */}
+{/* Silent request toggle */}
+<div style={{ marginBottom: "0.75rem" }}>
+  <label style={{ fontSize: "0.95rem", display: "flex", gap: "0.6rem", alignItems: "center" }}>
+    <input
+      type="checkbox"
+      checked={isSilentRequest}
+      onChange={(e) => setIsSilentRequest(e.target.checked)}
+      disabled={isBooking}
+    />
+    Request a silent appointment
+  </label>
+
+  <p style={{ marginTop: "0.25rem", color: "#94a3b8", fontSize: "0.85rem" }}>
+    No forced small talk — barber keeps it minimal unless you speak first.
+  </p>
+</div>
+
+{/* Requirements (only if silent requested) */}
 {isSilentRequest && (
   <div style={{ margin: "0.75rem 0 1rem" }}>
     <label style={{ fontSize: "0.95rem", display: "block", marginBottom: "0.35rem" }}>
@@ -417,7 +434,7 @@ Request a silent appointment
     <textarea
       value={requirements}
       onChange={(e) => setRequirements(e.target.value)}
-      placeholder="e.g. low fade, keep length on top, no razor, please be quiet"
+      placeholder="e.g. low fade, keep length on top, no razor, sensitive skin"
       rows={3}
       disabled={isBooking}
       style={{
@@ -432,61 +449,21 @@ Request a silent appointment
   </div>
 )}
 
-
-        {/* Date picker */}
-        <div style={{ marginBottom: "0.75rem" }}>
-          <label style={{ fontSize: "0.95rem" }}>
-            Choose a date:{" "}
-            <input
-              type="date"
-              value={bookingDate}
-              onChange={(e) => setBookingDate(e.target.value)}
-              min={todayStr}
-              style={{ padding: "0.25rem 0.5rem" }}
-              disabled={isBooking}
-            />
-          </label>
-        </div>
-
-{/* Silent request toggle */}
+{/* Date picker */}
 <div style={{ marginBottom: "0.75rem" }}>
-  <label style={{ fontSize: "0.95rem", display: "flex", gap: "0.6rem", alignItems: "center" }}>
+  <label style={{ fontSize: "0.95rem" }}>
+    Choose a date:{" "}
     <input
-      type="checkbox"
-      checked={isSilentRequest}
-      onChange={(e) => setIsSilentRequest(e.target.checked)}
+      type="date"
+      value={bookingDate}
+      onChange={(e) => setBookingDate(e.target.value)}
+      min={todayStr}
+      style={{ padding: "0.25rem 0.5rem" }}
       disabled={isBooking}
     />
-    Request a silent appointment
   </label>
-  <p style={{ marginTop: "0.25rem", color: "#6b7280", fontSize: "0.85rem" }}>
-    No forced small talk — barber keeps it minimal unless you speak first.
-  </p>
 </div>
 
-{/* Requirements (only if silent requested) */}
-{isSilentRequest && (
-  <div style={{ marginBottom: "0.75rem" }}>
-    <label style={{ fontSize: "0.95rem", display: "block", marginBottom: "0.35rem" }}>
-      Requirements (optional):
-    </label>
-    <textarea
-      value={requirements}
-      onChange={(e) => setRequirements(e.target.value)}
-      placeholder="e.g. fringe length, clippers only, no mirror, sensitive skin"
-      rows={3}
-      disabled={isBooking}
-      style={{
-        width: "100%",
-        padding: "0.5rem",
-        borderRadius: "8px",
-        border: "1px solid rgba(255,255,255,0.15)",
-        backgroundColor: "rgba(255,255,255,0.06)",
-        color: "#e5e7eb",
-      }}
-    />
-  </div>
-)}
 
 
         {/* Time slots */}
