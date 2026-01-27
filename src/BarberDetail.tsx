@@ -399,7 +399,7 @@ if (data?.customerToken) {
   }}
 />
 
-    I prefer a quiet / no small talk cut
+Request a silent appointment
   </label>
 
   <div style={{ marginTop: "0.35rem", fontSize: "0.85rem", color: "#94a3b8" }}>
@@ -408,29 +408,30 @@ if (data?.customerToken) {
 </div>
 
 {/* Requirements / notes */}
-<div style={{ margin: "0.75rem 0 1rem" }}>
-  <label style={{ fontSize: "0.95rem", display: "block", marginBottom: "0.35rem" }}>
-    Requirements (optional):
-  </label>
+{isSilentRequest && (
+  <div style={{ margin: "0.75rem 0 1rem" }}>
+    <label style={{ fontSize: "0.95rem", display: "block", marginBottom: "0.35rem" }}>
+      Requirements (optional):
+    </label>
 
-  <textarea
-    value={requirements}
-    onChange={(e) => setRequirements(e.target.value)}
-    placeholder="e.g. low fade, keep length on top, no razor, please be quiet"
-    rows={3}
-    style={{
-      width: "100%",
-      padding: "0.6rem 0.75rem",
-      borderRadius: "12px",
-      border: "1px solid rgba(255,255,255,0.18)",
-      background: "rgba(255,255,255,0.06)",
-      color: "white",
-      outline: "none",
-      resize: "vertical",
-    }}
-    disabled={isBooking}
-  />
-</div>
+    <textarea
+      value={requirements}
+      onChange={(e) => setRequirements(e.target.value)}
+      placeholder="e.g. low fade, keep length on top, no razor, please be quiet"
+      rows={3}
+      disabled={isBooking}
+      style={{
+        width: "100%",
+        padding: "0.6rem 0.75rem",
+        borderRadius: "12px",
+        border: "1px solid rgba(255,255,255,0.15)",
+        backgroundColor: "rgba(255,255,255,0.06)",
+        color: "#e5e7eb",
+      }}
+    />
+  </div>
+)}
+
 
         {/* Date picker */}
         <div style={{ marginBottom: "0.75rem" }}>
