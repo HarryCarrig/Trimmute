@@ -462,15 +462,26 @@ const visibleShops = shops.filter((shop) => {
     />
   </label>
 
-  <button
-    onClick={searchByPostcode}
-    style={{
-      padding: "0.7rem 1.1rem",
-      whiteSpace: "nowrap",
-    }}
-  >
-    Search postcode
-  </button>
+<button
+  onClick={searchByPostcode}
+  style={{
+    padding: "0.8rem 1.1rem",
+    borderRadius: "12px",
+    border: `1px solid ${THEME.border}`,
+    background: THEME.primary,          // 👈 key line (or your gradient)
+    color: "#ffffff",
+    fontWeight: 700,
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+
+    // mobile-friendly: button drops under and fills width nicely
+    width: "100%",
+    flex: "1 1 180px",
+    marginTop: "0.25rem",
+  }}
+>
+  Search postcode
+</button>
 </div>
 
           </div>
