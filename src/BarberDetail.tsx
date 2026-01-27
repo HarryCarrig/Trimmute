@@ -374,39 +374,6 @@ if (data?.customerToken) {
           </label>
         </div>
 
-{/* Silent preference */}
-<div style={{ marginBottom: "0.75rem" }}>
-  <label
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "0.6rem",
-      fontSize: "0.95rem",
-      color: "#e5e7eb",
-      userSelect: "none",
-    }}
-  >
-<input
-  type="checkbox"
-  checked={isSilentRequest}
-  onChange={(e) => setIsSilentRequest(e.target.checked)}
-  disabled={isBooking}
-  style={{
-    width: "18px",
-    height: "18px",
-    accentColor: "#22c55e",
-    cursor: isBooking ? "not-allowed" : "pointer",
-  }}
-/>
-
-Request a silent appointment
-  </label>
-
-  <div style={{ marginTop: "0.35rem", fontSize: "0.85rem", color: "#94a3b8" }}>
-    This preference will be shared with your barber before the appointment.
-  </div>
-</div>
-
 {/* Silent request toggle */}
 <div style={{ marginBottom: "0.75rem" }}>
   <label style={{ fontSize: "0.95rem", display: "flex", gap: "0.6rem", alignItems: "center" }}>
