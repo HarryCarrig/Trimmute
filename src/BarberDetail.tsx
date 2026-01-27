@@ -31,10 +31,12 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const [wantsSilent, setWantsSilent] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
-
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const [loadingTimes, setLoadingTimes] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
+ const [isSilentRequest, setIsSilentRequest] = useState(true); // default ON for Silent Snips
+const [requirements, setRequirements] = useState("");
+
 
   const hasDistance =
     typeof shop.distanceKm === "number" && !Number.isNaN(shop.distanceKm);
@@ -175,14 +177,16 @@ const times = Array.isArray(data?.bookedTimes)
       const res = await fetch(BOOKINGS_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          barberId: shop.id,
-          barberName: shop.name,
-          customerName: customerName.trim(),
-          date: bookingDate,
-          time: selectedTime,
-          isSilent: wantsSilent,
-        }),
+body: JSON.stringify({
+  barberId: shop.id,
+  barberName: shop.name,
+  customerName: customerName.trim(),
+  date: bookingDate,
+  time: selectedTime,
+  isSilent: isSilentRequest,
+  requirements: requirements.trim(),
+}),
+
       });
 
       if (res.status === 409) {
@@ -404,6 +408,31 @@ if (data?.customerToken) {
   </div>
 </div>
 
+{/* Requirements / notes */}
+<div style={{ margin: "0.75rem 0 1rem" }}>
+  <label style={{ fontSize: "0.95rem", display: "block", marginBottom: "0.35rem" }}>
+    Requirements (optional):
+  </label>
+
+  <textarea
+    value={requirements}
+    onChange={(e) => setRequirements(e.target.value)}
+    placeholder="e.g. low fade, keep length on top, no razor, please be quiet"
+    rows={3}
+    style={{
+      width: "100%",
+      padding: "0.6rem 0.75rem",
+      borderRadius: "12px",
+      border: "1px solid rgba(255,255,255,0.18)",
+      background: "rgba(255,255,255,0.06)",
+      color: "white",
+      outline: "none",
+      resize: "vertical",
+    }}
+    disabled={isBooking}
+  />
+</div>
+
         {/* Date picker */}
         <div style={{ marginBottom: "0.75rem" }}>
           <label style={{ fontSize: "0.95rem" }}>
@@ -418,6 +447,46 @@ if (data?.customerToken) {
             />
           </label>
         </div>
+
+{/* Silent request toggle */}
+<div style={{ marginBottom: "0.75rem" }}>
+  <label style={{ fontSize: "0.95rem", display: "flex", gap: "0.6rem", alignItems: "center" }}>
+    <input
+      type="checkbox"
+      checked={isSilentRequest}
+      onChange={(e) => setIsSilentRequest(e.target.checked)}
+      disabled={isBooking}
+    />
+    Request a silent appointment
+  </label>
+  <p style={{ marginTop: "0.25rem", color: "#6b7280", fontSize: "0.85rem" }}>
+    No forced small talk — barber keeps it minimal unless you speak first.
+  </p>
+</div>
+
+{/* Requirements / notes */}
+<div style={{ marginBottom: "0.75rem" }}>
+  <label style={{ fontSize: "0.95rem", display: "block", marginBottom: "0.35rem" }}>
+    Requirements (optional):
+  </label>
+  <textarea
+    value={requirements}
+    onChange={(e) => setRequirements(e.target.value)}
+    placeholder="e.g. low fade, keep length on top, no razor, please be quiet"
+    rows={3}
+    style={{
+      width: "100%",
+      padding: "0.6rem 0.75rem",
+      borderRadius: "12px",
+      border: "1px solid #d1d5db",
+      background: "rgba(255,255,255,0.06)",
+      color: "white",
+      outline: "none",
+      resize: "vertical",
+    }}
+    disabled={isBooking}
+  />
+</div>
 
         {/* Time slots */}
         <div style={{ marginBottom: "0.75rem" }}>
