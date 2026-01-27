@@ -436,42 +436,43 @@ const visibleShops = shops.filter((shop) => {
               </label>
             </div>
 
-            <div>
-              <label>
-                Or enter full postcode:{" "}
-                <input
-            value={postcode}
-  onChange={(e) => setPostcode(e.target.value)}
-  placeholder="e.g. SW1A 1AA"
+<div
   style={{
-    padding: "0.65rem 0.8rem",
-    borderRadius: "12px",
-    border: `1px solid ${THEME.border}`,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    color: THEME.text,
-    outline: "none",
-    minWidth: 200,
-    marginRight: "0.6rem",
-  }}
-/>
-              </label>
-              <button
-        onClick={searchByPostcode}
-  style={{
-    padding: "0.7rem 1.1rem",
-    background: `linear-gradient(180deg, ${THEME.primary}, ${THEME.primaryHover})`,
-    color: "white",
-    border: "none",
-    borderRadius: "12px",
-    cursor: "pointer",
-    fontWeight: 800,
-    fontSize: "0.9rem",
-    boxShadow: "0 10px 22px rgba(14,165,164,0.18)",
+    display: "flex",
+    gap: "0.6rem",
+    flexWrap: "wrap",
+    alignItems: "center",
   }}
 >
-  Search postcode
-              </button>
-            </div>
+  <label style={{ flex: "1 1 260px" }}>
+    Or enter full postcode:{" "}
+    <input
+      value={postcode}
+      onChange={(e) => setPostcode(e.target.value)}
+      placeholder="e.g. SW1A 1AA"
+      style={{
+        padding: "0.65rem 0.8rem",
+        borderRadius: "12px",
+        border: `1px solid ${THEME.border}`,
+        backgroundColor: "rgba(255,255,255,0.06)",
+        color: THEME.text,
+        outline: "none",
+        width: "100%",          // 👈 important
+      }}
+    />
+  </label>
+
+  <button
+    onClick={searchByPostcode}
+    style={{
+      padding: "0.7rem 1.1rem",
+      whiteSpace: "nowrap",
+    }}
+  >
+    Search postcode
+  </button>
+</div>
+
           </div>
 
           {loading && <p>Loading barbers...</p>}
