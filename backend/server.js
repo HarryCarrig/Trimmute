@@ -278,10 +278,19 @@ app.post("/bookings", async (req, res) => {
       customerName,
       date,
       time,
-      isSilent = true,
+      isSilent = false,
       requirements = null,
       customerToken,
     } = req.body || {};
+
+    
+    // determine if barber supports silent cuts
+const supportsSilent =
+  barberId === "1" || barberName === "Silent Snips";
+
+// force silent off if not supported
+const finalIsSilent = supportsSilent ? !!isSilent : false;
+const finalRequirements = supportsSilent ? requirements : null;
 
     if (!barberId || !date || !time) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -325,8 +334,8 @@ app.post("/bookings", async (req, res) => {
         customerName ?? null,
         date,
         time,
-        !!isSilent,
-        requirements,
+        finalIsSilent,
+        finalRequirements,
         token,
       ]
     );
