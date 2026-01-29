@@ -11,13 +11,16 @@ type Shop = {
   name: string;
   address: string;
   imageUrl?: string | null;
-  basePrice: number; // pence
+  basePrice: number;
   styles: string[];
   distanceKm?: number;
   postcode?: string;
   lat?: number;
   lng?: number;
+
+  supportsSilent?: boolean; // ✅ optional for now
 };
+
 
 // 👇 added "bookings" here
 type View = "home" | "barber" | "detail" | "bookings";
@@ -77,23 +80,23 @@ const mapped: Shop[] = raw.map((b, index) => {
   const name = String(b.name ?? "");
 
   const isSilentSnips = id === "1" || name === "Silent Snips";
+  const supportsSilent = isSilentSnips || Boolean(b.silentCutAvailable);
 
   return {
     id,
     name,
     address: b.address ?? b.city ?? "Unknown area",
 
-    // ✅ Force Silent Snips to have NO image so it matches others
-    imageUrl:
-      isSilentSnips
-        ? null
-        : typeof b.imageUrl === "string" && b.imageUrl.trim()
-        ? b.imageUrl
-        : null,
+    imageUrl: isSilentSnips
+      ? null
+      : (typeof b.imageUrl === "string" && b.imageUrl.trim()
+          ? b.imageUrl
+          : null),
+
+    supportsSilent,
 
     basePrice: b.basePrice ?? b.basePricePence ?? 2000,
-    styles:
-      b.styles ?? (b.silentCutAvailable ? ["Silent cut available"] : []),
+    styles: b.styles ?? (supportsSilent ? ["Silent cut available"] : []),
 
     distanceKm: b.distanceKm,
     postcode: b.postcode,
@@ -101,7 +104,6 @@ const mapped: Shop[] = raw.map((b, index) => {
     lng: typeof b.lng === "number" ? b.lng : undefined,
   };
 });
-
 
 
       setShops(mapped);
@@ -128,26 +130,38 @@ const mapped: Shop[] = raw.map((b, index) => {
 
       const raw: any[] = await res.json();
 
-      const mapped: Shop[] = raw.map((b, index) => ({
-        id: String(b.id ?? index),
-        name: b.name,
-        address: b.address ?? b.city ?? "Unknown area",
-imageUrl:
-  (String(b.id ?? index) === "1" || b.name === "Silent Snips")
-    ? null
-    : (typeof b.imageUrl === "string" && b.imageUrl.trim()
-        ? b.imageUrl
-        : null),
+const mapped: Shop[] = raw.map((b, index) => {
+  const id = String(b.id ?? index);
+  const name = String(b.name ?? "");
 
-        basePrice: b.basePrice ?? b.basePricePence ?? 2000,
-        styles:
-          b.styles ??
-          (b.silentCutAvailable ? ["Silent cut available"] : []),
-        distanceKm: b.distanceKm,
-        postcode: b.postcode,
-        lat: typeof b.lat === "number" ? b.lat : undefined,
-        lng: typeof b.lng === "number" ? b.lng : undefined,
-      }));
+  const isSilentSnips = id === "1" || name === "Silent Snips";
+  const supportsSilent = isSilentSnips || Boolean(b.silentCutAvailable);
+
+  return {
+    id,
+    name,
+    address: b.address ?? b.city ?? "Unknown area",
+
+    imageUrl: isSilentSnips
+      ? null
+      : typeof b.imageUrl === "string" && b.imageUrl.trim()
+      ? b.imageUrl
+      : null,
+
+    supportsSilent,
+
+    basePrice: b.basePrice ?? b.basePricePence ?? 2000,
+
+    styles: b.styles ?? (supportsSilent ? ["Silent cut available"] : []),
+
+    distanceKm: b.distanceKm,
+    postcode: b.postcode,
+    lat: typeof b.lat === "number" ? b.lat : undefined,
+    lng: typeof b.lng === "number" ? b.lng : undefined,
+  };
+});
+
+
 
       setView("home");
       setShops(mapped);

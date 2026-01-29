@@ -16,6 +16,7 @@ type BarberDetailProps = {
     imageUrl?: string | null;
     basePrice: number;
     styles: string[];
+    supportsSilent?: boolean;
     distanceKm?: number;
     postcode?: string;
     lat?: number;
