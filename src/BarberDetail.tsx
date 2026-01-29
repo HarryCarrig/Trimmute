@@ -38,10 +38,7 @@ const isSilentSnips = shop.id === "1" || shop.name === "Silent Snips";
 const [isSilentRequest, setIsSilentRequest] = useState(false);
 const [requirements, setRequirements] = useState("");
 
-  const supportsSilent =
-    (shop.styles ?? []).includes("Silent cut available") ||
-    shop.id === "1" ||
-    shop.name === "Silent Snips";
+const supportsSilent = shop.supportsSilent ?? false;
 
 
   const hasDistance =
@@ -53,8 +50,6 @@ const [requirements, setRequirements] = useState("");
   const drivingMins = hasDistance
     ? Math.round(((shop.distanceKm as number) / 30) * 60)
     : null;
-
-const isSilent = supportsSilent;
 
 
   // Map support – only if we have coordinates
@@ -149,7 +144,7 @@ const times = Array.isArray(data?.bookedTimes)
         Skin fade &amp; style – from £{(shop.basePrice / 100 + 5).toFixed(2)}
       </li>
       <li>Beard trim &amp; shape up – from £10.00</li>
-      {isSilent && <li>Silent appointment option (no small talk)</li>}
+      {supportsSilent && <li>Silent appointment option (no small talk)</li>}
     </>
   );
 
@@ -184,12 +179,13 @@ const times = Array.isArray(data?.bookedTimes)
 body: JSON.stringify({
   barberId: shop.id,
   barberName: shop.name,
-  customerName: customerName.trim(),
+  customerName,
   date: bookingDate,
   time: selectedTime,
-  isSilent: isSilentRequest,
-  requirements: requirements.trim(),
-}),
+  isSilent: supportsSilent ? isSilentRequest : false,
+  requirements: supportsSilent && isSilentRequest ? requirements : null,
+})
+
 
       });
 
@@ -284,11 +280,12 @@ if (data?.customerToken) {
           </div>
 
           <div style={{ marginBottom: "0.35rem" }}>
-{isSilent && (
+{supportsSilent && (
   <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-400/15 text-teal-200 border border-teal-300/25 text-xs">
     🔇 Silent cut available
   </span>
 )}
+
 
             {hasDistance && (
               <span
@@ -381,6 +378,7 @@ if (data?.customerToken) {
         </div>
 {supportsSilent && (
   <>
+
     {/* Silent request toggle */}
     <div style={{ marginBottom: "0.75rem" }}>
       <label style={{ fontSize: "0.95rem", display: "flex", gap: "0.6rem", alignItems: "center" }}>
@@ -398,16 +396,10 @@ if (data?.customerToken) {
       </p>
     </div>
 
-    {/* Requirements (only if silent requested) */}
+    {/* Requirements (only if requested) */}
     {isSilentRequest && (
       <div style={{ margin: "0.75rem 0 1rem" }}>
-        <label
-          style={{
-            fontSize: "0.95rem",
-            display: "block",
-            marginBottom: "0.35rem",
-          }}
-        >
+        <label style={{ fontSize: "0.95rem", display: "block", marginBottom: "0.35rem" }}>
           Requirements (optional):
         </label>
 
@@ -430,6 +422,7 @@ if (data?.customerToken) {
     )}
   </>
 )}
+
 
 
 {/* Date picker */}
