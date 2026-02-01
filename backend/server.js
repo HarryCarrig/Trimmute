@@ -29,7 +29,9 @@ console.log("Has DATABASE_URL =", !!process.env.DATABASE_URL);
 
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.FRONTEND_URL, // e.g. https://trimmute.vercel.app
+  ...(process.env.FRONTEND_URLS
+    ? process.env.FRONTEND_URLS.split(",").map(s => s.trim())
+    : []),
 ].filter(Boolean);
 
 const corsOptions = {
