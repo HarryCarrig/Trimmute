@@ -10,16 +10,18 @@ type Shop = {
   id: string;
   name: string;
   address: string;
-  imageUrl?: string | null;
+  imageUrl: string | null;
+
+  supportsSilent: boolean;
   basePrice: number;
   styles: string[];
+
   distanceKm?: number;
   postcode?: string;
   lat?: number;
   lng?: number;
-
-  supportsSilent?: boolean; // ✅ optional for now
 };
+
 
 
 // 👇 added "bookings" here
@@ -63,116 +65,68 @@ export default function App() {
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
 const [demoMode, setDemoMode] = useState(false);
 
-  async function loadShops() {
-    try {
-      setError("");
-      setLoading(true);
 
-      const res = await fetch(BACKEND_URL);
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      const raw: any[] = await res.json();
-
-const mapped: Shop[] = raw.map((b, index) => {
-  const id = String(b.id ?? index);
-  const name = String(b.name ?? "");
-
-  const isSilentSnips = id === "1" || name === "Silent Snips";
-  const supportsSilent = isSilentSnips || Boolean(b.silentCutAvailable);
-
-  return {
-    id,
-    name,
-    address: b.address ?? b.city ?? "Unknown area",
-
-    imageUrl: isSilentSnips
-      ? null
-      : (typeof b.imageUrl === "string" && b.imageUrl.trim()
-          ? b.imageUrl
-          : null),
-
-    supportsSilent,
-
-    basePrice: b.basePrice ?? b.basePricePence ?? 2000,
-    styles: b.styles ?? (supportsSilent ? ["Silent cut available"] : []),
-
-    distanceKm: b.distanceKm,
-    postcode: b.postcode,
-    lat: typeof b.lat === "number" ? b.lat : undefined,
-    lng: typeof b.lng === "number" ? b.lng : undefined,
-  };
-});
-
-
-      setShops(mapped);
-      setView("home");
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message ?? "Failed to load barbers");
-      setShops([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function loadShopsNearCoords(latitude: number, longitude: number) {
-    try {
-      setError("");
-      setLoading(true);
-
-      const url = `${BACKEND_NEAR_URL}?lat=${latitude}&lng=${longitude}`;
-      const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      const raw: any[] = await res.json();
-
-const mapped: Shop[] = raw.map((b, index) => {
-  const id = String(b.id ?? index);
-  const name = String(b.name ?? "");
-
-  const isSilentSnips = id === "1" || name === "Silent Snips";
-  const supportsSilent = isSilentSnips || Boolean(b.silentCutAvailable);
-
-  return {
-    id,
-    name,
-    address: b.address ?? b.city ?? "Unknown area",
-
-    imageUrl: isSilentSnips
-      ? null
-      : typeof b.imageUrl === "string" && b.imageUrl.trim()
+const mapShop = (b: any, index: number): Shop => ({
+  id: String(b.id ?? index),
+  name: String(b.name ?? ""),
+  address: b.address ?? "Unknown area",
+  imageUrl:
+    typeof b.imageUrl === "string" && b.imageUrl.trim()
       ? b.imageUrl
       : null,
-
-    supportsSilent,
-
-    basePrice: b.basePrice ?? b.basePricePence ?? 2000,
-
-    styles: b.styles ?? (supportsSilent ? ["Silent cut available"] : []),
-
-    distanceKm: b.distanceKm,
-    postcode: b.postcode,
-    lat: typeof b.lat === "number" ? b.lat : undefined,
-    lng: typeof b.lng === "number" ? b.lng : undefined,
-  };
+  supportsSilent: Boolean(b.supportsSilent),
+  basePrice: Number(b.basePrice ?? 2000),
+  styles: Array.isArray(b.styles) ? b.styles : [],
+  distanceKm: typeof b.distanceKm === "number" ? b.distanceKm : undefined,
+  postcode: b.postcode ?? undefined,
+  lat: typeof b.lat === "number" ? b.lat : undefined,
+  lng: typeof b.lng === "number" ? b.lng : undefined,
 });
 
 
 
-      setView("home");
-      setShops(mapped);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message ?? "Failed to load nearby barbers");
-      setShops([]);
-    } finally {
-      setLoading(false);
-    }
+async function loadShops() {
+  try {
+    setError("");
+    setLoading(true);
+
+    const res = await fetch(BACKEND_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const raw: any[] = await res.json();
+    setShops(raw.map(mapShop));
+    setView("home");
+  } catch (err: any) {
+    console.error(err);
+    setError(err.message ?? "Failed to load barbers");
+    setShops([]);
+  } finally {
+    setLoading(false);
   }
+}
+
+async function loadShopsNearCoords(latitude: number, longitude: number) {
+  try {
+    setError("");
+    setLoading(true);
+
+    const url = `${BACKEND_NEAR_URL}?lat=${latitude}&lng=${longitude}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const raw: any[] = await res.json();
+
+    setShops(raw.map(mapShop));
+    setView("home");
+  } catch (err: any) {
+    console.error(err);
+    setError(err.message ?? "Failed to load nearby barbers");
+    setShops([]);
+  } finally {
+    setLoading(false);
+  }
+}
+
 
   function loadShopsNearMe() {
     if (!navigator.geolocation) {
@@ -249,7 +203,7 @@ const visibleShops = shops.filter((shop) => {
 
   const showHome = view === "home";
   const showBarberMode = view === "barber";
-  const showDetail = view === "detail" && selectedShop;
+  const showDetail = view === "detail" && selectedShop !== null;
   const showBookings = view === "bookings";
 
   return (
@@ -287,14 +241,18 @@ const visibleShops = shops.filter((shop) => {
 
       {showBarberMode && <BarberMode />}
 
-      {showDetail && selectedShop && (
-        <BarberDetail
-          shop={selectedShop}
-          onBack={() => {
-            setView("home");
-          }}
-        />
-      )}
+    {view === "detail" && selectedShop && (
+  <BarberDetail
+    shop={selectedShop}
+    onBack={() => {
+      setSelectedShop(null);
+      setView("home");
+    }}
+  />
+)}
+
+
+
 
       {/* 👇 NEW: bookings view */}
       {showBookings && (

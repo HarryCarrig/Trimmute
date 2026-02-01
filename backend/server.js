@@ -229,6 +229,52 @@ app.get("/barbers", async (req, res) => {
   }
 });
 
+app.get("/barbers/near", async (req, res) => {
+  try {
+    const { lat, lng } = req.query;
+
+    if (lat == null || lng == null) {
+      return res.status(400).json({ error: "Query parameters 'lat' and 'lng' are required" });
+    }
+
+    const userLat = parseFloat(lat);
+    const userLng = parseFloat(lng);
+
+    if (Number.isNaN(userLat) || Number.isNaN(userLng)) {
+      return res.status(400).json({ error: "Invalid 'lat' or 'lng'" });
+    }
+
+    // pull all shops, then compute distance in JS
+    const result = await pool.query(`
+      select
+        id,
+        name,
+        address,
+        postcode,
+        image_url as "imageUrl",
+        base_price_pence as "basePricePence",
+        supports_silent as "supportsSilent",
+        lat,
+        lng,
+        styles
+      from public.shops
+      where lat is not null and lng is not null
+      order by id asc
+    `);
+
+    const withDistance = result.rows
+      .map((s) => ({
+        ...s,
+        distanceKm: distanceKm(userLat, userLng, Number(s.lat), Number(s.lng)),
+      }))
+      .sort((a, b) => a.distanceKm - b.distanceKm);
+
+    res.json(withDistance);
+  } catch (err) {
+    console.error("GET /barbers/near error:", err);
+    res.status(500).json({ error: err.message || String(err) });
+  }
+});
 
 
 // Public: returns booked time slots for a barber on a date (NO personal data)
