@@ -211,11 +211,13 @@ app.get("/barbers", async (req, res) => {
         id,
         name,
         address,
+        postcode,
         image_url as "imageUrl",
-        base_price as "basePrice",
+        base_price_pence as "basePricePence",
         supports_silent as "supportsSilent",
         lat,
-        lng
+        lng,
+        styles
       from public.shops
       order by id asc
     `);
@@ -223,52 +225,10 @@ app.get("/barbers", async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error("GET /barbers error:", err);
-    res.status(500).json({ error: "server error" });
+    res.status(500).json({ error: err.message || String(err) });
   }
 });
 
-app.get("/barbers/near", async (req, res) => {
-  try {
-    const { lat, lng } = req.query;
-
-    if (!lat || !lng) {
-      return res.status(400).json({ error: "Query parameters 'lat' and 'lng' are required" });
-    }
-
-    const userLat = parseFloat(lat);
-    const userLng = parseFloat(lng);
-
-    if (Number.isNaN(userLat) || Number.isNaN(userLng)) {
-      return res.status(400).json({ error: "Invalid 'lat' or 'lng'" });
-    }
-
-    const result = await pool.query(`
-      select
-        id,
-        name,
-        address,
-        image_url as "imageUrl",
-        base_price as "basePrice",
-        supports_silent as "supportsSilent",
-        lat,
-        lng
-      from public.shops
-      where lat is not null and lng is not null
-    `);
-
-    const withDistance = result.rows
-      .map((b) => ({
-        ...b,
-        distanceKm: distanceKm(userLat, userLng, b.lat, b.lng),
-      }))
-      .sort((a, b) => a.distanceKm - b.distanceKm);
-
-    res.json(withDistance);
-  } catch (err) {
-    console.error("GET /barbers/near error:", err);
-    res.status(500).json({ error: "server error" });
-  }
-});
 
 
 // Public: returns booked time slots for a barber on a date (NO personal data)
