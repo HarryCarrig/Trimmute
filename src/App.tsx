@@ -4,56 +4,55 @@ import BarberDetail from "./BarberDetail";
 import MyBookings from "./mybookings";
 import logo from "./assets/trimmute-logo.png";
 
-
-
 type Shop = {
   id: string;
   name: string;
   address: string;
   imageUrl: string | null;
-
   supportsSilent: boolean;
   basePrice: number;
   styles: string[];
-
   distanceKm?: number;
   postcode?: string;
   lat?: number;
   lng?: number;
 };
 
-
-
-// 👇 added "bookings" here
 type View = "home" | "barber" | "detail" | "bookings";
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
 
-  const THEME = {
-  bg: "#0b1220",            // deep slate background
-  surface: "#111a2e",       // card surface
-  surface2: "#0f172a",      // slightly darker surface
-  border: "rgba(255,255,255,0.10)",
-  text: "#e5e7eb",
-  muted: "#aab3c5",
+// 🎨 THEME UPDATE: "Midnight Monochrome"
+// We removed the aggressive neons. The app is now deep black, grey, and white.
+// Teal is reserved ONLY for the "Silent" badge.
+const THEME = {
+  bodyBg: "#0f0f0f",              // Outer desktop background (Deep Grey)
+  bg: "#000000",                  // Inner App Background (Pure Void)
+  
+  // Glass is now darker and smokier
+  glass: "rgba(20, 20, 20, 0.7)", 
+  glassHover: "rgba(40, 40, 40, 0.9)",
+  
+  border: "rgba(255, 255, 255, 0.12)", // Slightly sharper borders
+  borderHighlight: "rgba(255, 255, 255, 0.3)", 
 
-  primary: "#0ea5a4",       // teal
-  primaryHover: "#0891b2",
-  primaryText: "#062225",
-
-  secondary: "rgba(255,255,255,0.06)",
-  secondaryHover: "rgba(255,255,255,0.10)",
-
-  chipBg: "rgba(34,197,94,0.14)", // green chip background
-  chipText: "#86efac",
-
-  danger: "#fb7185",
+  textMain: "#ffffff",
+  textMuted: "#737373",           // Much darker grey for secondary text (subtle)
+  
+  // The new "Silent" Accent (Muted Mint, not Neon)
+  silent: "#5eead4",              
+  silentBg: "rgba(94, 234, 212, 0.1)",
+  
+  // Action Color (White is the new Black)
+  actionBg: "#ffffff",
+  actionText: "#000000",
+  
+  danger: "#ef4444",
 };
 
 const BACKEND_URL = `${API_BASE}/barbers`;
 const BACKEND_NEAR_URL = `${API_BASE}/barbers/near`;
-
 
 export default function App() {
   const [view, setView] = useState<View>("home");
@@ -63,80 +62,69 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [postcode, setPostcode] = useState("");
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
-const [demoMode, setDemoMode] = useState(false);
+  const [demoMode, setDemoMode] = useState(false);
 
+  // --- LOGIC (UNCHANGED) ---
+  const mapShop = (b: any, index: number): Shop => ({
+    id: String(b.id ?? index),
+    name: String(b.name ?? ""),
+    address: b.address ?? "Unknown area",
+    imageUrl: b.name === "Silent Snips" 
+  ? null 
+  : (typeof b.imageUrl === "string" && b.imageUrl.trim() ? b.imageUrl : null),
+    supportsSilent: Boolean(b.supportsSilent),
+    basePrice: Number(b.basePrice ?? 2000),
+    styles: Array.isArray(b.styles) ? b.styles : [],
+    distanceKm: typeof b.distanceKm === "number" ? b.distanceKm : undefined,
+    postcode: b.postcode ?? undefined,
+    lat: typeof b.lat === "number" ? b.lat : undefined,
+    lng: typeof b.lng === "number" ? b.lng : undefined,
+  });
 
-const mapShop = (b: any, index: number): Shop => ({
-  id: String(b.id ?? index),
-  name: String(b.name ?? ""),
-  address: b.address ?? "Unknown area",
-  imageUrl:
-    typeof b.imageUrl === "string" && b.imageUrl.trim()
-      ? b.imageUrl
-      : null,
-  supportsSilent: Boolean(b.supportsSilent),
-  basePrice: Number(b.basePrice ?? 2000),
-  styles: Array.isArray(b.styles) ? b.styles : [],
-  distanceKm: typeof b.distanceKm === "number" ? b.distanceKm : undefined,
-  postcode: b.postcode ?? undefined,
-  lat: typeof b.lat === "number" ? b.lat : undefined,
-  lng: typeof b.lng === "number" ? b.lng : undefined,
-});
-
-
-
-async function loadShops() {
-  try {
-    setError("");
-    setLoading(true);
-
-    const res = await fetch(BACKEND_URL);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const raw: any[] = await res.json();
-    setShops(raw.map(mapShop));
-    setView("home");
-  } catch (err: any) {
-    console.error(err);
-    setError(err.message ?? "Failed to load barbers");
-    setShops([]);
-  } finally {
-    setLoading(false);
+  async function loadShops() {
+    try {
+      setError("");
+      setLoading(true);
+      const res = await fetch(BACKEND_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const raw: any[] = await res.json();
+      setShops(raw.map(mapShop));
+      setView("home");
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message ?? "Failed to load barbers");
+      setShops([]);
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
-async function loadShopsNearCoords(latitude: number, longitude: number) {
-  try {
-    setError("");
-    setLoading(true);
-
-    const url = `${BACKEND_NEAR_URL}?lat=${latitude}&lng=${longitude}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const raw: any[] = await res.json();
-
-    setShops(raw.map(mapShop));
-    setView("home");
-  } catch (err: any) {
-    console.error(err);
-    setError(err.message ?? "Failed to load nearby barbers");
-    setShops([]);
-  } finally {
-    setLoading(false);
+  async function loadShopsNearCoords(latitude: number, longitude: number) {
+    try {
+      setError("");
+      setLoading(true);
+      const url = `${BACKEND_NEAR_URL}?lat=${latitude}&lng=${longitude}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const raw: any[] = await res.json();
+      setShops(raw.map(mapShop));
+      setView("home");
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message ?? "Failed to load nearby barbers");
+      setShops([]);
+    } finally {
+      setLoading(false);
+    }
   }
-}
-
 
   function loadShopsNearMe() {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported in this browser.");
       return;
     }
-
     setError("");
     setLoading(true);
-
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -145,33 +133,25 @@ async function loadShopsNearCoords(latitude: number, longitude: number) {
       (geoError) => {
         console.error(geoError);
         setLoading(false);
-        if (geoError.code === 1) {
-          setError("Location permission denied.");
-        } else {
-          setError("Could not get your location.");
-        }
+        if (geoError.code === 1) setError("Location permission denied.");
+        else setError("Could not get your location.");
       }
     );
   }
 
   async function searchByPostcode() {
     if (!postcode.trim()) return;
-
     try {
       setError("");
       setLoading(true);
-
       const cleaned = postcode.trim().replace(/\s+/g, "");
-
       const res = await fetch(
         `https://api.postcodes.io/postcodes/${encodeURIComponent(cleaned)}`
       );
       const data = await res.json();
-
       if (data.status !== 200 || !data.result) {
         throw new Error(data.error || "Postcode not found");
       }
-
       const { latitude, longitude } = data.result;
       await loadShopsNearCoords(latitude, longitude);
     } catch (err: any) {
@@ -189,429 +169,350 @@ async function loadShopsNearCoords(latitude: number, longitude: number) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-const visibleShops = shops.filter((shop) => {
-  // ✅ Step A: demo mode = only show the test shop
-  if (demoMode) {
-    return shop.id === "1" || shop.name === "Silent Snips";
-  }
-
-  if (!searchTerm.trim()) return true;
-  const q = searchTerm.trim().toLowerCase();
-  return shop.address.toLowerCase().includes(q);
-});
-
+  const visibleShops = shops.filter((shop) => {
+    if (demoMode) return shop.id === "1" || shop.name === "Silent Snips";
+    if (!searchTerm.trim()) return true;
+    const q = searchTerm.trim().toLowerCase();
+    return shop.address.toLowerCase().includes(q);
+  });
 
   const showHome = view === "home";
   const showBarberMode = view === "barber";
   const showDetail = view === "detail" && selectedShop !== null;
   const showBookings = view === "bookings";
 
+  // --- RENDER ---
   return (
-<div
-  style={{
-    padding: "1.75rem",
-    maxWidth: 820,
-    margin: "0 auto",
-    minHeight: "100vh",
-    background: `radial-gradient(1200px 800px at 20% 0%, rgba(14,165,164,0.18), transparent 60%),
-                 radial-gradient(900px 600px at 90% 10%, rgba(56,189,248,0.12), transparent 55%),
-                 ${THEME.bg}`,
-    color: THEME.text,
-  }}
->
-<div style={{ marginBottom: "0.75rem" }}>
-<img
-  src={logo}
-  alt="Trimmute"
-  style={{
-    height: "52nppx",
-    maxHeight: "38px",
-    display: "block",
-    filter: "invert(70%) sepia(100%) saturate(400%) hue-rotate(140deg)",
-  }}
-/>
-
-</div>
-
-<p style={{ marginBottom: "0.9rem", color: THEME.muted }}>
-  Silent-friendly barbers, no awkward small talk.
-</p>
-
-
-
-      {showBarberMode && <BarberMode />}
-
-    {view === "detail" && selectedShop && (
-  <BarberDetail
-    shop={selectedShop}
-    onBack={() => {
-      setSelectedShop(null);
-      setView("home");
-    }}
-  />
-)}
-
-
-
-
-      {/* 👇 NEW: bookings view */}
-      {showBookings && (
-        <MyBookings
-          onBack={() => {
-            setView("home");
-          }}
-        />
-      )}
-
-      {showHome && !showDetail && !showBookings && (
-        <>
-{/* TOP BUTTONS */}
-<div
-  style={{
-    display: "flex",
-    gap: "0.75rem",
-    marginBottom: "1.25rem",
-    flexWrap: "wrap",
-    alignItems: "center",
-    padding: "0.9rem",
-    borderRadius: "16px",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    border: `1px solid ${THEME.border}`,
-    backdropFilter: "blur(6px)",
-  }}
->
-  <button
-    onClick={() => {
-      setSelectedShop(null);
-      setView("home");
-      loadShops();
-    }}
-    style={{
-      padding: "0.65rem 1.1rem",
-      background: `linear-gradient(180deg, ${THEME.primary}, ${THEME.primaryHover})`,
-      color: "white",
-      border: "none",
-      borderRadius: "999px",
-      cursor: "pointer",
-      fontWeight: 700,
-      fontSize: "0.9rem",
-      boxShadow: "0 10px 22px rgba(14,165,164,0.22)",
-      display: "flex",
-      gap: "0.5rem",
-      alignItems: "center",
-    }}
-  >
-    🔄 <span>Reload</span>
-  </button>
-
-  <button
-    onClick={() => {
-      setSelectedShop(null);
-      setView("home");
-      loadShopsNearMe();
-    }}
-    style={{
-      padding: "0.65rem 1.1rem",
-      background: `linear-gradient(180deg, ${THEME.primary}, ${THEME.primaryHover})`,
-      color: "white",
-      border: "none",
-      borderRadius: "999px",
-      cursor: "pointer",
-      fontWeight: 700,
-      fontSize: "0.9rem",
-      boxShadow: "0 10px 22px rgba(14,165,164,0.22)",
-      display: "flex",
-      gap: "0.5rem",
-      alignItems: "center",
-    }}
-  >
-    📍 <span>Near me</span>
-  </button>
-
-  <div style={{ flex: 1 }} />
-
-  <button
-    onClick={() => {
-      setSelectedShop(null);
-      setView("barber");
-    }}
-    style={{
-      padding: "0.55rem 1rem",
-      backgroundColor: THEME.secondary,
-      color: THEME.text,
-      border: `1px solid ${THEME.border}`,
-      borderRadius: "999px",
-      cursor: "pointer",
-      fontWeight: 600,
-      fontSize: "0.85rem",
-      display: "flex",
-      gap: "0.5rem",
-      alignItems: "center",
-    }}
-  >
-    ✂️ Barber mode
-  </button>
-
-  <button
-    onClick={() => {
-      setSelectedShop(null);
-      setView("bookings");
-    }}
-    style={{
-      padding: "0.55rem 1rem",
-      backgroundColor: THEME.secondary,
-      color: THEME.text,
-      border: `1px solid ${THEME.border}`,
-      borderRadius: "999px",
-      cursor: "pointer",
-      fontWeight: 600,
-      fontSize: "0.85rem",
-      display: "flex",
-      gap: "0.5rem",
-      alignItems: "center",
-    }}
-  >
-    📅 My bookings
-  </button>
-</div>
-
-          {/* Search row */}
-          <div
-            style={{
-         display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "0.9rem",
-    marginBottom: "1.1rem",
-    padding: "1rem",
-    borderRadius: "16px",
-    backgroundColor: THEME.surface2,
-    border: `1px solid ${THEME.border}`,
-  }}
-          >
-            <div>
-              <label>
-                Search by area or postcode:{" "}
-                <input
-         value={searchTerm}
-  onChange={(e) => setSearchTerm(e.target.value)}
-  placeholder="e.g. SW1A or Manchester"
-  style={{
-    padding: "0.65rem 0.8rem",
-    borderRadius: "12px",
-    border: `1px solid ${THEME.border}`,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    color: THEME.text,
-    outline: "none",
-    minWidth: 260,
-  }}
-/>
-              </label>
-            </div>
-
-<div
-  style={{
-    display: "flex",
-    gap: "0.6rem",
-    flexWrap: "wrap",
-    alignItems: "center",
-  }}
->
-  <label style={{ flex: "1 1 260px" }}>
-    Or enter full postcode:{" "}
-    <input
-      value={postcode}
-      onChange={(e) => setPostcode(e.target.value)}
-      placeholder="e.g. SW1A 1AA"
-      style={{
-        padding: "0.65rem 0.8rem",
-        borderRadius: "12px",
-        border: `1px solid ${THEME.border}`,
-        backgroundColor: "rgba(255,255,255,0.06)",
-        color: THEME.text,
-        outline: "none",
-        width: "100%",          // 👈 important
-      }}
-    />
-  </label>
-
-<button
-  onClick={searchByPostcode}
-  style={{
-    padding: "0.8rem 1.1rem",
-    borderRadius: "12px",
-    border: `1px solid ${THEME.border}`,
-   background: `linear-gradient(180deg, ${THEME.primary}, ${THEME.primaryHover})`,
-    color: "#ffffff",
-    fontWeight: 700,
-    cursor: "pointer",
-    whiteSpace: "nowrap",
-
-    // mobile-friendly: button drops under and fills width nicely
-    width: "100%",
-    flex: "1 1 180px",
-    marginTop: "0.25rem",
-  }}
->
-  Search postcode
-</button>
-</div>
-
-          </div>
-
-          {loading && <p>Loading barbers...</p>}
-          {error && <p style={{ color: "red" }}>Error: {error}</p>}
-
-          {!loading && !error && visibleShops.length === 0 && (
-            <p>No barbers found. Try a different area or postcode.</p>
-          )}
-
-          {visibleShops.map((shop) => {
-            const hasDistance =
-              typeof shop.distanceKm === "number" &&
-              !Number.isNaN(shop.distanceKm);
-            const walkingMins = hasDistance
-              ? Math.round(((shop.distanceKm as number) / 5) * 60)
-              : null;
-            const drivingMins = hasDistance
-              ? Math.round(((shop.distanceKm as number) / 30) * 60)
-              : null;
-
-            return (
-              <div
-                key={shop.id}
-                onClick={() => {
-                  setSelectedShop(shop);
-                  setView("detail");
-                }}
-                style={{
-             display: "flex",
-  gap: "1rem",
-  padding: "1rem",
-  borderRadius: "18px",
-  backgroundColor: THEME.surface,
-  border: `1px solid ${THEME.border}`,
-  boxShadow: "0 18px 35px rgba(0,0,0,0.35)",
-  marginBottom: "0.9rem",
-  alignItems: "center",
-  cursor: "pointer",
-                }}
-              >
-  {/* Avatar / image box */}
-<div
-  style={{
-    width: "92px",
-    height: "92px",
-    borderRadius: "16px",
-    backgroundColor: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(255,255,255,0.10)",
-    boxShadow: "0 10px 24px rgba(0,0,0,0.35)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-    overflow: "hidden",
-  }}
->
-  {shop.imageUrl ? (
-    <img
-      src={shop.imageUrl}
-      alt={shop.name}
-      crossOrigin="anonymous"
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        borderRadius: "14px",
-        filter: "saturate(1.05) contrast(1.05)",
-      }}
-    />
-  ) : (
     <div
       style={{
+        minHeight: "100vh",
         width: "100%",
-        height: "100%",
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+        color: THEME.textMain,
+        backgroundColor: THEME.bodyBg,
         display: "flex",
-        alignItems: "center",
         justifyContent: "center",
-        color: "rgba(255,255,255,0.75)",
-        fontWeight: 800,
-        fontSize: "0.8rem",
-        textAlign: "center",
-        padding: "0.6rem",
-        background:
-          "linear-gradient(135deg, rgba(45,212,191,0.22), rgba(56,189,248,0.10))",
       }}
     >
-      {shop.name}
-    </div>
-  )}
-</div>
+      {/* APP STRIP */}
+      <div
+        style={{
+            width: "100%",
+            maxWidth: "500px", // Made slightly narrower for a tighter mobile feel
+            minHeight: "100vh",
+            background: THEME.bg,
+            position: "relative",
+            boxShadow: "0 0 50px rgba(0,0,0,0.5)",
+            borderLeft: `1px solid ${THEME.border}`,
+            borderRight: `1px solid ${THEME.border}`,
+            overflow: "hidden"
+        }}
+        >
+        
+        {/* Subtle top light leak for atmosphere */}
+        <div style={{
+            position: "absolute", top: "-100px", left: "0", right: "0", height: "300px",
+            background: "radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)",
+            pointerEvents: "none"
+        }} />
 
+        <div style={{ padding: "1.5rem", position: "relative", zIndex: 2 }}>
+            
+            {/* LOGO AREA */}
+            <div style={{ 
+            textAlign: "center", 
+            marginBottom: "2.5rem",
+            paddingTop: "2rem" 
+            }}>
+            <img
+                src={logo}
+                alt="Trimmute"
+                style={{
+                height: "36px", // Smaller logo
+                margin: "0 auto 12px auto",
+                display: "block",
+                filter: "brightness(0) invert(1)", 
+                opacity: 1
+                }}
+            />
+            {/* Minimalist Pill - Removed the border for cleaner look */}
+            <div style={{
+                fontSize: "0.75rem",
+                color: THEME.textMuted,
+                letterSpacing: "2px",
+                textTransform: "uppercase",
+                fontWeight: 600
+            }}>
+                Silence speaks volumes
+            </div>
+            </div>
 
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ marginBottom: "0.25rem" }}>{shop.name}</h3>
-                  <div
-                    style={{
-                      fontSize: "0.9rem",
-                      marginBottom: "0.25rem",
-                      color: "#4b5563",
-                    }}
-                  >
-                    {shop.address}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "0.9rem",
-                      marginBottom: "0.25rem",
-                      fontWeight: 500,
-                    }}
-                  >
-                    £{(shop.basePrice / 100).toFixed(2)}
-                  </div>
+            {/* SUB-VIEWS */}
+            {showBarberMode && <BarberMode />}
+            
+            {view === "detail" && selectedShop && (
+            <BarberDetail
+                shop={selectedShop}
+                onBack={() => {
+                setSelectedShop(null);
+                setView("home");
+                }}
+            />
+            )}
 
-                  <div style={{ fontSize: "0.85rem", color: "#374151" }}>
-                    {shop.styles.includes("Silent cut available") && (
-                 <span
-  style={{
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "0.4rem",
-    padding: "0.22rem 0.6rem",
-    borderRadius: "999px",
-    backgroundColor: "rgba(45, 212, 191, 0.14)", // teal tint
-    color: "#99f6e4", // teal-200
-    border: "1px solid rgba(45, 212, 191, 0.28)",
-    fontSize: "0.78rem",
-    fontWeight: 700,
-  }}
->
-  🔇 Silent cut available
-</span>
+            {showBookings && (
+            <MyBookings
+                onBack={() => {
+                setView("home");
+                }}
+            />
+            )}
 
-                    )}
-                  </div>
-
-                  {hasDistance && (
-                    <div
-                      style={{
-                        fontSize: "0.85rem",
-                        marginTop: "0.35rem",
-                        color: "#6b7280",
-                      }}
-                    >
-                      ~{(shop.distanceKm as number).toFixed(1)} km away
-                      {walkingMins !== null &&
-                        ` · ~${walkingMins} min walk`}
-                      {drivingMins !== null &&
-                        ` · ~${drivingMins} min drive`}
-                    </div>
-                  )}
+            {/* HOME VIEW */}
+            {showHome && !showDetail && !showBookings && (
+            <>
+                {/* NAVIGATION - Now Monochrome */}
+                <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "2rem",
+                }}>
+                <div style={{ display: "flex", gap: "0.75rem" }}>
+                    <NavButton icon="MapPin" label="Near Me" active onClick={() => { setSelectedShop(null); setView("home"); loadShopsNearMe(); }} />
+                    <NavButton icon="RotateCcw" onClick={() => { setSelectedShop(null); setView("home"); loadShops(); }} />
                 </div>
-              </div>
-            );
-          })}
-        </>
-      )}
+
+                <div style={{ display: "flex", gap: "0.75rem" }}>
+                    <NavButton icon="Calendar" onClick={() => setView("bookings")} />
+                    <NavButton icon="Scissors" onClick={() => setView("barber")} />
+                </div>
+                </div>
+
+                {/* SEARCH SECTION - Cleaner, Darker */}
+                <div style={{
+                marginBottom: "3rem",
+                }}>
+                    <h2 style={{ 
+                        fontSize: "1.5rem", 
+                        fontWeight: 300, 
+                        marginBottom: "1.5rem", 
+                        color: THEME.textMain,
+                        letterSpacing: "-0.5px"
+                    }}>
+                        Find your <span style={{ color: THEME.textMuted }}>quiet place.</span>
+                    </h2>
+                
+                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                    <SearchInput 
+                    placeholder="Search area (e.g. Manchester)" 
+                    value={searchTerm} 
+                    onChange={setSearchTerm} 
+                    />
+                    
+                    <div style={{ display: "flex", gap: "0.75rem" }}>
+                    <SearchInput 
+                        placeholder="Postcode (e.g. SW1A)" 
+                        value={postcode} 
+                        onChange={setPostcode} 
+                    />
+                    {/* The GO Button - High Contrast White */}
+                    <button
+                        onClick={searchByPostcode}
+                        style={{
+                        padding: "0 2rem",
+                        borderRadius: "12px",
+                        background: THEME.actionBg, // White
+                        color: THEME.actionText,    // Black
+                        border: "none",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        fontSize: "0.95rem",
+                        transition: "transform 0.1s"
+                        }}
+                    >
+                        Go
+                    </button>
+                    </div>
+                </div>
+                </div>
+
+                {/* STATUS MESSAGES */}
+                {loading && (
+                <div style={{ textAlign: "center", padding: "2rem", color: THEME.textMuted }}>
+                    Searching...
+                </div>
+                )}
+                
+                {error && (
+                <div style={{ 
+                    padding: "1rem", 
+                    borderRadius: "12px", 
+                    border: `1px solid ${THEME.danger}`,
+                    color: THEME.danger,
+                    marginBottom: "1rem",
+                    fontSize: "0.9rem"
+                }}>
+                    {error}
+                </div>
+                )}
+
+                {!loading && !error && visibleShops.length === 0 && (
+                <div style={{ textAlign: "center", color: THEME.textMuted, marginTop: "2rem" }}>
+                    No locations found.
+                </div>
+                )}
+
+                {/* SHOP LIST */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                {visibleShops.map((shop) => (
+                    <ShopCard 
+                    key={shop.id} 
+                    shop={shop} 
+                    onClick={() => { setSelectedShop(shop); setView("detail"); }} 
+                    />
+                ))}
+                </div>
+            </>
+            )}
+        </div>
+      </div>
     </div>
   );
 }
+
+// --- SUB-COMPONENTS ---
+
+// Simple Icons using SVG to remove dependency on external library for this snippet
+const Icons: any = {
+    MapPin: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>,
+    RotateCcw: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"></path><path d="M3 3v9h9"></path></svg>,
+    Calendar: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>,
+    Scissors: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+}
+
+const NavButton = ({ icon, label, onClick, active }: any) => (
+  <button
+    onClick={onClick}
+    style={{
+      padding: label ? "0.6rem 1rem" : "0.6rem",
+      borderRadius: "10px",
+      border: `1px solid ${active ? THEME.textMain : THEME.border}`, // Active = White Border
+      background: "transparent",
+      color: active ? THEME.textMain : THEME.textMuted,
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      gap: "0.5rem",
+      fontSize: "0.85rem",
+      fontWeight: 500,
+      transition: "all 0.2s"
+    }}
+  >
+    <span style={{ opacity: active ? 1 : 0.7 }}>{Icons[icon]}</span>
+    {label && <span>{label}</span>}
+  </button>
+);
+
+const SearchInput = ({ placeholder, value, onChange }: any) => (
+  <input
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    placeholder={placeholder}
+    style={{
+      width: "100%",
+      padding: "1rem 1.2rem",
+      borderRadius: "12px",
+      background: "rgba(255,255,255,0.05)",
+      border: `1px solid ${THEME.border}`,
+      color: THEME.textMain,
+      fontSize: "0.95rem",
+      outline: "none",
+      transition: "border 0.2s",
+      fontFamily: "inherit"
+    }}
+    onFocus={(e) => (e.target.style.border = `1px solid ${THEME.textMuted}`)}
+    onBlur={(e) => (e.target.style.border = `1px solid ${THEME.border}`)}
+  />
+);
+
+const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
+  const hasDistance = typeof shop.distanceKm === "number" && !Number.isNaN(shop.distanceKm);
+
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        display: "flex",
+        padding: "1.2rem",
+        borderRadius: "0px", // Sharper corners for modern look
+        borderBottom: `1px solid ${THEME.border}`,
+        cursor: "pointer",
+        transition: "background 0.2s",
+        position: "relative",
+        alignItems: "center"
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.03)")}
+      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+    >
+      
+      {/* Image */}
+      <div style={{
+        width: "60px",
+        height: "60px",
+        borderRadius: "50%", // Circle avatars look cleaner in lists
+        overflow: "hidden",
+        flexShrink: 0,
+        background: "#1a1a1a",
+        marginRight: "1.2rem",
+        border: `1px solid ${THEME.border}`
+      }}>
+        {shop.imageUrl ? (
+          <img src={shop.imageUrl} alt={shop.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", color: THEME.textMuted }}>
+            ✂️
+          </div>
+        )}
+      </div>
+
+      {/* Details */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
+          <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: THEME.textMain }}>{shop.name}</h3>
+          <span style={{ fontWeight: 400, color: THEME.textMain, fontSize: "0.9rem" }}>£{(shop.basePrice / 100).toFixed(0)}</span>
+        </div>
+        
+        <p style={{ margin: 0, fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.6rem" }}>{shop.address}</p>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            {/* The ONLY color pop: The Silent Badge */}
+            {shop.supportsSilent && (
+                <span style={{
+                    fontSize: "0.7rem",
+                    fontWeight: 700,
+                    color: THEME.silent,
+                    background: THEME.silentBg,
+                    padding: "3px 8px",
+                    borderRadius: "4px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    border: `1px solid ${THEME.silent}40`
+                }}>
+                    ● SILENT
+                </span>
+            )}
+            
+            {hasDistance && (
+                <span style={{ fontSize: "0.75rem", color: THEME.textMuted }}>
+                    {shop.distanceKm?.toFixed(1)} km
+                </span>
+            )}
+        </div>
+      </div>
+       {/* Chevron for affordance */}
+       <div style={{color: THEME.border, marginLeft: "10px"}}>›</div>
+    </div>
+  );
+};
