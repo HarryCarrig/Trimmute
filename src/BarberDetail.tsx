@@ -371,7 +371,12 @@ if (data?.customerToken) {
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="e.g. Harry"
-              style={{ padding: "0.25rem 0.5rem", minWidth: "180px" }}
+              style={{ 
+  padding: "0.25rem 0.5rem", 
+  minWidth: "180px", 
+  color: "black",          // <--- Adds black text
+  backgroundColor: "white" // <--- Ensures white background
+}}
               disabled={isBooking}
             />
           </label>

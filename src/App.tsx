@@ -23,28 +23,23 @@ type View = "home" | "barber" | "detail" | "bookings";
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
 
-// 🎨 THEME UPDATE: "Midnight Monochrome"
-// We removed the aggressive neons. The app is now deep black, grey, and white.
-// Teal is reserved ONLY for the "Silent" badge.
+// 🎨 THEME UPDATE: SEAMLESS MIDNIGHT
 const THEME = {
-  bodyBg: "#0f0f0f",              // Outer desktop background (Deep Grey)
-  bg: "#000000",                  // Inner App Background (Pure Void)
+  bodyBg: "#000000",              // <--- CHANGED: Outer bg is now pure black to match
+  bg: "#000000",                  // Inner bg
   
-  // Glass is now darker and smokier
   glass: "rgba(20, 20, 20, 0.7)", 
   glassHover: "rgba(40, 40, 40, 0.9)",
   
-  border: "rgba(255, 255, 255, 0.12)", // Slightly sharper borders
+  border: "rgba(255, 255, 255, 0.12)", 
   borderHighlight: "rgba(255, 255, 255, 0.3)", 
 
   textMain: "#ffffff",
-  textMuted: "#737373",           // Much darker grey for secondary text (subtle)
+  textMuted: "#737373",           
   
-  // The new "Silent" Accent (Muted Mint, not Neon)
   silent: "#5eead4",              
   silentBg: "rgba(94, 234, 212, 0.1)",
   
-  // Action Color (White is the new Black)
   actionBg: "#ffffff",
   actionText: "#000000",
   
@@ -69,9 +64,10 @@ export default function App() {
     id: String(b.id ?? index),
     name: String(b.name ?? ""),
     address: b.address ?? "Unknown area",
+    // Force Silent Snips to have NO image so it uses the ✂️ icon
     imageUrl: b.name === "Silent Snips" 
-  ? null 
-  : (typeof b.imageUrl === "string" && b.imageUrl.trim() ? b.imageUrl : null),
+      ? null 
+      : (typeof b.imageUrl === "string" && b.imageUrl.trim() ? b.imageUrl : null),
     supportsSilent: Boolean(b.supportsSilent),
     basePrice: Number(b.basePrice ?? 2000),
     styles: Array.isArray(b.styles) ? b.styles : [],
@@ -194,18 +190,15 @@ export default function App() {
         justifyContent: "center",
       }}
     >
-      {/* APP STRIP */}
+      {/* APP CONTAINER */}
       <div
         style={{
             width: "100%",
-            maxWidth: "500px", // Made slightly narrower for a tighter mobile feel
+            maxWidth: "1000px", // Keeps content centered and readable
             minHeight: "100vh",
             background: THEME.bg,
             position: "relative",
-            boxShadow: "0 0 50px rgba(0,0,0,0.5)",
-            borderLeft: `1px solid ${THEME.border}`,
-            borderRight: `1px solid ${THEME.border}`,
-            overflow: "hidden"
+            // <--- REMOVED: Borders and Shadow. Now it blends seamlessly.
         }}
         >
         
@@ -228,14 +221,13 @@ export default function App() {
                 src={logo}
                 alt="Trimmute"
                 style={{
-                height: "36px", // Smaller logo
+                height: "36px", 
                 margin: "0 auto 12px auto",
                 display: "block",
                 filter: "brightness(0) invert(1)", 
                 opacity: 1
                 }}
             />
-            {/* Minimalist Pill - Removed the border for cleaner look */}
             <div style={{
                 fontSize: "0.75rem",
                 color: THEME.textMuted,
@@ -271,7 +263,7 @@ export default function App() {
             {/* HOME VIEW */}
             {showHome && !showDetail && !showBookings && (
             <>
-                {/* NAVIGATION - Now Monochrome */}
+                {/* NAVIGATION */}
                 <div style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -289,7 +281,7 @@ export default function App() {
                 </div>
                 </div>
 
-                {/* SEARCH SECTION - Cleaner, Darker */}
+                {/* SEARCH SECTION */}
                 <div style={{
                 marginBottom: "3rem",
                 }}>
@@ -316,7 +308,7 @@ export default function App() {
                         value={postcode} 
                         onChange={setPostcode} 
                     />
-                    {/* The GO Button - High Contrast White */}
+                    {/* The GO Button */}
                     <button
                         onClick={searchByPostcode}
                         style={{
@@ -383,10 +375,13 @@ export default function App() {
 
 // --- SUB-COMPONENTS ---
 
-// Simple Icons using SVG to remove dependency on external library for this snippet
+// Updated Icons with Gapped Reload
 const Icons: any = {
     MapPin: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>,
-    RotateCcw: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"></path><path d="M3 3v9h9"></path></svg>,
+    
+    // 👇 CHANGED: This is now a proper "Refresh" arrow with a gap
+    RotateCcw: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>,
+
     Calendar: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>,
     Scissors: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
 }
@@ -397,7 +392,7 @@ const NavButton = ({ icon, label, onClick, active }: any) => (
     style={{
       padding: label ? "0.6rem 1rem" : "0.6rem",
       borderRadius: "10px",
-      border: `1px solid ${active ? THEME.textMain : THEME.border}`, // Active = White Border
+      border: `1px solid ${active ? THEME.textMain : THEME.border}`, 
       background: "transparent",
       color: active ? THEME.textMain : THEME.textMuted,
       cursor: "pointer",
@@ -445,7 +440,7 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
       style={{
         display: "flex",
         padding: "1.2rem",
-        borderRadius: "0px", // Sharper corners for modern look
+        borderRadius: "0px", 
         borderBottom: `1px solid ${THEME.border}`,
         cursor: "pointer",
         transition: "background 0.2s",
@@ -460,7 +455,7 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
       <div style={{
         width: "60px",
         height: "60px",
-        borderRadius: "50%", // Circle avatars look cleaner in lists
+        borderRadius: "12px", 
         overflow: "hidden",
         flexShrink: 0,
         background: "#1a1a1a",
@@ -486,7 +481,6 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
         <p style={{ margin: 0, fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.6rem" }}>{shop.address}</p>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-            {/* The ONLY color pop: The Silent Badge */}
             {shop.supportsSilent && (
                 <span style={{
                     fontSize: "0.7rem",
@@ -511,7 +505,6 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
             )}
         </div>
       </div>
-       {/* Chevron for affordance */}
        <div style={{color: THEME.border, marginLeft: "10px"}}>›</div>
     </div>
   );
