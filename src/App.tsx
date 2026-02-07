@@ -165,12 +165,35 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const visibleShops = shops.filter((shop) => {
-    if (demoMode) return shop.id === "1" || shop.name === "Silent Snips";
-    if (!searchTerm.trim()) return true;
-    const q = searchTerm.trim().toLowerCase();
-    return shop.address.toLowerCase().includes(q);
-  });
+ // 1. THE SECRET KEY CHECK 🕵️‍♂️
+  const urlParams = new URLSearchParams(window.location.search);
+  const isFriendMode = urlParams.get("mode") === "friend";
+
+// 2. THE GHOST SHOP (The "Kitchen Sink" Fix) 🚰
+  const friendShop = {
+    id: 99,              // Changed back to Number (just in case)
+    name: "TeoBRBR",
+    address: "Riverside, Canterbury CT1 1JX",
+    postcode: "CT1 1JX",
+    lat: 51.2854,
+    lng: 1.0878,
+    
+    // 👇 WE GIVE IT EVERYTHING
+    price: "25.00",      // Option A: String
+    priceNum: 20,        // Option B: Number
+    basePrice: 2000,// Option C: Backend format
+    
+    styles: ["Silent Cut", "Skin Fade"],
+    silentCutAvailable: true,
+    imageUrl: "/teo.jpg" 
+  } as any;
+
+  // 3. THE LOGIC
+  // If friend mode is ON, ignore the database and just show Teo.
+  // If friend mode is OFF, look at the database but only show Silent Snips.
+  const visibleShops = isFriendMode 
+    ? [friendShop] 
+    : shops.filter(shop => shop.name === "Silent Snips");
 
   const showHome = view === "home";
   const showBarberMode = view === "barber";

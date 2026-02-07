@@ -181,6 +181,19 @@ const barbers = [
     silentCutAvailable: false,
     imageUrl: null,
   },
+
+  {
+    id: 99,
+    name: "TeoBRBR", // MUST match your App.tsx secret key check exactly
+    address: "123 Real Street, Canterbury CT1 2AA", // Put his real address
+    postcode: "CT1 2AA",
+    lat: 51.2802,
+    lng: 1.0789,
+    basePricePence: 2500, // This equals £25.00
+    styles: ["Silent Cut", "Skin Fade", "Scissor Cut"],
+    silentCutAvailable: true,
+    imageUrl: "/teo.jpg"
+  },
 ];
 
 // ---------- DISTANCE HELPERS ----------
