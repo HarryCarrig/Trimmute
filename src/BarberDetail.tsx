@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Avatar from "./components/Avatar";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
@@ -36,11 +35,10 @@ type BarberDetailProps = {
     lat?: number;
     lng?: number;  
   };
-  onBack: () => void;
+  onBack?: () => void; // 👈 FIXED: Added '?' here
 };
 
 const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
-  // --- STATE FOR INTERNAL BOOKINGS ---
   const [bookingDate, setBookingDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [customerName, setCustomerName] = useState("");
@@ -49,16 +47,13 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const [loadingTimes, setLoadingTimes] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
-  
-  // RESTORED: Silent Toggle State
   const [isSilentRequest, setIsSilentRequest] = useState(false);
 
   const supportsSilent = shop.supportsSilent ?? false;
   const isExternal = !!shop.bookingUrl;
 
-  // RESTORED: Map URL Logic
   const mapUrl = (shop.lat && shop.lng) 
-    ? `https://maps.google.com/maps?q=${shop.lat},${shop.lng}&z=15&output=embed`
+    ? `http://googleusercontent.com/maps.google.com/maps?q=${shop.lat},${shop.lng}&z=15&output=embed`
     : null;
 
   const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"];
@@ -99,7 +94,7 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
           customerName,
           date: bookingDate,
           time: selectedTime,
-          isSilent: isSilentRequest, // Use the toggle value!
+          isSilent: isSilentRequest,
         })
       });
 
@@ -118,18 +113,18 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   return (
     <div style={{ paddingBottom: "2rem", color: THEME.textMain, maxWidth: "600px", margin: "0 auto" }}>
       
-      {/* HEADER */}
       <div style={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}>
-        <button
-          onClick={onBack}
-          style={{ background: "transparent", border: `1px solid ${THEME.border}`, color: THEME.textMain, padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontSize: "0.9rem", marginRight: "1rem" }}
-        >
-          ← Back
-        </button>
+        {onBack && (
+          <button
+            onClick={onBack}
+            style={{ background: "transparent", border: `1px solid ${THEME.border}`, color: THEME.textMain, padding: "8px 16px", borderRadius: "8px", cursor: "pointer", fontSize: "0.9rem", marginRight: "1rem" }}
+          >
+            ← Back
+          </button>
+        )}
         <h2 style={{ fontSize: "1.1rem", margin: 0, fontWeight: 600 }}>Shop Details</h2>
       </div>
 
-      {/* HERO CARD */}
       <div style={{ backgroundColor: THEME.cardBg, borderRadius: "16px", overflow: "hidden", border: `1px solid ${THEME.border}`, marginBottom: "1.5rem" }}>
         <div style={{ height: "160px", backgroundColor: "#333", position: "relative" }}>
            {shop.imageUrl ? (
@@ -155,7 +150,6 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
         </div>
       </div>
 
-      {/* RESTORED: MAP SECTION */}
       {mapUrl && (
         <div style={{ borderRadius: "16px", overflow: "hidden", border: `1px solid ${THEME.border}`, marginBottom: "1.5rem", height: "200px" }}>
           <iframe 
@@ -169,7 +163,6 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
         </div>
       )}
 
-      {/* LOGIC SPLIT: EXTERNAL vs INTERNAL */}
       {isExternal ? (
         <div style={{ textAlign: "center", padding: "2rem 1rem", backgroundColor: THEME.cardBg, borderRadius: "16px", border: `1px solid ${THEME.border}` }}>
            <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem" }}>Ready to book?</h3>
@@ -188,7 +181,6 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
                <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: `1px solid ${THEME.border}`, background: "#111", color: "white", fontSize: "1rem" }} placeholder="e.g. Harry" />
             </div>
 
-            {/* RESTORED: SILENT TOGGLE */}
             {supportsSilent && (
               <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", backgroundColor: "rgba(255,255,255,0.05)", borderRadius: "8px", border: `1px solid ${THEME.border}` }}>
                 <input 

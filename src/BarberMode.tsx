@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import React, { useEffect, useState } from "react";
 
-// DEMO DATA: This is what makes it look "alive" without a database 🪄
+// DEMO DATA
 const DEMO_BOOKINGS = [
   {
     id: 101,
@@ -29,31 +29,28 @@ const DEMO_BOOKINGS = [
   },
 ];
 
-// 1. Add 'onBack' so the button works
-export default function BarberMode({ onBack }: { onBack: () => void }) {
+// FIXED: Added '?' to make onBack optional
+export default function BarberMode({ onBack }: { onBack?: () => void }) {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
     () => new Date().toISOString().split("T")[0]
   );
 
-  // SIMULATE LOADING (Fake "Network Request")
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
-      setBookings(DEMO_BOOKINGS); // Just load the fake data!
+      setBookings(DEMO_BOOKINGS);
       setLoading(false);
-    }, 600); // 0.6s delay to feel real
+    }, 600);
   }, [selectedDate]);
 
-  // SIMULATE CANCELLATION
   function cancelBooking(id: number) {
     if (confirm("Demo: Cancel this booking?")) {
       setBookings((prev) => prev.filter((b) => b.id !== id));
     }
   }
 
-  // DARK MODE THEME COLOURS
   const THEME = {
     bg: "#1a1a1a",
     cardBg: "#262626",
@@ -66,34 +63,32 @@ export default function BarberMode({ onBack }: { onBack: () => void }) {
 
   return (
     <div style={{ padding: "1rem", color: THEME.textMain, maxWidth: "600px", margin: "0 auto" }}>
-      
-      {/* HEADER WITH BACK BUTTON */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
-        <button 
-          onClick={onBack}
-          style={{ 
-            background: "transparent", 
-            border: "1px solid " + THEME.border, 
-            color: THEME.textMain, 
-            padding: "6px 12px", 
-            borderRadius: "8px",
-            cursor: "pointer"
-          }}
-        >
-          ← Back
-        </button>
+        {onBack && (
+          <button 
+            onClick={onBack}
+            style={{ 
+              background: "transparent", 
+              border: "1px solid " + THEME.border, 
+              color: THEME.textMain, 
+              padding: "6px 12px", 
+              borderRadius: "8px",
+              cursor: "pointer"
+            }}
+          >
+            ← Back
+          </button>
+        )}
         <h1 style={{ fontSize: "1.2rem", fontWeight: 700, margin: 0 }}>
           Barber Dashboard
         </h1>
-        <div style={{ width: "60px" }}></div> {/* Spacer for centering */}
+        <div style={{ width: "60px" }}></div>
       </div>
 
       <div style={{ background: THEME.cardBg, padding: "1rem", borderRadius: "12px", border: `1px solid ${THEME.border}`, marginBottom: "1.5rem" }}>
         <p style={{ margin: "0 0 1rem 0", color: THEME.textMuted, fontSize: "0.9rem" }}>
           Manage your silent appointments.
         </p>
-
-        {/* DATE PICKER */}
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
           <label style={{ fontSize: "0.9rem", color: THEME.textMuted }}>Date:</label>
           <input
