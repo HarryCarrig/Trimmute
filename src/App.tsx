@@ -169,24 +169,26 @@ export default function App() {
   const urlParams = new URLSearchParams(window.location.search);
   const isFriendMode = urlParams.get("mode") === "friend";
 
-// 2. THE GHOST SHOP (The "Kitchen Sink" Fix) 🚰
-  const friendShop = {
-    id: 99,              // Changed back to Number (just in case)
-    name: "TeoBRBR",
-    address: "Riverside, Canterbury CT1 1JX",
-    postcode: "CT1 1JX",
-    lat: 51.2854,
-    lng: 1.0878,
-    
-    // 👇 WE GIVE IT EVERYTHING
-    price: "25.00",      // Option A: String
-    priceNum: 20,        // Option B: Number
-    basePrice: 2000,// Option C: Backend format
-    
-    styles: ["Silent Cut", "Skin Fade"],
-    silentCutAvailable: true,
-    imageUrl: "/teo.jpg" 
-  } as any;
+// 2. THE GHOST SHOP (Fella Mode) 🧢
+
+const friendShop = {
+  id: 99,
+  name: "Fella (Canterbury)",
+  address: "20 The Borough, Canterbury CT1 2DR", // Their actual address
+  postcode: "CT1 2DR",
+  bookingUrl: "https://www.fresha.com/lvp/fella-hair-borough-WqA2xK",
+  lat: 51.2804,  // Real coordinates near The Borough
+  lng: 1.0805,
+  
+  // 💸 THE KEY FEATURE BOBBY WANTS
+  price: "18.00",
+  deal: "Student Discount Card Accepted", // <--- New Field!
+  
+  basePrice: 1800,
+  styles: ["Skin Fade", "Little Fella", "Beard Trim"],
+  silentCutAvailable: true,
+  imageUrl: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop",
+} as any;
 
   // 3. THE LOGIC
   // If friend mode is ON, ignore the database and just show Teo.
@@ -263,7 +265,7 @@ export default function App() {
             </div>
 
             {/* SUB-VIEWS */}
-            {showBarberMode && <BarberMode />}
+            {showBarberMode && <BarberMode onBack={() => setView("home")} />}
             
             {view === "detail" && selectedShop && (
             <BarberDetail
@@ -501,6 +503,26 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
           <span style={{ fontWeight: 400, color: THEME.textMain, fontSize: "0.9rem" }}>£{(shop.basePrice / 100).toFixed(0)}</span>
         </div>
         
+        {(shop as any).deal && (
+  <div style={{ 
+    display: "inline-flex",
+    alignItems: "center",
+    backgroundColor: "rgba(34, 197, 94, 0.15)",
+    border: "1px solid rgba(34, 197, 94, 0.5)",
+    color: "#4ade80",
+    fontSize: "0.7rem", 
+    fontWeight: "600", 
+    padding: "2px 8px", 
+    borderRadius: "6px", 
+    marginBottom: "0.4rem", 
+    marginTop: "-0.2rem",   // Added this to tuck it close to the name
+    alignSelf: "flex-start",
+    whiteSpace: "nowrap"
+  }}>
+    <span style={{ marginRight: "4px" }}>💳</span> 
+    {(shop as any).deal}
+  </div>
+)}
         <p style={{ margin: 0, fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.6rem" }}>{shop.address}</p>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
@@ -520,7 +542,7 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
                     ● SILENT
                 </span>
             )}
-            
+  
             {hasDistance && (
                 <span style={{ fontSize: "0.75rem", color: THEME.textMuted }}>
                     {shop.distanceKm?.toFixed(1)} km
