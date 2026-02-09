@@ -35,7 +35,7 @@ type BarberDetailProps = {
     lat?: number;
     lng?: number;  
   };
-  onBack?: () => void; // 👈 FIXED: Added '?' here
+  onBack?: () => void;
 };
 
 const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
@@ -52,8 +52,9 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const supportsSilent = shop.supportsSilent ?? false;
   const isExternal = !!shop.bookingUrl;
 
+  // 🛠️ FIXED: Secure HTTPS Google Maps Embed (No API Key needed)
   const mapUrl = (shop.lat && shop.lng) 
-    ? `http://googleusercontent.com/maps.google.com/maps?q=${shop.lat},${shop.lng}&z=15&output=embed`
+    ? `https://maps.google.com/maps?q=${shop.lat},${shop.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`
     : null;
 
   const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"];
@@ -150,6 +151,7 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
         </div>
       </div>
 
+      {/* 🗺️ MAP SECTION */}
       {mapUrl && (
         <div style={{ borderRadius: "16px", overflow: "hidden", border: `1px solid ${THEME.border}`, marginBottom: "1.5rem", height: "200px" }}>
           <iframe 
