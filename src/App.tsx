@@ -286,23 +286,21 @@ const visibleShops = [friendShop];
             {/* HOME VIEW */}
             {showHome && !showDetail && !showBookings && (
             <>
-                {/* NAVIGATION */}
-                <div style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "2rem",
-                }}>
-                <div style={{ display: "flex", gap: "0.75rem" }}>
-                    <NavButton icon="MapPin" label="Near Me" active onClick={() => { setSelectedShop(null); setView("home"); loadShopsNearMe(); }} />
-                    <NavButton icon="RotateCcw" onClick={() => { setSelectedShop(null); setView("home"); loadShops(); }} />
-                </div>
+                {/* NAVIGATION - PUBLIC LAUNCH MODE 🚀 */}
+                    <div style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "2rem",
+                    }}>
+                      {/* Left Side: Discovery Tools (Keep these!) */}
+                      <div style={{ display: "flex", gap: "0.75rem" }}>
+                        <NavButton icon="MapPin" label="Near Me" active onClick={() => { setSelectedShop(null); setView("home"); loadShopsNearMe(); }} />
+                        <NavButton icon="RotateCcw" onClick={() => { setSelectedShop(null); setView("home"); loadShops(); }} />
+                      </div>
 
-                <div style={{ display: "flex", gap: "0.75rem" }}>
-                    <NavButton icon="Calendar" onClick={() => setView("bookings")} />
-                    <NavButton icon="Scissors" onClick={() => setView("barber")} />
-                </div>
-                </div>
+                      {/* Right Side: HIDDEN so students don't see Admin tools */}
+                    </div>
 
                 {/* SEARCH SECTION */}
                 <div style={{
