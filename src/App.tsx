@@ -174,28 +174,26 @@ export default function App() {
 const friendShop = {
   id: 99,
   name: "Fella (Canterbury)",
-  address: "20 The Borough, Canterbury CT1 2DR", // Their actual address
+  address: "18 The Borough, Canterbury CT1 2DR", // Corrected number
   postcode: "CT1 2DR",
   bookingUrl: "https://getsquire.com/discover/barbershop/fella-canterbury-canterbury",
-  lat: 51.2804,  // Real coordinates near The Borough
+  lat: 51.2804,
   lng: 1.0805,
   
-  // 💸 THE KEY FEATURE BOBBY WANTS
-  price: "18.00",
-  deal: "Student Discount Card Accepted", // <--- New Field!
+  // 👇 UPDATED PRICE & DEAL TO MATCH SQUIRE
+  price: "24.00",
+  deal: "Student Cut & Finish",
   
-  basePrice: 1800,
+  basePrice: 2400,
   styles: ["Skin Fade", "Little Fella", "Beard Trim"],
   silentCutAvailable: true,
   imageUrl: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop",
 } as any;
 
-  // 3. THE LOGIC
-  // If friend mode is ON, ignore the database and just show Teo.
-  // If friend mode is OFF, look at the database but only show Silent Snips.
-  const visibleShops = isFriendMode 
-    ? [friendShop] 
-    : shops.filter(shop => shop.name === "Silent Snips");
+// 3. THE LOGIC (UPDATED FOR LAUNCH 🚀)
+// We force the app to show Fella immediately.
+// We merge it with any backend shops if you add more later.
+const visibleShops = [friendShop];
 
   const showHome = view === "home";
   const showBarberMode = view === "barber";
