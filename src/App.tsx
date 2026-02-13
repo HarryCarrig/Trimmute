@@ -176,7 +176,7 @@ const friendShop = {
   name: "Fella (Canterbury)",
   address: "20 The Borough, Canterbury CT1 2DR", // Their actual address
   postcode: "CT1 2DR",
-  bookingUrl: "https://www.fresha.com/lvp/fella-hair-borough-WqA2xK",
+  bookingUrl: "https://getsquire.com/discover/barbershop/fella-canterbury-canterbury",
   lat: 51.2804,  // Real coordinates near The Borough
   lng: 1.0805,
   

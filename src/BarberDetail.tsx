@@ -167,15 +167,17 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
 
       {isExternal ? (
   <div style={{ textAlign: "center", padding: "2rem 1rem", backgroundColor: THEME.cardBg, borderRadius: "16px", border: `1px solid ${THEME.border}` }}>
-     <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem" }}>Ready to book?</h3>
-     <p style={{ color: THEME.textMuted, marginBottom: "1.5rem", fontSize: "0.95rem" }}>
-       This shop uses Fresha. <br/>
-       <span style={{ color: "#fbbf24", fontWeight: "bold" }}>⚠️ Please add "SILENT" to your booking notes.</span>
-     </p>
-     <a href={shop.bookingUrl} target="_blank" rel="noreferrer" style={{ display: "block", width: "100%", maxWidth: "300px", margin: "0 auto", backgroundColor: "#22c55e", color: "white", textDecoration: "none", fontSize: "1.1rem", fontWeight: "bold", padding: "1rem", borderRadius: "12px" }}>
-       Book on Fresha ↗
-     </a>
-  </div>
+  <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem" }}>Ready to book?</h3>
+  
+  <p style={{ color: THEME.textMuted, marginBottom: "1.5rem", fontSize: "0.95rem" }}>
+    <span style={{ color: "#fbbf24", fontWeight: "bold" }}>⚠️ IMPORTANT</span><br/>
+    Please add "SILENT" to your booking notes.
+  </p>
+
+  <a href={shop.bookingUrl} target="_blank" rel="noreferrer" style={{ display: "block", width: "100%", maxWidth: "300px", margin: "0 auto", backgroundColor: "#000000", color: "white", textDecoration: "none", fontSize: "1.1rem", fontWeight: "bold", padding: "1rem", borderRadius: "12px", border: "1px solid #333" }}>
+    Book on Squire ↗
+  </a>
+</div>
 ) : (
  
         <div style={{ backgroundColor: THEME.cardBg, padding: "1.5rem", borderRadius: "16px", border: `1px solid ${THEME.border}` }}>
