@@ -44,8 +44,15 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"], // ✅ FIX
 };
 
-app.use(cors(corsOptions));
-app.options(/.*/, cors(corsOptions)); // ✅ works reliably (preflight)
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://trimmute.vercel.app",
+    "https://trimmute.com",       // 👈 Add this
+    "https://www.trimmute.com"    // 👈 Add this too (just in case)
+  ],
+  credentials: true
+}));
 
 
 app.use(express.json());
