@@ -174,7 +174,7 @@ export default function App() {
 const friendShop = {
   id: 99,
   name: "Fella (Canterbury)",
-  address: "18 The Borough, Canterbury CT1 2DR", // Corrected number
+  address: "19 The Borough, Canterbury CT1 2DR", // Corrected number
   postcode: "CT1 2DR",
   bookingUrl: "https://getsquire.com/discover/barbershop/fella-canterbury-canterbury",
   lat: 51.2804,
