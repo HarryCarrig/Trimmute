@@ -180,57 +180,53 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
 </div>
 ) : (
  
-        <div style={{ backgroundColor: THEME.cardBg, padding: "1.5rem", borderRadius: "16px", border: `1px solid ${THEME.border}` }}>
-          <h3 style={{ margin: "0 0 1.5rem 0", fontSize: "1.2rem", borderBottom: `1px solid ${THEME.border}`, paddingBottom: "1rem" }}>Book a Silent Cut</h3>
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <div>
-               <label style={{ color: THEME.textMuted, fontSize: "0.85rem", display: "block", marginBottom: "6px" }}>Your Name</label>
-               <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: `1px solid ${THEME.border}`, background: "#111", color: "white", fontSize: "1rem" }} placeholder="e.g. Harry" />
-            </div>
-
-            {supportsSilent && (
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", backgroundColor: "rgba(255,255,255,0.05)", borderRadius: "8px", border: `1px solid ${THEME.border}` }}>
-                <input 
-                  type="checkbox" 
-                  checked={isSilentRequest} 
-                  onChange={(e) => setIsSilentRequest(e.target.checked)}
-                  style={{ width: "20px", height: "20px", accentColor: THEME.silent }}
-                />
-                <label style={{ fontSize: "0.95rem", color: "white" }}>Request Silent Service 🤫</label>
-              </div>
-            )}
-
-            <div>
-               <label style={{ color: THEME.textMuted, fontSize: "0.85rem", display: "block", marginBottom: "6px" }}>Date</label>
-               <input type="date" value={bookingDate} onChange={e => setBookingDate(e.target.value)} min={todayStr} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: `1px solid ${THEME.border}`, background: "#111", color: "white", fontSize: "1rem" }} />
-            </div>
-
-            <div>
-              <label style={{ color: THEME.textMuted, fontSize: "0.85rem", display: "block", marginBottom: "8px" }}>Select Time {loadingTimes && "(Loading...)"}</label>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {timeSlots.map(slot => {
-                   const isTaken = bookedTimes.includes(slot);
-                   const isSelected = selectedTime === slot;
-                   return (
-                     <button key={slot} onClick={() => setSelectedTime(slot)} disabled={isTaken} style={{ padding: "8px 14px", borderRadius: "8px", border: isSelected ? "1px solid #3b82f6" : `1px solid ${THEME.border}`, background: isSelected ? "rgba(59, 130, 246, 0.2)" : (isTaken ? "#333" : "#111"), color: isTaken ? "#555" : (isSelected ? "#60a5fa" : "white"), cursor: isTaken ? "not-allowed" : "pointer", fontWeight: isSelected ? "bold" : "normal", opacity: isTaken ? 0.5 : 1 }}>
-                       {slot}
-                     </button>
-                   );
-                })}
-              </div>
-            </div>
-
-            <button onClick={handleConfirmBooking} disabled={isBooking || !selectedTime || !bookingDate || !customerName} style={{ width: "100%", marginTop: "1rem", padding: "14px", borderRadius: "10px", background: "white", color: "black", fontWeight: "800", fontSize: "1rem", border: "none", cursor: (isBooking || !selectedTime) ? "not-allowed" : "pointer", opacity: (isBooking || !selectedTime) ? 0.7 : 1 }}>
-               {isBooking ? "Booking..." : "Confirm Booking"}
-            </button>
-            
-            {message && <p style={{ color: THEME.success, textAlign: "center", marginTop: "1rem", fontWeight: "bold" }}>{message}</p>}
-            {error && <p style={{ color: THEME.danger, textAlign: "center", marginTop: "1rem" }}>{error}</p>}
-          </div>
-        </div>
-      )}
-    </div>
+        <div style={{ backgroundColor: "rgba(255,255,255,0.03)", padding: "1.5rem", borderRadius: "16px", border: `1px solid ${THEME.border}`, textAlign: "center" }}>
+  <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", color: "#ffffff", fontWeight: 600 }}>Ready for your Silent Cut?</h3>
+  
+  <p style={{ color: THEME.textMuted, fontSize: "0.9rem", marginBottom: "1.5rem", lineHeight: "1.5" }}>
+  You are booking directly with <b>{shop.name}</b>. <br/>
+  Remember to select the student option on their page!
+  <br /><br />
+  <span style={{ 
+    display: "inline-block", 
+    backgroundColor: "rgba(234, 179, 8, 0.1)", 
+    border: "1px solid rgba(234, 179, 8, 0.3)", 
+    color: "#fde047", 
+    padding: "8px 12px", 
+    borderRadius: "6px", 
+    fontWeight: 600 
+  }}>
+    ⚠️ IMPORTANT: You MUST write "Silent Cut Please" in their booking notes!
+  </span>
+</p>
+  
+  <button 
+    onClick={() => window.open((shop as any).externalUrl || "https://getsquire.com/discover/barbershop/fella-canterbury-canterbury", "_blank", "noopener,noreferrer")}
+    style={{
+      width: "100%",
+      padding: "1rem",
+      backgroundColor: "#ffffff",
+      color: "#000000",
+      fontWeight: "700",
+      fontSize: "1rem",
+      borderRadius: "8px",
+      border: "none",
+      cursor: "pointer",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: "8px",
+      transition: "transform 0.1s"
+    }}
+    onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.98)"}
+    onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
+    onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+  >
+    Continue to Official Booking ↗
+  </button>
+</div>
+  )}
+</div>
   );
 };
 

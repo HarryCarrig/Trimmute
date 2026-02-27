@@ -16,6 +16,10 @@ type Shop = {
   postcode?: string;
   lat?: number;
   lng?: number;
+  isPartner?: boolean;
+  externalUrl?: string;
+  price?: string;
+  deal?: string;
 };
 
 type View = "home" | "barber" | "detail" | "bookings";
@@ -60,22 +64,54 @@ export default function App() {
   const [demoMode, setDemoMode] = useState(false);
 
   // --- LOGIC (UNCHANGED) ---
-  const mapShop = (b: any, index: number): Shop => ({
-    id: String(b.id ?? index),
-    name: String(b.name ?? ""),
-    address: b.address ?? "Unknown area",
-    // Force Silent Snips to have NO image so it uses the ✂️ icon
-    imageUrl: b.name === "Silent Snips" 
-      ? null 
-      : (typeof b.imageUrl === "string" && b.imageUrl.trim() ? b.imageUrl : null),
-    supportsSilent: Boolean(b.supportsSilent),
-    basePrice: Number(b.basePrice ?? 2000),
-    styles: Array.isArray(b.styles) ? b.styles : [],
-    distanceKm: typeof b.distanceKm === "number" ? b.distanceKm : undefined,
-    postcode: b.postcode ?? undefined,
-    lat: typeof b.lat === "number" ? b.lat : undefined,
-    lng: typeof b.lng === "number" ? b.lng : undefined,
-  });
+const mapShop = (b: any, index: number): Shop => {
+    // 1. Grab base values safely
+    let patchedUrl = b.external_url ?? b.externalUrl ?? "";
+    let patchedPrice = Number(b.base_price_pence ?? b.basePrice ?? 2000);
+    let patchedIsPartner = Boolean(b.is_partner ?? b.isPartner ?? false);
+    let patchedImageUrl = typeof b.imageUrl === "string" ? b.imageUrl : null;
+    let patchedDeal = b.deal ?? undefined;
+
+    // 2. Override missing backend data
+    if (b.name === "Fella (Canterbury)") {
+      patchedUrl = "https://getsquire.com/discover/barbershop/fella-canterbury-canterbury";
+      patchedPrice = 2400;
+      patchedIsPartner = true; // VIP Status!
+      patchedImageUrl = "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop";
+    } else if (b.name === "Winding Creative" || b.name === "The Winding Creative") {
+      patchedUrl = "https://www.fresha.com/a/winding-creative-canterbury-winding-creative-locke-square-university-of-kent-utfzz6nf"; // 👈 Paste their Fresha link here!
+      patchedPrice = 2350;
+      patchedIsPartner = true; // 👈 THIS FIXES THE YELLOW WARNING BAR!
+      patchedImageUrl = "https://qopixgjwnlfygbijvbdo.supabase.co/storage/v1/object/public/shop-images/Winding%20creative%20pfp.jpg"; // 👈 Paste the dog photo link here!
+    } else if (b.name === "Jimie's Chop Shop") {
+      patchedUrl = "https://booksy.com/en-gb/141413_jimies-chop-shop_barber_866996_canterbury";
+      patchedPrice = 2500;
+    } else if (b.name === "Shaving Ken") {
+      patchedUrl = "https://booksy.com/en-gb/25770_shaving-ken-barbershop_barber_866996_canterbury";
+      patchedPrice = 2400;
+    } else if (b.name === "Stone Hairdressing") {
+      patchedUrl = "https://www.stonehairdressing.co.uk/book-your-appointment-online/";
+      patchedPrice = 6300;
+    }
+
+    // 3. Return the clean, production-ready object
+    return {
+      id: String(b.id ?? index),
+      name: String(b.name ?? ""),
+      address: b.address ?? "Unknown area",
+      imageUrl: patchedImageUrl,
+      supportsSilent: Boolean(b.supportsSilent ?? true), // Assume silent friendly for our patched list
+      basePrice: patchedPrice,
+      styles: Array.isArray(b.styles) ? b.styles : [],
+      distanceKm: typeof b.distanceKm === "number" ? b.distanceKm : undefined,
+      postcode: b.postcode ?? undefined,
+      lat: typeof b.lat === "number" ? b.lat : undefined,
+      lng: typeof b.lng === "number" ? b.lng : undefined,
+      isPartner: patchedIsPartner, // 👈 Tells the UI to hide the yellow bar and open BarberDetail!
+      externalUrl: patchedUrl,
+      deal: patchedDeal
+    };
+  };
 
   async function loadShops() {
     try {
@@ -171,29 +207,16 @@ export default function App() {
 
 // 2. THE GHOST SHOP (Fella Mode) 🧢
 
-const friendShop = {
-  id: 99,
-  name: "Fella (Canterbury)",
-  address: "19 The Borough, Canterbury CT1 2DR", // Corrected number
-  postcode: "CT1 2DR",
-  bookingUrl: "https://getsquire.com/discover/barbershop/fella-canterbury-canterbury",
-  lat: 51.2804,
-  lng: 1.0805,
-  
-  // 👇 UPDATED PRICE & DEAL TO MATCH SQUIRE
-  price: "24.00",
-  deal: "Student Cut & Finish",
-  
-  basePrice: 2400,
-  styles: ["Skin Fade", "Little Fella", "Beard Trim"],
-  silentCutAvailable: true,
-  imageUrl: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop",
-} as any;
-
+// 👇 Sort shops so VIP Partners appear at the very top!
+  const visibleShops = [...shops].sort((a, b) => {
+    if (a.isPartner && !b.isPartner) return -1; // Move VIPs up
+    if (!a.isPartner && b.isPartner) return 1;  // Move VIPs up
+    return 0; // Leave others in normal order
+  });
 // 3. THE LOGIC (UPDATED FOR LAUNCH 🚀)
 // We force the app to show Fella immediately.
 // We merge it with any backend shops if you add more later.
-const visibleShops = [friendShop];
+
 
   const showHome = view === "home";
   const showBarberMode = view === "barber";
@@ -455,9 +478,18 @@ const SearchInput = ({ placeholder, value, onChange }: any) => (
 const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
   const hasDistance = typeof shop.distanceKm === "number" && !Number.isNaN(shop.distanceKm);
 
+  // 👇 NEW: Check if it's a partner or a ghost shop before doing anything
+  const handleCardClick = () => {
+    if (shop.isPartner) {
+      onClick(); // Opens your internal BarberDetail page
+    } else if (shop.externalUrl) {
+      window.open(shop.externalUrl, "_blank", "noopener,noreferrer"); // Opens their Booksy in a new tab
+    }
+  };
+
   return (
     <div
-      onClick={onClick}
+      onClick={handleCardClick} // 👈 Updated to use the new logic
       style={{
         display: "flex",
         padding: "1.2rem",
@@ -496,30 +528,50 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
           <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: THEME.textMain }}>{shop.name}</h3>
-          <span style={{ fontWeight: 400, color: THEME.textMain, fontSize: "0.9rem" }}>£{(shop.basePrice / 100).toFixed(0)}</span>
+          {/* Price display */}
+          <span style={{ fontWeight: 400, color: THEME.textMain, fontSize: "0.9rem" }}>
+            £{(shop.basePrice / 100).toFixed(2).replace(/\.00$/, '')}
+          </span>
         </div>
         
         {(shop as any).deal && (
-  <div style={{ 
-    display: "inline-flex",
-    alignItems: "center",
-    backgroundColor: "rgba(34, 197, 94, 0.15)",
-    border: "1px solid rgba(34, 197, 94, 0.5)",
-    color: "#4ade80",
-    fontSize: "0.7rem", 
-    fontWeight: "600", 
-    padding: "2px 8px", 
-    borderRadius: "6px", 
-    marginBottom: "0.4rem", 
-    marginTop: "-0.2rem",   // Added this to tuck it close to the name
-    alignSelf: "flex-start",
-    whiteSpace: "nowrap"
-  }}>
-    <span style={{ marginRight: "4px" }}>💳</span> 
-    {(shop as any).deal}
-  </div>
-)}
+          <div style={{ 
+            display: "inline-flex",
+            alignItems: "center",
+            backgroundColor: "rgba(34, 197, 94, 0.15)",
+            border: "1px solid rgba(34, 197, 94, 0.5)",
+            color: "#4ade80",
+            fontSize: "0.7rem", 
+            fontWeight: "600", 
+            padding: "2px 8px", 
+            borderRadius: "6px", 
+            marginBottom: "0.4rem", 
+            marginTop: "-0.2rem",
+            alignSelf: "flex-start",
+            whiteSpace: "nowrap"
+          }}>
+            <span style={{ marginRight: "4px" }}>💳</span> 
+            {(shop as any).deal}
+          </div>
+        )}
         <p style={{ margin: 0, fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.6rem" }}>{shop.address}</p>
+
+        {/* 👇 THE GHOST SHOP WARNING BADGE ADDED HERE */}
+        {!shop.isPartner && (
+          <div style={{ 
+            marginBottom: "8px", 
+            padding: "6px 8px", 
+            backgroundColor: "rgba(234, 179, 8, 0.1)", 
+            border: "1px solid rgba(234, 179, 8, 0.3)", 
+            borderRadius: "6px", 
+            color: "#fde047", 
+            fontSize: "0.7rem", 
+            fontWeight: 500, 
+            lineHeight: "1.4"
+          }}>
+            ⚠️ <b>Community Listing:</b> To get a silent cut here, you MUST write "Silent Cut Please" in their booking notes!
+          </div>
+        )}
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             {shop.supportsSilent && (
@@ -546,7 +598,19 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
             )}
         </div>
       </div>
-       <div style={{color: THEME.border, marginLeft: "10px"}}>›</div>
+       
+      {/* 👇 NEW: Dynamic Right-Side Indicator */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: "10px" }}>
+        {shop.isPartner ? (
+          <div style={{color: THEME.border, fontSize: "1.5rem"}}>›</div>
+        ) : (
+          <>
+            <div style={{color: THEME.textMain, fontSize: "0.8rem", fontWeight: 600}}>↗</div>
+            <div style={{color: THEME.textMuted, fontSize: "0.6rem", marginTop: "4px", whiteSpace: "nowrap"}}>External</div>
+          </>
+        )}
+      </div>
+
     </div>
   );
 };
