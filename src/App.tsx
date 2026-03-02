@@ -20,6 +20,7 @@ type Shop = {
   externalUrl?: string;
   price?: string;
   deal?: string;
+  distance?: number;
 };
 
 type View = "home" | "barber" | "detail" | "bookings";
@@ -456,7 +457,7 @@ const SearchInput = ({ placeholder, value, onChange }: any) => (
 );
 
 const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
-  const hasDistance = typeof shop.distanceKm === "number" && !Number.isNaN(shop.distanceKm);
+  const hasDistance = typeof shop.distance === "number" && !Number.isNaN(shop.distance);
 
   // 👇 NEW: Check if it's a partner or a ghost shop before doing anything
   const handleCardClick = () => {
@@ -535,6 +536,13 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
           </div>
         )}
         <p style={{ margin: 0, fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.6rem" }}>{shop.address}</p>
+
+          {/* PASTE THE NEW DISTANCE CODE RIGHT HERE */}
+          {hasDistance && (
+            <div style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: 600, marginTop: "0.4rem" }}>
+            📍 {shop.distance?.toFixed(1)} miles away
+            </div>
+          )}
 
         {/* 👇 THE GHOST SHOP WARNING BADGE ADDED HERE */}
         {!shop.isPartner && (
