@@ -580,11 +580,7 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
                 </span>
             )}
   
-            {hasDistance && (
-                <span style={{ fontSize: "0.75rem", color: THEME.textMuted }}>
-                    {shop.distanceKm?.toFixed(1)} km
-                </span>
-            )}
+           
         </div>
       </div>
        
