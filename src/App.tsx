@@ -50,8 +50,8 @@ const THEME = {
   danger: "#ef4444",
 };
 
-const BACKEND_URL = "http://localhost:3001/shops";
-const BACKEND_NEAR_URL = "http://localhost:3001/shops"; // (We will use the same endpoint for now so it doesn't crash!)
+const BACKEND_URL = "https://trimmute.onrender.com/shops";
+const BACKEND_NEAR_URL = "https://trimmute.onrender.com/shops";
 
 export default function App() {
   const [view, setView] = useState<View>("home");
