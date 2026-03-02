@@ -90,7 +90,8 @@ export default function App() {
       lng: typeof b.lng === "number" ? b.lng : undefined,
       isPartner: patchedIsPartner, 
       externalUrl: patchedUrl,
-      deal: patchedDeal
+      deal: patchedDeal,
+      distance: b.distance,
     };
   };
 
