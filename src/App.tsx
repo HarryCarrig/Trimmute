@@ -3,6 +3,16 @@ import BarberMode from "./BarberMode";
 import BarberDetail from "./BarberDetail";
 import MyBookings from "./mybookings";
 import logo from "./assets/trimmute-logo.png";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+
+// 🛠️ FIX FOR REACT LEAFLET MISSING ICONS
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
 
 type Shop = {
   id: string;
@@ -63,6 +73,8 @@ export default function App() {
   const [postcode, setPostcode] = useState("");
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
   const [demoMode, setDemoMode] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [userLoc, setUserLoc] = useState<[number, number] | null>(null);
 
   // --- LOGIC (UNCHANGED) ---
 // --- LOGIC (UPDATED FOR DYNAMIC BACKEND) ---
@@ -117,6 +129,7 @@ export default function App() {
     try {
       setError("");
       setLoading(true);
+      setUserLoc([latitude, longitude]);
       const url = `${BACKEND_NEAR_URL}?lat=${latitude}&lng=${longitude}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -302,6 +315,13 @@ export default function App() {
                       <div style={{ display: "flex", gap: "0.75rem" }}>
                         <NavButton icon="MapPin" label="Near Me" active onClick={() => { setSelectedShop(null); setView("home"); loadShopsNearMe(); }} />
                         <NavButton icon="RotateCcw" onClick={() => { setSelectedShop(null); setView("home"); loadShops(); }} />
+                          <NavButton 
+            
+            icon={showMap ? "List" : "MapFold"} 
+            label={showMap ? "List" : "Map"} 
+            onClick={() => setShowMap(!showMap)} 
+            active={showMap} 
+          />
                       </div>
 
                       {/* Right Side: HIDDEN so students don't see Admin tools */}
@@ -382,15 +402,55 @@ export default function App() {
                 )}
 
                 {/* SHOP LIST */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                {visibleShops.map((shop) => (
-                    <ShopCard 
-                    key={shop.id} 
-                    shop={shop} 
-                    onClick={() => { setSelectedShop(shop); setView("detail"); }} 
-                    />
-                ))}
-                </div>
+
+        {/* 🗺️ THE MAP VS LIST DISPLAY */}
+                {showMap ? (
+                  <div style={{ height: "450px", width: "100%", borderRadius: "12px", overflow: "hidden", border: `1px solid ${THEME.border}`, zIndex: 0 }}>
+                    {/* Centers on user if known, otherwise Canterbury */}
+            <MapContainer center={userLoc || [51.28, 1.08]} zoom={13} style={{ height: "100%", width: "100%" }}>
+              
+              <TileLayer
+                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                attribution='&copy; CARTO'
+              />
+
+              {/* 📍 THE "YOU ARE HERE" DOT */}
+              {userLoc && (
+                <Marker position={userLoc} icon={userPin}>
+                  <Popup>
+                    <strong style={{ color: "#000", fontSize: "14px", fontFamily: "sans-serif" }}>You Are Here</strong>
+                  </Popup>
+                </Marker>
+              )}
+              
+              {/* 💈 THE CUSTOM CYAN SHOP PINS */}
+              {visibleShops.map(shop => {
+                if (!shop.lat || !shop.lng) return null;
+                return (
+                  <Marker key={shop.id} position={[shop.lat, shop.lng]} icon={cyanPin}>
+                    <Popup>
+                      <strong style={{ color: "#000", fontSize: "14px", fontFamily: "sans-serif" }}>{shop.name}</strong><br/>
+                      <span style={{ color: "#555", fontSize: "12px", fontFamily: "sans-serif" }}>{shop.address}</span>
+                    </Popup>
+                  </Marker>
+                );
+              })}
+
+            </MapContainer>
+            
+                  </div>
+                ) : (
+                  /* 📋 YOUR ORIGINAL LIST VIEW */
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                    {visibleShops.map((shop) => (
+                      <ShopCard 
+                        key={shop.id} 
+                        shop={shop} 
+                        onClick={() => { setSelectedShop(shop); setView("detail"); }} 
+                      />
+                    ))}
+                  </div>
+                )}
             </>
             )}
         </div>
@@ -402,6 +462,22 @@ export default function App() {
 // --- SUB-COMPONENTS ---
 
 // Updated Icons with Gapped Reload
+const cyanPin = L.divIcon({
+  className: "custom-cyan-pin",
+  html: `<svg width="28" height="28" viewBox="0 0 24 24" fill="${THEME.silent}" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="#000"></circle></svg>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 28],
+  popupAnchor: [0, -28]
+});
+
+const userPin = L.divIcon({
+  className: "custom-user-pin",
+  html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="${THEME.silent}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle></svg>`,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+  popupAnchor: [0, -12]
+});
+
 const Icons: any = {
     MapPin: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>,
     
@@ -540,7 +616,7 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
 
           {/* PASTE THE NEW DISTANCE CODE RIGHT HERE */}
           {hasDistance && (
-            <div style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: 600, marginTop: "0.4rem" }}>
+            <div style={{ fontSize: "0.85rem", color: THEME.silent, fontWeight: 600, marginTop: "0.4rem" }}>
             📍 {shop.distance?.toFixed(1)} miles away
             </div>
           )}
