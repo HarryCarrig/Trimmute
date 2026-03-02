@@ -50,8 +50,8 @@ const THEME = {
   danger: "#ef4444",
 };
 
-const BACKEND_URL = `${API_BASE}/barbers`;
-const BACKEND_NEAR_URL = `${API_BASE}/barbers/near`;
+const BACKEND_URL = "http://localhost:3001/shops";
+const BACKEND_NEAR_URL = "http://localhost:3001/shops"; // (We will use the same endpoint for now so it doesn't crash!)
 
 export default function App() {
   const [view, setView] = useState<View>("home");
@@ -64,50 +64,30 @@ export default function App() {
   const [demoMode, setDemoMode] = useState(false);
 
   // --- LOGIC (UNCHANGED) ---
-const mapShop = (b: any, index: number): Shop => {
-    // 1. Grab base values safely
-    let patchedUrl = b.external_url ?? b.externalUrl ?? "";
-    let patchedPrice = Number(b.base_price_pence ?? b.basePrice ?? 2000);
-    let patchedIsPartner = Boolean(b.is_partner ?? b.isPartner ?? false);
+// --- LOGIC (UPDATED FOR DYNAMIC BACKEND) ---
+  const mapShop = (b: any, index: number): Shop => {
+    // 1. Grab base values safely from your new backend!
+    let patchedUrl = b.externalUrl ?? b.external_url ?? "";
+    let patchedPrice = Number(b.basePrice ?? b.base_price_pence ?? 2000);
+    let patchedIsPartner = Boolean(b.isPartner ?? b.is_partner ?? false);
     let patchedImageUrl = typeof b.imageUrl === "string" ? b.imageUrl : null;
     let patchedDeal = b.deal ?? undefined;
+    let patchedSupportsSilent = Boolean(b.supportsSilent ?? b.supports_silent ?? true);
 
-    // 2. Override missing backend data
-    if (b.name === "Fella (Canterbury)") {
-      patchedUrl = "https://getsquire.com/discover/barbershop/fella-canterbury-canterbury";
-      patchedPrice = 2400;
-      patchedIsPartner = true; // VIP Status!
-      patchedImageUrl = "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop";
-    } else if (b.name === "Winding Creative" || b.name === "The Winding Creative") {
-      patchedUrl = "https://www.fresha.com/a/winding-creative-canterbury-winding-creative-locke-square-university-of-kent-utfzz6nf"; // 👈 Paste their Fresha link here!
-      patchedPrice = 2350;
-      patchedIsPartner = true; // 👈 THIS FIXES THE YELLOW WARNING BAR!
-      patchedImageUrl = "https://qopixgjwnlfygbijvbdo.supabase.co/storage/v1/object/public/shop-images/Winding%20creative%20pfp.jpg"; // 👈 Paste the dog photo link here!
-    } else if (b.name === "Jimie's Chop Shop") {
-      patchedUrl = "https://booksy.com/en-gb/141413_jimies-chop-shop_barber_866996_canterbury";
-      patchedPrice = 2500;
-    } else if (b.name === "Shaving Ken") {
-      patchedUrl = "https://booksy.com/en-gb/25770_shaving-ken-barbershop_barber_866996_canterbury";
-      patchedPrice = 2400;
-    } else if (b.name === "Stone Hairdressing") {
-      patchedUrl = "https://www.stonehairdressing.co.uk/book-your-appointment-online/";
-      patchedPrice = 6300;
-    }
-
-    // 3. Return the clean, production-ready object
+    // 2. Return the clean, production-ready object
     return {
       id: String(b.id ?? index),
       name: String(b.name ?? ""),
       address: b.address ?? "Unknown area",
       imageUrl: patchedImageUrl,
-      supportsSilent: Boolean(b.supportsSilent ?? true), // Assume silent friendly for our patched list
+      supportsSilent: patchedSupportsSilent, 
       basePrice: patchedPrice,
       styles: Array.isArray(b.styles) ? b.styles : [],
       distanceKm: typeof b.distanceKm === "number" ? b.distanceKm : undefined,
       postcode: b.postcode ?? undefined,
       lat: typeof b.lat === "number" ? b.lat : undefined,
       lng: typeof b.lng === "number" ? b.lng : undefined,
-      isPartner: patchedIsPartner, // 👈 Tells the UI to hide the yellow bar and open BarberDetail!
+      isPartner: patchedIsPartner, 
       externalUrl: patchedUrl,
       deal: patchedDeal
     };

@@ -15,10 +15,26 @@ app.get('/health', (req, res) => {
 
 // ── SHOPS ───────────────────────────────────────────
 app.get('/shops', async (req, res) => {
-  const shops = await prisma.shop.findMany({
-    orderBy: { name: 'asc' },
-  });
-  res.json(shops);
+  try {
+    const shops = await prisma.shops.findMany({
+      orderBy: { name: 'asc' },
+    });
+
+    // 🔀 Translate Supabase underscores into frontend camelCase
+    const formattedShops = shops.map(shop => ({
+      ...shop,
+      basePrice: shop.base_price_pence ?? shop.basePrice ?? 2000,
+      isPartner: shop.is_partner ?? false,
+      imageUrl: shop.image_url ?? shop.imageUrl ?? null,
+      externalUrl: shop.external_url ?? null,
+      supportsSilent: shop.supports_silent ?? false
+    }));
+
+    res.json(formattedShops);
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).json({ error: "Failed to fetch shops" });
+  }
 });
 
 app.post('/shops', async (req, res) => {
