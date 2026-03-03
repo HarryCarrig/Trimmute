@@ -363,14 +363,48 @@ export default function App() {
                         Find your <span style={{ color: THEME.textMuted }}>quiet place.</span>
                     </h2>
                 
-                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                    <SearchInput 
-                    placeholder="Search area (e.g. Manchester)" 
-                    value={searchTerm} 
-                    onChange={setSearchTerm} 
-                    />
-                    {/* 👇 THE NEW FILTER CONTROLS 👇 */}
-          <div style={{ display: "flex", gap: "1rem", marginTop: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+                {/* --- 🔎 SEARCH & FILTER SECTION --- */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", marginBottom: "1.5rem" }}>
+          
+          {/* 👇 THE UNIFIED SEARCH PILL 👇 */}
+          <div style={{ 
+            display: "flex", 
+            alignItems: "stretch", 
+            background: "rgba(255, 255, 255, 0.05)", 
+            borderRadius: "14px", 
+            border: `1px solid ${THEME.border}`,
+            overflow: "hidden"
+          }}>
+            {/* 1. Name/Area Search */}
+            <input 
+              placeholder="Area or Shop..." 
+              value={searchTerm} 
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ flex: 1, padding: "0.875rem 1rem", background: "transparent", border: "none", color: THEME.textMain, outline: "none", fontSize: "0.95rem", minWidth: "50px" }}
+            />
+            
+            {/* Divider */}
+            <div style={{ width: "1px", background: THEME.border, margin: "0.6rem 0" }} />
+            
+            {/* 2. Postcode Input */}
+            <input 
+              placeholder="Postcode..." 
+              value={postcode} 
+              onChange={(e) => setPostcode(e.target.value)}
+              style={{ width: "100px", padding: "0.875rem 1rem", background: "transparent", border: "none", color: THEME.textMain, outline: "none", fontSize: "0.95rem" }}
+            />
+            
+            {/* 3. The Go Button */}
+            <button 
+              onClick={searchByPostcode}
+              style={{ padding: "0 1.2rem", background: THEME.textMain, color: THEME.bg, border: "none", fontWeight: "bold", cursor: "pointer" }}
+            >
+              Go
+            </button>
+          </div>
+
+          {/* 👇 THE FILTER CONTROLS 👇 */}
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
             
             {/* Price Slider */}
             <div style={{ flex: 1, minWidth: "150px" }}>
@@ -403,32 +437,7 @@ export default function App() {
             </div>
             
           </div>
-                    
-                    <div style={{ display: "flex", gap: "0.75rem" }}>
-                    <SearchInput 
-                        placeholder="Postcode (e.g. SW1A)" 
-                        value={postcode} 
-                        onChange={setPostcode} 
-                    />
-                    {/* The GO Button */}
-                    <button
-                        onClick={searchByPostcode}
-                        style={{
-                        padding: "0 2rem",
-                        borderRadius: "12px",
-                        background: THEME.actionBg, // White
-                        color: THEME.actionText,    // Black
-                        border: "none",
-                        fontWeight: 700,
-                        cursor: "pointer",
-                        fontSize: "0.95rem",
-                        transition: "transform 0.1s"
-                        }}
-                    >
-                        Go
-                    </button>
-                    </div>
-                </div>
+        </div>
                 </div>
 
                 {/* STATUS MESSAGES */}
