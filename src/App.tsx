@@ -74,6 +74,8 @@ export default function App() {
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
   const [demoMode, setDemoMode] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [maxPrice, setMaxPrice] = useState<number>(40); // Defaults to £40 max
+  const [sortBy, setSortBy] = useState<string>("recommended");
   const [userLoc, setUserLoc] = useState<[number, number] | null>(null);
 
   // --- LOGIC (UNCHANGED) ---
@@ -202,12 +204,32 @@ export default function App() {
 
 // 2. THE GHOST SHOP (Fella Mode) 🧢
 
-// 👇 Sort shops so VIP Partners appear at the very top!
-  const visibleShops = [...shops].sort((a, b) => {
-    if (a.isPartner && !b.isPartner) return -1; // Move VIPs up
-    if (!a.isPartner && b.isPartner) return 1;  // Move VIPs up
-    return 0; // Leave others in normal order
-  });
+// 👇 SUPERCHARGED FILTER & SORT LOGIC
+  const visibleShops = [...shops]
+    .filter(shop => {
+      // 1. Text Search (Filters by name or area if they type in the search bar)
+      const matchesSearch = shop.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            (shop.address && shop.address.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      // 2. Max Price Filter
+      const matchesPrice = (shop.basePrice / 100) <= maxPrice;
+      
+      return matchesSearch && matchesPrice;
+    })
+    .sort((a, b) => {
+      // 1. Sort by Lowest Price
+      if (sortBy === "price_low") return a.basePrice - b.basePrice;
+      
+      // 2. Sort by Closest Distance (if GPS is active)
+      if (sortBy === "distance" && a.distance !== undefined && b.distance !== undefined) {
+        return a.distance - b.distance;
+      }
+      
+      // 3. Default: Recommended (VIP Partners First)
+      if (a.isPartner && !b.isPartner) return -1;
+      if (!a.isPartner && b.isPartner) return 1;
+      return 0; 
+    });
 // 3. THE LOGIC (UPDATED FOR LAUNCH 🚀)
 // We force the app to show Fella immediately.
 // We merge it with any backend shops if you add more later.
@@ -347,6 +369,40 @@ export default function App() {
                     value={searchTerm} 
                     onChange={setSearchTerm} 
                     />
+                    {/* 👇 THE NEW FILTER CONTROLS 👇 */}
+          <div style={{ display: "flex", gap: "1rem", marginTop: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+            
+            {/* Price Slider */}
+            <div style={{ flex: 1, minWidth: "150px" }}>
+              <label style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.5rem" }}>
+                <span>Max Price</span>
+                <span style={{ color: THEME.silent, fontWeight: "bold" }}>£{maxPrice}</span>
+              </label>
+              <input 
+                type="range" min="10" max="60" step="1" 
+                value={maxPrice} 
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                style={{ width: "100%", accentColor: THEME.silent }}
+              />
+            </div>
+
+            {/* Sort Dropdown */}
+            <div style={{ flex: 1, minWidth: "150px" }}>
+              <label style={{ display: "block", fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.5rem" }}>
+                Sort By
+              </label>
+              <select 
+                value={sortBy} 
+                onChange={(e) => setSortBy(e.target.value)}
+                style={{ width: "100%", padding: "0.5rem", borderRadius: "8px", background: "transparent", color: THEME.textMain, border: `1px solid ${THEME.border}`, outline: "none" }}
+              >
+                <option value="recommended" style={{ background: THEME.bodyBg }}>Recommended</option>
+                <option value="price_low" style={{ background: THEME.bodyBg }}>Lowest Price</option>
+                <option value="distance" style={{ background: THEME.bodyBg }}>Closest to Me</option>
+              </select>
+            </div>
+            
+          </div>
                     
                     <div style={{ display: "flex", gap: "0.75rem" }}>
                     <SearchInput 
