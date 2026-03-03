@@ -5,6 +5,7 @@ import MyBookings from "./mybookings";
 import logo from "./assets/trimmute-logo.png";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 // 🛠️ FIX FOR REACT LEAFLET MISSING ICONS
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -74,7 +75,7 @@ export default function App() {
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
   const [demoMode, setDemoMode] = useState(false);
   const [showMap, setShowMap] = useState(false);
-  const [maxPrice, setMaxPrice] = useState<number>(40); // Defaults to £40 max
+  const [maxPrice, setMaxPrice] = useState<number>(100); // Defaults to £100 max
   const [sortBy, setSortBy] = useState<string>("recommended");
   const [userLoc, setUserLoc] = useState<[number, number] | null>(null);
 
@@ -264,6 +265,29 @@ export default function App() {
             // <--- REMOVED: Borders and Shadow. Now it blends seamlessly.
         }}
         >
+        {/* 👇 AUTHENTICATION CORNER 👇 */}
+        <div style={{ position: "absolute", top: "1.5rem", right: "1.5rem", zIndex: 50 }}>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button style={{ 
+                padding: "0.5rem 1.2rem", 
+                borderRadius: "8px", 
+                background: THEME.silent, // Uses your custom Cyan!
+                color: THEME.bg, 
+                border: "none", 
+                fontWeight: "bold", 
+                cursor: "pointer",
+                fontSize: "0.9rem"
+              }}>
+                Sign In
+              </button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
+        </div>
+        {/* 👆 AUTHENTICATION CORNER 👆 */}
         
         {/* Subtle top light leak for atmosphere */}
         <div style={{
@@ -413,7 +437,7 @@ export default function App() {
                 <span style={{ color: THEME.silent, fontWeight: "bold" }}>£{maxPrice}</span>
               </label>
               <input 
-                type="range" min="10" max="60" step="1" 
+                type="range" min="10" max="100" step="1" 
                 value={maxPrice} 
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
                 style={{ width: "100%", accentColor: THEME.silent }}
