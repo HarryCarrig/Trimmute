@@ -436,6 +436,12 @@ export default function App() {
                           {shop.name}
                         </strong>
                         
+                        {/* 👇 THE POPUP VERIFIED BADGE 👇 */}
+            {shop.isPartner && (
+              <div style={{ marginBottom: "8px", fontSize: "11px", fontWeight: "bold", color: "#b8860b", backgroundColor: "#fff8dc", padding: "3px 6px", borderRadius: "4px", display: "inline-block", border: "1px solid #FFC107" }}>
+                ✓ Trimmute Verified
+              </div>
+            )}
                         {/* Address */}
                         <div style={{ color: "#555", fontSize: "12px", marginTop: "4px", marginBottom: "8px" }}>
                           {shop.address}
@@ -708,7 +714,12 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
                     ● SILENT
                 </span>
             )}
-  
+ 
+  {shop.isPartner && (
+            <span style={{ backgroundColor: "rgba(255, 193, 7, 0.15)", color: "#FFC107", padding: "4px 8px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "bold" }}>
+              ★ Trimmute Verified
+            </span>
+          )}
            
         </div>
       </div>
