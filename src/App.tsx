@@ -423,14 +423,50 @@ export default function App() {
                 </Marker>
               )}
               
-              {/* 💈 THE CUSTOM CYAN SHOP PINS */}
-              {visibleShops.map(shop => {
+            {visibleShops.map(shop => {
                 if (!shop.lat || !shop.lng) return null;
                 return (
-                  <Marker key={shop.id} position={[shop.lat, shop.lng]} icon={cyanPin}>
+                  <Marker key={shop.id} position={[shop.lat, shop.lng]} icon={shop.isPartner ? goldPin : cyanPin}>
                     <Popup>
-                      <strong style={{ color: "#000", fontSize: "14px", fontFamily: "sans-serif" }}>{shop.name}</strong><br/>
-                      <span style={{ color: "#555", fontSize: "12px", fontFamily: "sans-serif" }}>{shop.address}</span>
+                      <div style={{ textAlign: "center", fontFamily: "sans-serif", minWidth: "140px" }}>
+                        
+                        {/* Title with optional Star */}
+                        <strong style={{ color: "#000", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
+                          {shop.isPartner && <span>⭐</span>}
+                          {shop.name}
+                        </strong>
+                        
+                        {/* Address */}
+                        <div style={{ color: "#555", fontSize: "12px", marginTop: "4px", marginBottom: "8px" }}>
+                          {shop.address}
+                        </div>
+                        
+                        {/* Smart Button: Internal Details vs External Link */}
+                        <button
+                          onClick={() => {
+                            if (shop.isPartner) {
+                              setSelectedShop(shop);
+                              setView("detail");
+                            } else if (shop.externalUrl) {
+                              window.open(shop.externalUrl, "_blank", "noopener,noreferrer");
+                            }
+                          }}
+                          style={{
+                            background: shop.isPartner ? "#D4AF37" : THEME.silent,
+                            color: "#000",
+                            border: "none",
+                            padding: "6px 10px",
+                            borderRadius: "6px",
+                            fontWeight: "bold",
+                            cursor: "pointer",
+                            width: "100%",
+                            fontSize: "12px"
+                          }}
+                        >
+                          {shop.isPartner ? "View Details" : "Book External"}
+                        </button>
+
+                      </div>
                     </Popup>
                   </Marker>
                 );
@@ -465,6 +501,21 @@ export default function App() {
 const cyanPin = L.divIcon({
   className: "custom-cyan-pin",
   html: `<svg width="28" height="28" viewBox="0 0 24 24" fill="${THEME.silent}" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="#000"></circle></svg>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 28],
+  popupAnchor: [0, -28]
+});
+
+const goldPin = L.divIcon({
+  className: "custom-gold-pin",
+  html: `<svg width="28" height="28" viewBox="0 0 24 24" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <defs>
+            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFE066" />  <stop offset="50%" stop-color="#F5B700" /> <stop offset="100%" stop-color="#9E7600" /> </linearGradient>
+          </defs>
+          <path fill="url(#goldGradient)" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3" fill="#000"></circle>
+        </svg>`,
   iconSize: [28, 28],
   iconAnchor: [14, 28],
   popupAnchor: [0, -28]
