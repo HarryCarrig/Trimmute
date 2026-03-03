@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
@@ -34,9 +36,27 @@ type BarberDetailProps = {
     bookingUrl?: string; 
     lat?: number;
     lng?: number;  
+    isPartner?: boolean; //
   };
   onBack?: () => void;
 };
+
+// 📌 CUSTOM PINS
+const cyanPin = L.divIcon({
+  className: "custom-cyan-pin",
+  html: `<svg width="28" height="28" viewBox="0 0 24 24" fill="${THEME.silent}" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="#000"></circle></svg>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 28],
+  popupAnchor: [0, -28]
+});
+
+const goldPin = L.divIcon({
+  className: "custom-gold-pin",
+  html: `<svg width="28" height="28" viewBox="0 0 24 24" fill="#FFC107" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="#000"></circle></svg>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 28],
+  popupAnchor: [0, -28]
+});
 
 const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const [bookingDate, setBookingDate] = useState("");
@@ -52,10 +72,6 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const supportsSilent = shop.supportsSilent ?? false;
   const isExternal = !!shop.bookingUrl;
 
-  // 🛠️ FIXED: Secure HTTPS Google Maps Embed (No API Key needed)
-  const mapUrl = (shop.lat && shop.lng) 
-    ? `https://maps.google.com/maps?q=${shop.lat},${shop.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`
-    : null;
 
   const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"];
   const todayStr = new Date().toISOString().split("T")[0];
@@ -151,17 +167,26 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
         </div>
       </div>
 
-      {/* 🗺️ MAP SECTION */}
-      {mapUrl && (
-        <div style={{ borderRadius: "16px", overflow: "hidden", border: `1px solid ${THEME.border}`, marginBottom: "1.5rem", height: "200px" }}>
-          <iframe 
-            src={mapUrl} 
-            width="100%" 
-            height="100%" 
-            style={{ border: 0 }} 
-            loading="lazy" 
-            title="Shop Location"
-          />
+   {/* 🗺️ MAP SECTION */}
+      {(shop.lat && shop.lng) && (
+        <div style={{ borderRadius: "16px", overflow: "hidden", border: `1px solid ${THEME.border}`, marginBottom: "1.5rem", height: "200px", zIndex: 0, position: "relative" }}>
+          {/* Zoom is set to 15 for a nice close-up of the specific shop! */}
+          <MapContainer center={[shop.lat, shop.lng]} zoom={15} style={{ height: "100%", width: "100%" }} zoomControl={false}>
+            
+            {/* Dark Mode Tiles */}
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              attribution='&copy; CARTO'
+            />
+            
+            {/* Custom Pin (Gold for partners, Cyan for normal) */}
+            <Marker position={[shop.lat, shop.lng]} icon={shop.isPartner ? goldPin : cyanPin}>
+              <Popup>
+                <strong style={{ color: "#000", fontSize: "14px", fontFamily: "sans-serif" }}>{shop.name}</strong>
+              </Popup>
+            </Marker>
+
+          </MapContainer>
         </div>
       )}
 
