@@ -655,7 +655,8 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
         </div>
       </div>
        
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: "10px" }}>
+     {/* 👇 Added minWidth: "55px" right here! */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: "10px", minWidth: "55px" }}>
         {shop.isPartner ? (
           <div style={{color: THEME.border, fontSize: "1.5rem"}}>›</div>
         ) : (
