@@ -78,11 +78,24 @@ export default function App() {
   const [maxPrice, setMaxPrice] = useState<number>(100); // Defaults to £100 max
   const [sortBy, setSortBy] = useState<string>("recommended");
   const [userLoc, setUserLoc] = useState<[number, number] | null>(null);
+  
+  // 👇 FIXED: States are now properly separated
+  const [showRosterOnly, setShowRosterOnly] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const saved = localStorage.getItem("trimmute_favorites");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  // --- LOGIC (UNCHANGED) ---
-// --- LOGIC (UPDATED FOR DYNAMIC BACKEND) ---
+  const toggleFavorite = (id: string) => {
+    setFavorites(prev => {
+      const newFavs = prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id];
+      localStorage.setItem("trimmute_favorites", JSON.stringify(newFavs));
+      return newFavs;
+    });
+  };
+
+  // --- LOGIC (UPDATED FOR DYNAMIC BACKEND) ---
   const mapShop = (b: any, index: number): Shop => {
-    // 1. Grab base values safely from your new backend!
     let patchedUrl = b.externalUrl ?? b.external_url ?? "";
     let patchedPrice = Number(b.basePrice ?? b.base_price_pence ?? 2000);
     let patchedIsPartner = Boolean(b.isPartner ?? b.is_partner ?? false);
@@ -90,7 +103,6 @@ export default function App() {
     let patchedDeal = b.deal ?? undefined;
     let patchedSupportsSilent = Boolean(b.supportsSilent ?? b.supports_silent ?? true);
 
-    // 2. Return the clean, production-ready object
     return {
       id: String(b.id ?? index),
       name: String(b.name ?? ""),
@@ -199,42 +211,31 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
- // 1. THE SECRET KEY CHECK 🕵️‍♂️
   const urlParams = new URLSearchParams(window.location.search);
   const isFriendMode = urlParams.get("mode") === "friend";
 
-// 2. THE GHOST SHOP (Fella Mode) 🧢
-
-// 👇 SUPERCHARGED FILTER & SORT LOGIC
+  // 👇 FIXED: The filter array is properly chained again
   const visibleShops = [...shops]
     .filter(shop => {
-      // 1. Text Search (Filters by name or area if they type in the search bar)
       const matchesSearch = shop.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                             (shop.address && shop.address.toLowerCase().includes(searchTerm.toLowerCase()));
       
-      // 2. Max Price Filter
       const matchesPrice = (shop.basePrice / 100) <= maxPrice;
       
-      return matchesSearch && matchesPrice;
+      // Roster Gate
+      const matchesRoster = showRosterOnly ? favorites.includes(shop.id) : true;
+      
+      return matchesSearch && matchesPrice && matchesRoster;
     })
     .sort((a, b) => {
-      // 1. Sort by Lowest Price
       if (sortBy === "price_low") return a.basePrice - b.basePrice;
-      
-      // 2. Sort by Closest Distance (if GPS is active)
       if (sortBy === "distance" && a.distance !== undefined && b.distance !== undefined) {
-        return a.distance - b.distance;
+        return a.distance - b.distance;        
       }
-      
-      // 3. Default: Recommended (VIP Partners First)
-      if (a.isPartner && !b.isPartner) return -1;
+      if (a.isPartner && !b.isPartner) return -1;                                                                  
       if (!a.isPartner && b.isPartner) return 1;
       return 0; 
     });
-// 3. THE LOGIC (UPDATED FOR LAUNCH 🚀)
-// We force the app to show Fella immediately.
-// We merge it with any backend shops if you add more later.
-
 
   const showHome = view === "home";
   const showBarberMode = view === "barber";
@@ -258,11 +259,10 @@ export default function App() {
       <div
         style={{
             width: "100%",
-            maxWidth: "1000px", // Keeps content centered and readable
+            maxWidth: "1000px", 
             minHeight: "100vh",
             background: THEME.bg,
             position: "relative",
-            // <--- REMOVED: Borders and Shadow. Now it blends seamlessly.
         }}
         >
         {/* 👇 AUTHENTICATION CORNER 👇 */}
@@ -272,7 +272,7 @@ export default function App() {
               <button style={{ 
                 padding: "0.5rem 1.2rem", 
                 borderRadius: "8px", 
-                background: THEME.silent, // Uses your custom Cyan!
+                background: THEME.silent, 
                 color: THEME.bg, 
                 border: "none", 
                 fontWeight: "bold", 
@@ -287,7 +287,6 @@ export default function App() {
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
         </div>
-        {/* 👆 AUTHENTICATION CORNER 👆 */}
         
         {/* Subtle top light leak for atmosphere */}
         <div style={{
@@ -299,284 +298,183 @@ export default function App() {
         <div style={{ padding: "1.5rem", position: "relative", zIndex: 2 }}>
             
             {/* LOGO AREA */}
-            <div style={{ 
-            textAlign: "center", 
-            marginBottom: "2.5rem",
-            paddingTop: "2rem" 
-            }}>
-            <img
-                src={logo}
-                alt="Trimmute"
-                style={{
-                height: "36px", 
-                margin: "0 auto 12px auto",
-                display: "block",
-                filter: "brightness(0) invert(1)", 
-                opacity: 1
-                }}
-            />
-            <div style={{
-                fontSize: "0.75rem",
-                color: THEME.textMuted,
-                letterSpacing: "2px",
-                textTransform: "uppercase",
-                fontWeight: 600
-            }}>
-                Silence speaks volumes
-            </div>
+            <div style={{ textAlign: "center", marginBottom: "2.5rem", paddingTop: "2rem" }}>
+              <img
+                  src={logo}
+                  alt="Trimmute"
+                  style={{ height: "36px", margin: "0 auto 12px auto", display: "block", filter: "brightness(0) invert(1)", opacity: 1 }}
+              />
+              <div style={{ fontSize: "0.75rem", color: THEME.textMuted, letterSpacing: "2px", textTransform: "uppercase", fontWeight: 600 }}>
+                  Silence speaks volumes
+              </div>
             </div>
 
             {/* SUB-VIEWS */}
             {showBarberMode && <BarberMode onBack={() => setView("home")} />}
             
             {view === "detail" && selectedShop && (
-            <BarberDetail
-                shop={selectedShop}
-                onBack={() => {
-                setSelectedShop(null);
-                setView("home");
-                }}
-            />
+              <BarberDetail shop={selectedShop} onBack={() => { setSelectedShop(null); setView("home"); }} />
             )}
 
             {showBookings && (
-            <MyBookings
-                onBack={() => {
-                setView("home");
-                }}
-            />
+              <MyBookings onBack={() => { setView("home"); }} />
             )}
 
             {/* HOME VIEW */}
             {showHome && !showDetail && !showBookings && (
             <>
-                {/* NAVIGATION - PUBLIC LAUNCH MODE 🚀 */}
-                    <div style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "2rem",
-                    }}>
-                      {/* Left Side: Discovery Tools (Keep these!) */}
-                      <div style={{ display: "flex", gap: "0.75rem" }}>
-                        <NavButton icon="MapPin" label="Near Me" active onClick={() => { setSelectedShop(null); setView("home"); loadShopsNearMe(); }} />
-                        <NavButton icon="RotateCcw" onClick={() => { setSelectedShop(null); setView("home"); loadShops(); }} />
-                          <NavButton 
-            
-            icon={showMap ? "List" : "MapFold"} 
-            label={showMap ? "List" : "Map"} 
-            onClick={() => setShowMap(!showMap)} 
-            active={showMap} 
-          />
-                      </div>
+                {/* NAVIGATION */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+                  <div style={{ display: "flex", gap: "0.75rem" }}>
+                    <NavButton 
+                      icon="MapPin" 
+                      label="Near Me" 
+                      active={!showRosterOnly} 
+                      onClick={() => { setShowRosterOnly(false); setSelectedShop(null); setView("home"); loadShopsNearMe(); }} 
+                    />
+                    
+                    <NavButton 
+                      icon="Scissors" 
+                      label={showRosterOnly ? "Show All" : "My Roster"} 
+                      active={showRosterOnly}
+                      onClick={() => setShowRosterOnly(!showRosterOnly)} 
+                    />
 
-                      {/* Right Side: HIDDEN so students don't see Admin tools */}
-                    </div>
+                    <NavButton 
+                      icon={showMap ? "List" : "MapFold"} 
+                      label={showMap ? "List" : "Map"} 
+                      onClick={() => setShowMap(!showMap)} 
+                      active={showMap} 
+                    />
+                  </div>
+                </div>
 
                 {/* SEARCH SECTION */}
-                <div style={{
-                marginBottom: "3rem",
-                }}>
-                    <h2 style={{ 
-                        fontSize: "1.5rem", 
-                        fontWeight: 300, 
-                        marginBottom: "1.5rem", 
-                        color: THEME.textMain,
-                        letterSpacing: "-0.5px"
-                    }}>
+                <div style={{ marginBottom: "3rem" }}>
+                    <h2 style={{ fontSize: "1.5rem", fontWeight: 300, marginBottom: "1.5rem", color: THEME.textMain, letterSpacing: "-0.5px" }}>
                         Find your <span style={{ color: THEME.textMuted }}>quiet place.</span>
                     </h2>
                 
-                {/* --- 🔎 SEARCH & FILTER SECTION --- */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", marginBottom: "1.5rem" }}>
-          
-          {/* 👇 THE UNIFIED SEARCH PILL 👇 */}
-          <div style={{ 
-            display: "flex", 
-            alignItems: "stretch", 
-            background: "rgba(255, 255, 255, 0.05)", 
-            borderRadius: "14px", 
-            border: `1px solid ${THEME.border}`,
-            overflow: "hidden"
-          }}>
-            {/* 1. Name/Area Search */}
-            <input 
-              placeholder="Area or Shop..." 
-              value={searchTerm} 
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ flex: 1, padding: "0.875rem 1rem", background: "transparent", border: "none", color: THEME.textMain, outline: "none", fontSize: "0.95rem", minWidth: "50px" }}
-            />
-            
-            {/* Divider */}
-            <div style={{ width: "1px", background: THEME.border, margin: "0.6rem 0" }} />
-            
-            {/* 2. Postcode Input */}
-            <input 
-              placeholder="Postcode..." 
-              value={postcode} 
-              onChange={(e) => setPostcode(e.target.value)}
-              style={{ width: "100px", padding: "0.875rem 1rem", background: "transparent", border: "none", color: THEME.textMain, outline: "none", fontSize: "0.95rem" }}
-            />
-            
-            {/* 3. The Go Button */}
-            <button 
-              onClick={searchByPostcode}
-              style={{ padding: "0 1.2rem", background: THEME.textMain, color: THEME.bg, border: "none", fontWeight: "bold", cursor: "pointer" }}
-            >
-              Go
-            </button>
-          </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", marginBottom: "1.5rem" }}>
+                  
+                  <div style={{ display: "flex", alignItems: "stretch", background: "rgba(255, 255, 255, 0.05)", borderRadius: "14px", border: `1px solid ${THEME.border}`, overflow: "hidden" }}>
+                    <input 
+                      placeholder="Area or Shop..." 
+                      value={searchTerm} 
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      style={{ flex: 1, padding: "0.875rem 1rem", background: "transparent", border: "none", color: THEME.textMain, outline: "none", fontSize: "0.95rem", minWidth: "50px" }}
+                    />
+                    <div style={{ width: "1px", background: THEME.border, margin: "0.6rem 0" }} />
+                    <input 
+                      placeholder="Postcode..." 
+                      value={postcode} 
+                      onChange={(e) => setPostcode(e.target.value)}
+                      style={{ width: "100px", padding: "0.875rem 1rem", background: "transparent", border: "none", color: THEME.textMain, outline: "none", fontSize: "0.95rem" }}
+                    />
+                    <button 
+                      onClick={searchByPostcode}
+                      style={{ padding: "0 1.2rem", background: THEME.textMain, color: THEME.bg, border: "none", fontWeight: "bold", cursor: "pointer" }}
+                    >
+                      Go
+                    </button>
+                  </div>
 
-          {/* 👇 THE FILTER CONTROLS 👇 */}
-          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
-            
-            {/* Price Slider */}
-            <div style={{ flex: 1, minWidth: "150px" }}>
-              <label style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.5rem" }}>
-                <span>Max Price</span>
-                <span style={{ color: THEME.silent, fontWeight: "bold" }}>£{maxPrice}</span>
-              </label>
-              <input 
-                type="range" min="10" max="100" step="1" 
-                value={maxPrice} 
-                onChange={(e) => setMaxPrice(Number(e.target.value))}
-                style={{ width: "100%", accentColor: THEME.silent }}
-              />
-            </div>
+                  <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+                    <div style={{ flex: 1, minWidth: "150px" }}>
+                      <label style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.5rem" }}>
+                        <span>Max Price</span>
+                        <span style={{ color: THEME.silent, fontWeight: "bold" }}>£{maxPrice}</span>
+                      </label>
+                      <input 
+                        type="range" min="10" max="100" step="1" 
+                        value={maxPrice} 
+                        onChange={(e) => setMaxPrice(Number(e.target.value))}
+                        style={{ width: "100%", accentColor: THEME.silent }}
+                      />
+                    </div>
 
-            {/* Sort Dropdown */}
-            <div style={{ flex: 1, minWidth: "150px" }}>
-              <label style={{ display: "block", fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.5rem" }}>
-                Sort By
-              </label>
-              <select 
-                value={sortBy} 
-                onChange={(e) => setSortBy(e.target.value)}
-                style={{ width: "100%", padding: "0.5rem", borderRadius: "8px", background: "transparent", color: THEME.textMain, border: `1px solid ${THEME.border}`, outline: "none" }}
-              >
-                <option value="recommended" style={{ background: THEME.bodyBg }}>Recommended</option>
-                <option value="price_low" style={{ background: THEME.bodyBg }}>Lowest Price</option>
-                <option value="distance" style={{ background: THEME.bodyBg }}>Closest to Me</option>
-              </select>
-            </div>
-            
-          </div>
-        </div>
+                    <div style={{ flex: 1, minWidth: "150px" }}>
+                      <label style={{ display: "block", fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.5rem" }}>
+                        Sort By
+                      </label>
+                      <select 
+                        value={sortBy} 
+                        onChange={(e) => setSortBy(e.target.value)}
+                        style={{ width: "100%", padding: "0.5rem", borderRadius: "8px", background: "transparent", color: THEME.textMain, border: `1px solid ${THEME.border}`, outline: "none" }}
+                      >
+                        <option value="recommended" style={{ background: THEME.bodyBg }}>Recommended</option>
+                        <option value="price_low" style={{ background: THEME.bodyBg }}>Lowest Price</option>
+                        <option value="distance" style={{ background: THEME.bodyBg }}>Closest to Me</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
                 </div>
 
                 {/* STATUS MESSAGES */}
-                {loading && (
-                <div style={{ textAlign: "center", padding: "2rem", color: THEME.textMuted }}>
-                    Searching...
-                </div>
-                )}
+                {loading && <div style={{ textAlign: "center", padding: "2rem", color: THEME.textMuted }}>Searching...</div>}
                 
                 {error && (
-                <div style={{ 
-                    padding: "1rem", 
-                    borderRadius: "12px", 
-                    border: `1px solid ${THEME.danger}`,
-                    color: THEME.danger,
-                    marginBottom: "1rem",
-                    fontSize: "0.9rem"
-                }}>
-                    {error}
-                </div>
+                  <div style={{ padding: "1rem", borderRadius: "12px", border: `1px solid ${THEME.danger}`, color: THEME.danger, marginBottom: "1rem", fontSize: "0.9rem" }}>
+                      {error}
+                  </div>
                 )}
 
                 {!loading && !error && visibleShops.length === 0 && (
-                <div style={{ textAlign: "center", color: THEME.textMuted, marginTop: "2rem" }}>
-                    No locations found.
-                </div>
+                  <div style={{ textAlign: "center", color: THEME.textMuted, marginTop: "2rem" }}>
+                      {showRosterOnly ? "Your roster is empty! Heart some barbers to save them here." : "No locations found."}
+                  </div>
                 )}
 
-                {/* SHOP LIST */}
-
-        {/* 🗺️ THE MAP VS LIST DISPLAY */}
+                {/* MAP OR LIST VIEW */}
                 {showMap ? (
                   <div style={{ height: "450px", width: "100%", borderRadius: "12px", overflow: "hidden", border: `1px solid ${THEME.border}`, zIndex: 0 }}>
-                    {/* Centers on user if known, otherwise Canterbury */}
-            <MapContainer center={userLoc || [51.28, 1.08]} zoom={13} style={{ height: "100%", width: "100%" }}>
-              
-              <TileLayer
-                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                attribution='&copy; CARTO'
-              />
-
-              {/* 📍 THE "YOU ARE HERE" DOT */}
-              {userLoc && (
-                <Marker position={userLoc} icon={userPin}>
-                  <Popup>
-                    <strong style={{ color: "#000", fontSize: "14px", fontFamily: "sans-serif" }}>You Are Here</strong>
-                  </Popup>
-                </Marker>
-              )}
-              
-            {visibleShops.map(shop => {
-                if (!shop.lat || !shop.lng) return null;
-                return (
-                  <Marker key={shop.id} position={[shop.lat, shop.lng]} icon={shop.isPartner ? goldPin : cyanPin}>
-                    <Popup>
-                      <div style={{ textAlign: "center", fontFamily: "sans-serif", minWidth: "140px" }}>
-                        
-                        {/* Title with optional Star */}
-                        <strong style={{ color: "#000", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
-                          {shop.isPartner && <span>⭐</span>}
-                          {shop.name}
-                        </strong>
-                        
-                        {/* 👇 THE POPUP VERIFIED BADGE 👇 */}
-            {shop.isPartner && (
-              <div style={{ marginBottom: "8px", fontSize: "11px", fontWeight: "bold", color: "#b8860b", backgroundColor: "#fff8dc", padding: "3px 6px", borderRadius: "4px", display: "inline-block", border: "1px solid #FFC107" }}>
-                ✓ Trimmute Verified
-              </div>
-            )}
-                        {/* Address */}
-                        <div style={{ color: "#555", fontSize: "12px", marginTop: "4px", marginBottom: "8px" }}>
-                          {shop.address}
-                        </div>
-                        
-                        {/* Smart Button: Internal Details vs External Link */}
-                        <button
-                          onClick={() => {
-                            if (shop.isPartner) {
-                              setSelectedShop(shop);
-                              setView("detail");
-                            } else if (shop.externalUrl) {
-                              window.open(shop.externalUrl, "_blank", "noopener,noreferrer");
-                            }
-                          }}
-                          style={{
-                            background: shop.isPartner ? "#D4AF37" : THEME.silent,
-                            color: "#000",
-                            border: "none",
-                            padding: "6px 10px",
-                            borderRadius: "6px",
-                            fontWeight: "bold",
-                            cursor: "pointer",
-                            width: "100%",
-                            fontSize: "12px"
-                          }}
-                        >
-                          {shop.isPartner ? "View Details" : "Book External"}
-                        </button>
-
-                      </div>
-                    </Popup>
-                  </Marker>
-                );
-              })}
-
-            </MapContainer>
-            
+                    <MapContainer center={userLoc || [51.28, 1.08]} zoom={13} style={{ height: "100%", width: "100%" }}>
+                      <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" attribution='&copy; CARTO' />
+                      {userLoc && (
+                        <Marker position={userLoc} icon={userPin}>
+                          <Popup><strong style={{ color: "#000", fontSize: "14px", fontFamily: "sans-serif" }}>You Are Here</strong></Popup>
+                        </Marker>
+                      )}
+                      {visibleShops.map(shop => {
+                        if (!shop.lat || !shop.lng) return null;
+                        return (
+                          <Marker key={shop.id} position={[shop.lat, shop.lng]} icon={shop.isPartner ? goldPin : cyanPin}>
+                            <Popup>
+                              <div style={{ textAlign: "center", fontFamily: "sans-serif", minWidth: "140px" }}>
+                                <strong style={{ color: "#000", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
+                                  {shop.isPartner && <span>⭐</span>} {shop.name}
+                                </strong>
+                                {shop.isPartner && (
+                                  <div style={{ marginBottom: "8px", fontSize: "11px", fontWeight: "bold", color: "#b8860b", backgroundColor: "#fff8dc", padding: "3px 6px", borderRadius: "4px", display: "inline-block", border: "1px solid #FFC107" }}>
+                                    ✓ Trimmute Verified
+                                  </div>
+                                )}
+                                <div style={{ color: "#555", fontSize: "12px", marginTop: "4px", marginBottom: "8px" }}>{shop.address}</div>
+                                <button
+                                  onClick={() => {
+                                    if (shop.isPartner) { setSelectedShop(shop); setView("detail"); } 
+                                    else if (shop.externalUrl) { window.open(shop.externalUrl, "_blank", "noopener,noreferrer"); }
+                                  }}
+                                  style={{ background: shop.isPartner ? "#D4AF37" : THEME.silent, color: "#000", border: "none", padding: "6px 10px", borderRadius: "6px", fontWeight: "bold", cursor: "pointer", width: "100%", fontSize: "12px" }}
+                                >
+                                  {shop.isPartner ? "View Details" : "Book External"}
+                                </button>
+                              </div>
+                            </Popup>
+                          </Marker>
+                        );
+                      })}
+                    </MapContainer>
                   </div>
                 ) : (
-                  /* 📋 YOUR ORIGINAL LIST VIEW */
                   <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                     {visibleShops.map((shop) => (
                       <ShopCard 
                         key={shop.id} 
                         shop={shop} 
+                        isFavorited={favorites.includes(shop.id)} 
+                        onFavorite={() => toggleFavorite(shop.id)}
                         onClick={() => { setSelectedShop(shop); setView("detail"); }} 
                       />
                     ))}
@@ -592,7 +490,6 @@ export default function App() {
 
 // --- SUB-COMPONENTS ---
 
-// Updated Icons with Gapped Reload
 const cyanPin = L.divIcon({
   className: "custom-cyan-pin",
   html: `<svg width="28" height="28" viewBox="0 0 24 24" fill="${THEME.silent}" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="#000"></circle></svg>`,
@@ -604,12 +501,8 @@ const cyanPin = L.divIcon({
 const goldPin = L.divIcon({
   className: "custom-gold-pin",
   html: `<svg width="28" height="28" viewBox="0 0 24 24" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <defs>
-            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#FFE066" />  <stop offset="50%" stop-color="#F5B700" /> <stop offset="100%" stop-color="#9E7600" /> </linearGradient>
-          </defs>
-          <path fill="url(#goldGradient)" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-          <circle cx="12" cy="10" r="3" fill="#000"></circle>
+          <defs><linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFE066" /><stop offset="50%" stop-color="#F5B700" /><stop offset="100%" stop-color="#9E7600" /></linearGradient></defs>
+          <path fill="url(#goldGradient)" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="#000"></circle>
         </svg>`,
   iconSize: [28, 28],
   iconAnchor: [14, 28],
@@ -625,11 +518,8 @@ const userPin = L.divIcon({
 });
 
 const Icons: any = {
-  // 👇 YOUR TWO NEW ONES
   MapFold: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>,
   List: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>,
-  
-  // YOUR ORIGINAL ONES
   MapPin: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>,
   RotateCcw: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>,
   Calendar: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>,
@@ -659,43 +549,21 @@ const NavButton = ({ icon, label, onClick, active }: any) => (
   </button>
 );
 
-const SearchInput = ({ placeholder, value, onChange }: any) => (
-  <input
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    placeholder={placeholder}
-    style={{
-      width: "100%",
-      padding: "1rem 1.2rem",
-      borderRadius: "12px",
-      background: "rgba(255,255,255,0.05)",
-      border: `1px solid ${THEME.border}`,
-      color: THEME.textMain,
-      fontSize: "0.95rem",
-      outline: "none",
-      transition: "border 0.2s",
-      fontFamily: "inherit"
-    }}
-    onFocus={(e) => (e.target.style.border = `1px solid ${THEME.textMuted}`)}
-    onBlur={(e) => (e.target.style.border = `1px solid ${THEME.border}`)}
-  />
-);
-
-const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
+// 👇 FIXED: Added the new props so the card knows how to show the Heart!
+const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onClick: () => void; isFavorited: boolean; onFavorite: () => void }) => {
   const hasDistance = typeof shop.distance === "number" && !Number.isNaN(shop.distance);
 
-  // 👇 NEW: Check if it's a partner or a ghost shop before doing anything
   const handleCardClick = () => {
     if (shop.isPartner) {
-      onClick(); // Opens your internal BarberDetail page
+      onClick(); 
     } else if (shop.externalUrl) {
-      window.open(shop.externalUrl, "_blank", "noopener,noreferrer"); // Opens their Booksy in a new tab
+      window.open(shop.externalUrl, "_blank", "noopener,noreferrer"); 
     }
   };
 
   return (
     <div
-      onClick={handleCardClick} // 👈 Updated to use the new logic
+      onClick={handleCardClick}
       style={{
         display: "flex",
         padding: "1.2rem",
@@ -711,109 +579,82 @@ const ShopCard = ({ shop, onClick }: { shop: Shop; onClick: () => void }) => {
     >
       
       {/* Image */}
-      <div style={{
-        width: "60px",
-        height: "60px",
-        borderRadius: "12px", 
-        overflow: "hidden",
-        flexShrink: 0,
-        background: "#1a1a1a",
-        marginRight: "1.2rem",
-        border: `1px solid ${THEME.border}`
-      }}>
+      <div style={{ width: "60px", height: "60px", borderRadius: "12px", overflow: "hidden", flexShrink: 0, background: "#1a1a1a", marginRight: "1.2rem", border: `1px solid ${THEME.border}` }}>
         {shop.imageUrl ? (
           <img src={shop.imageUrl} alt={shop.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
-          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", color: THEME.textMuted }}>
-            ✂️
-          </div>
+          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", color: THEME.textMuted }}>✂️</div>
         )}
       </div>
 
-      {/* Details */}
+      {/* Details (This is the wrapper that went missing!) */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        
+        {/* 👇 The new Title, Price & Heart Row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
           <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: THEME.textMain }}>{shop.name}</h3>
-          {/* Price display */}
-          <span style={{ fontWeight: 400, color: THEME.textMain, fontSize: "0.9rem" }}>
-            £{(shop.basePrice / 100).toFixed(2).replace(/\.00$/, '')}
-          </span>
+          
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ fontWeight: 400, color: THEME.textMain, fontSize: "0.9rem" }}>
+              £{(shop.basePrice / 100).toFixed(2).replace(/\.00$/, '')}
+            </span>
+            
+            <button 
+              onClick={(e) => {
+                e.stopPropagation(); 
+                onFavorite();
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "1.1rem",
+                padding: "0", 
+                display: "flex",
+                color: isFavorited ? THEME.danger : THEME.textMuted,
+                transition: "transform 0.1s"
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.2)"}
+              onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+            >
+              {isFavorited ? "❤️" : "🤍"}
+            </button>
+          </div>
         </div>
         
         {(shop as any).deal && (
-          <div style={{ 
-            display: "inline-flex",
-            alignItems: "center",
-            backgroundColor: "rgba(34, 197, 94, 0.15)",
-            border: "1px solid rgba(34, 197, 94, 0.5)",
-            color: "#4ade80",
-            fontSize: "0.7rem", 
-            fontWeight: "600", 
-            padding: "2px 8px", 
-            borderRadius: "6px", 
-            marginBottom: "0.4rem", 
-            marginTop: "-0.2rem",
-            alignSelf: "flex-start",
-            whiteSpace: "nowrap"
-          }}>
-            <span style={{ marginRight: "4px" }}>💳</span> 
-            {(shop as any).deal}
+          <div style={{ display: "inline-flex", alignItems: "center", backgroundColor: "rgba(34, 197, 94, 0.15)", border: "1px solid rgba(34, 197, 94, 0.5)", color: "#4ade80", fontSize: "0.7rem", fontWeight: "600", padding: "2px 8px", borderRadius: "6px", marginBottom: "0.4rem", marginTop: "-0.2rem", alignSelf: "flex-start", whiteSpace: "nowrap" }}>
+            <span style={{ marginRight: "4px" }}>💳</span> {(shop as any).deal}
           </div>
         )}
         <p style={{ margin: 0, fontSize: "0.85rem", color: THEME.textMuted, marginBottom: "0.6rem" }}>{shop.address}</p>
 
-          {/* PASTE THE NEW DISTANCE CODE RIGHT HERE */}
-          {hasDistance && (
-            <div style={{ fontSize: "0.85rem", color: THEME.silent, fontWeight: 600, marginTop: "0.4rem" }}>
+        {hasDistance && (
+          <div style={{ fontSize: "0.85rem", color: THEME.silent, fontWeight: 600, marginTop: "0.4rem" }}>
             📍 {shop.distance?.toFixed(1)} miles away
-            </div>
-          )}
+          </div>
+        )}
 
-        {/* 👇 THE GHOST SHOP WARNING BADGE ADDED HERE */}
         {!shop.isPartner && (
-          <div style={{ 
-            marginBottom: "8px", 
-            padding: "6px 8px", 
-            backgroundColor: "rgba(234, 179, 8, 0.1)", 
-            border: "1px solid rgba(234, 179, 8, 0.3)", 
-            borderRadius: "6px", 
-            color: "#fde047", 
-            fontSize: "0.7rem", 
-            fontWeight: 500, 
-            lineHeight: "1.4"
-          }}>
+          <div style={{ marginBottom: "8px", padding: "6px 8px", backgroundColor: "rgba(234, 179, 8, 0.1)", border: "1px solid rgba(234, 179, 8, 0.3)", borderRadius: "6px", color: "#fde047", fontSize: "0.7rem", fontWeight: 500, lineHeight: "1.4" }}>
             ⚠️ <b>Community Listing:</b> To get a silent cut here, you MUST write "Silent Cut Please" in their booking notes!
           </div>
         )}
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             {shop.supportsSilent && (
-                <span style={{
-                    fontSize: "0.7rem",
-                    fontWeight: 700,
-                    color: THEME.silent,
-                    background: THEME.silentBg,
-                    padding: "3px 8px",
-                    borderRadius: "4px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                    border: `1px solid ${THEME.silent}40`
-                }}>
+                <span style={{ fontSize: "0.7rem", fontWeight: 700, color: THEME.silent, background: THEME.silentBg, padding: "3px 8px", borderRadius: "4px", display: "flex", alignItems: "center", gap: "4px", border: `1px solid ${THEME.silent}40` }}>
                     ● SILENT
                 </span>
             )}
- 
-  {shop.isPartner && (
-            <span style={{ backgroundColor: "rgba(255, 193, 7, 0.15)", color: "#FFC107", padding: "4px 8px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "bold" }}>
-              ★ Trimmute Verified
-            </span>
-          )}
-           
+            {shop.isPartner && (
+              <span style={{ backgroundColor: "rgba(255, 193, 7, 0.15)", color: "#FFC107", padding: "4px 8px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "bold" }}>
+                ★ Trimmute Verified
+              </span>
+            )}
         </div>
       </div>
        
-      {/* 👇 NEW: Dynamic Right-Side Indicator */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: "10px" }}>
         {shop.isPartner ? (
           <div style={{color: THEME.border, fontSize: "1.5rem"}}>›</div>
