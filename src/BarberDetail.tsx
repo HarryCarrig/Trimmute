@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
+import CopySilentCutButton from './components/CopySilentCutButton';
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
@@ -212,17 +213,32 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   You are booking directly with <b>{shop.name}</b>. <br/>
   Remember to select the student option on their page!
   <br /><br />
-  <span style={{ 
-    display: "inline-block", 
-    backgroundColor: "rgba(234, 179, 8, 0.1)", 
-    border: "1px solid rgba(234, 179, 8, 0.3)", 
-    color: "#fde047", 
-    padding: "8px 12px", 
-    borderRadius: "6px", 
-    fontWeight: 600 
-  }}>
-    ⚠️ IMPORTANT: You MUST write "Silent Cut Please" in their booking notes!
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "12px",
+    flexWrap: "wrap",
+    marginTop: "0.75rem",
+  }}
+>
+  <span
+    style={{
+      display: "inline-block",
+      backgroundColor: "rgba(234, 179, 8, 0.1)",
+      border: "1px solid rgba(234, 179, 8, 0.3)",
+      color: "#fde047",
+      padding: "8px 12px",
+      borderRadius: "6px",
+      fontWeight: 600,
+    }}
+  >
+    ⚠ IMPORTANT: Write “Requesting a Silent Cut please.” in the booking notes
   </span>
+
+  <CopySilentCutButton />
+</div>
 </p>
   
   <button 
