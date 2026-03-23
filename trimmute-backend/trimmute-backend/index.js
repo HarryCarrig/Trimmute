@@ -75,6 +75,67 @@ app.get('/shops', async (req, res) => {
     console.error("Database error:", error);
     res.status(500).json({ error: "Failed to fetch shops" });
   }
+  app.get('/barbers', async (req, res) => {
+  try {
+    const shops = await prisma.shops.findMany();
+
+    const formatted = shops.map(shop => ({
+      ...shop,
+      basePrice: shop.base_price_pence ?? shop.basePrice ?? 2000,
+      isPartner: shop.is_partner ?? false,
+      imageUrl: shop.image_url ?? shop.imageUrl ?? null,
+      externalUrl: shop.external_url ?? null,
+      supportsSilent: shop.supports_silent ?? false,
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    console.error("GET /barbers error:", error);
+    res.status(500).json({ error: "Failed to fetch barbers" });
+  }
+});
+
+app.get('/barbers/near', async (req, res) => {
+  try {
+    const userLat = parseFloat(req.query.lat);
+    const userLng = parseFloat(req.query.lng);
+
+    if (isNaN(userLat) || isNaN(userLng)) {
+      return res.status(400).json({ error: "lat and lng required" });
+    }
+
+    const shops = await prisma.shops.findMany();
+
+    const formatted = shops.map(shop => {
+      let distance = null;
+
+      if (shop.lat && shop.lng) {
+        distance = getDistanceInMiles(userLat, userLng, shop.lat, shop.lng);
+      }
+
+      return {
+        ...shop,
+        basePrice: shop.base_price_pence ?? shop.basePrice ?? 2000,
+        isPartner: shop.is_partner ?? false,
+        imageUrl: shop.image_url ?? shop.imageUrl ?? null,
+        externalUrl: shop.external_url ?? null,
+        supportsSilent: shop.supports_silent ?? false,
+        distance
+      };
+    });
+
+    formatted.sort((a, b) => {
+      if (a.distance === null) return 1;
+      if (b.distance === null) return -1;
+      return a.distance - b.distance;
+    });
+
+    res.json(formatted);
+  } catch (error) {
+    console.error("GET /barbers/near error:", error);
+    res.status(500).json({ error: "Failed to fetch nearby barbers" });
+  }
+});
 });
 
 app.post('/shops', async (req, res) => {
