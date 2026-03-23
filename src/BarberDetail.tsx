@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import CopySilentCutButton from './components/CopySilentCutButton';
+import type { Shop } from "./App";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
@@ -24,23 +25,8 @@ const THEME = {
 };
 
 type BarberDetailProps = {
-  shop: {
-    id: string | number;
-    name: string;
-    address: string;
-    imageUrl?: string | null;
-    cover_url?: string;
-    basePrice: number;
-    styles: string[];
-    supportsSilent: boolean;
-    distanceKm?: number;
-    deal?: string;
-    externalUrl?: string;
-    lat?: number;
-    lng?: number;
-    isPartner?: boolean;
-  };
-  onBack?: () => void;
+  shop: Shop;
+  onBack: () => void;
 };
 
 // 📌 CUSTOM PINS
@@ -207,7 +193,7 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   </p>
 
   <a href={shop.externalUrl} target="_blank" rel="noreferrer" style={{ display: "block", width: "100%", maxWidth: "300px", margin: "0 auto", backgroundColor: "#000000", color: "white", textDecoration: "none", fontSize: "1.1rem", fontWeight: "bold", padding: "1rem", borderRadius: "12px", border: "1px solid #333" }}>
-    Book on Squire ↗
+    Book Externally ↗
   </a>
 </div>
 ) : (

@@ -15,12 +15,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-type Shop = {
+export type Shop = {
   id: string;
   name: string;
   address: string;
   imageUrl: string | null;
-  cover_url?: string;
+  cover_url?: string | null;
   supportsSilent: boolean;
   basePrice: number;
   styles: string[];
@@ -63,8 +63,8 @@ const THEME = {
   danger: "#ef4444",
 };
 
-const BACKEND_URL = "https://trimmute.onrender.com/shops";
-const BACKEND_NEAR_URL = "https://trimmute.onrender.com/shops";
+const BACKEND_URL = `${API_BASE}/barbers`;
+const BACKEND_NEAR_URL = `${API_BASE}/barbers/near`;
 
 export default function App() {
   const [view, setView] = useState<View>("home");
@@ -105,22 +105,23 @@ export default function App() {
     let patchedSupportsSilent = Boolean(b.supportsSilent ?? b.supports_silent ?? true);
 
     return {
-      id: String(b.id ?? index),
-      name: String(b.name ?? ""),
-      address: b.address ?? "Unknown area",
-      imageUrl: patchedImageUrl,
-      supportsSilent: patchedSupportsSilent, 
-      basePrice: patchedPrice,
-      styles: Array.isArray(b.styles) ? b.styles : [],
-      distanceKm: typeof b.distanceKm === "number" ? b.distanceKm : undefined,
-      postcode: b.postcode ?? undefined,
-      lat: typeof b.lat === "number" ? b.lat : undefined,
-      lng: typeof b.lng === "number" ? b.lng : undefined,
-      isPartner: patchedIsPartner, 
-      externalUrl: patchedUrl,
-      deal: patchedDeal,
-      distance: b.distance,
-    };
+  id: String(b.id ?? index),
+  name: String(b.name ?? ""),
+  address: b.address ?? "Unknown area",
+  imageUrl: patchedImageUrl,
+  cover_url: b.cover_url ?? null,
+  supportsSilent: patchedSupportsSilent,
+  basePrice: patchedPrice,
+  styles: Array.isArray(b.styles) ? b.styles : [],
+  distanceKm: typeof b.distanceKm === "number" ? b.distanceKm : undefined,
+  postcode: b.postcode ?? undefined,
+  lat: typeof b.lat === "number" ? b.lat : undefined,
+  lng: typeof b.lng === "number" ? b.lng : undefined,
+  isPartner: patchedIsPartner,
+  externalUrl: patchedUrl,
+  deal: patchedDeal,
+  distance: b.distance,
+};
   };
 
   async function loadShops() {

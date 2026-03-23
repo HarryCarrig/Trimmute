@@ -229,19 +229,22 @@ function distanceKm(lat1, lng1, lat2, lng2) {
 app.get("/barbers", async (req, res) => {
   try {
     const result = await pool.query(`
-      select
-        id,
-        name,
-        address,
-        postcode,
-        image_url as "imageUrl",
-        base_price_pence as "basePricePence",
-        supports_silent as "supportsSilent",
-        lat,
-        lng,
-        styles
-      from public.shops
-      order by id asc
+     select
+  id,
+  name,
+  address,
+  postcode,
+  image_url as "imageUrl",
+  cover_url,
+  base_price_pence as "basePricePence",
+  supports_silent as "supportsSilent",
+  is_partner as "isPartner",
+  external_url as "externalUrl",
+  lat,
+  lng,
+  styles
+from public.shops
+order by id asc
     `);
 
     res.json(result.rows);
@@ -268,20 +271,23 @@ app.get("/barbers/near", async (req, res) => {
 
     // pull all shops, then compute distance in JS
     const result = await pool.query(`
-      select
-        id,
-        name,
-        address,
-        postcode,
-        image_url as "imageUrl",
-        base_price_pence as "basePricePence",
-        supports_silent as "supportsSilent",
-        lat,
-        lng,
-        styles
-      from public.shops
-      where lat is not null and lng is not null
-      order by id asc
+ select
+  id,
+  name,
+  address,
+  postcode,
+  image_url as "imageUrl",
+  cover_url,
+  base_price_pence as "basePricePence",
+  supports_silent as "supportsSilent",
+  is_partner as "isPartner",
+  external_url as "externalUrl",
+  lat,
+  lng,
+  styles
+from public.shops
+where lat is not null and lng is not null
+order by id asc
     `);
 
     const withDistance = result.rows
