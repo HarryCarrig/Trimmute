@@ -29,15 +29,16 @@ type BarberDetailProps = {
     name: string;
     address: string;
     imageUrl?: string | null;
+    cover_url?: string;
     basePrice: number;
     styles: string[];
-    supportsSilent?: boolean;
+    supportsSilent: boolean;
     distanceKm?: number;
-    deal?: string;         
-    bookingUrl?: string; 
+    deal?: string;
+    externalUrl?: string;
     lat?: number;
-    lng?: number;  
-    isPartner?: boolean; //
+    lng?: number;
+    isPartner?: boolean;
   };
   onBack?: () => void;
 };
@@ -71,7 +72,7 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const [isSilentRequest, setIsSilentRequest] = useState(false);
 
   const supportsSilent = shop.supportsSilent ?? false;
-  const isExternal = !!shop.bookingUrl;
+  const isExternal = shop.externalUrl
 
 
   const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"];
@@ -145,9 +146,14 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
 
       <div style={{ backgroundColor: THEME.cardBg, borderRadius: "16px", overflow: "hidden", border: `1px solid ${THEME.border}`, marginBottom: "1.5rem" }}>
         <div style={{ height: "160px", backgroundColor: "#333", position: "relative" }}>
-           {shop.imageUrl ? (
-               <img src={shop.imageUrl} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-           ) : <div style={{width:"100%", height:"100%", background:"#444"}} />}
+           {(shop.cover_url || shop.imageUrl) ? (
+ <img
+  src={shop.cover_url || shop.imageUrl || undefined}
+  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+/>
+) : (
+  <div style={{ width: "100%", height: "100%", background: "#444" }} />
+)}
            
            {shop.deal && (
              <div style={{ position: "absolute", bottom: "12px", left: "12px", backgroundColor: "#dcfce7", color: "#166534", fontSize: "0.8rem", fontWeight: "700", padding: "6px 12px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "6px" }}>
@@ -200,7 +206,7 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
     Please add "SILENT" to your booking notes.
   </p>
 
-  <a href={shop.bookingUrl} target="_blank" rel="noreferrer" style={{ display: "block", width: "100%", maxWidth: "300px", margin: "0 auto", backgroundColor: "#000000", color: "white", textDecoration: "none", fontSize: "1.1rem", fontWeight: "bold", padding: "1rem", borderRadius: "12px", border: "1px solid #333" }}>
+  <a href={shop.externalUrl} target="_blank" rel="noreferrer" style={{ display: "block", width: "100%", maxWidth: "300px", margin: "0 auto", backgroundColor: "#000000", color: "white", textDecoration: "none", fontSize: "1.1rem", fontWeight: "bold", padding: "1rem", borderRadius: "12px", border: "1px solid #333" }}>
     Book on Squire ↗
   </a>
 </div>

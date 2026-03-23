@@ -20,6 +20,7 @@ type Shop = {
   name: string;
   address: string;
   imageUrl: string | null;
+  cover_url?: string;
   supportsSilent: boolean;
   basePrice: number;
   styles: string[];
