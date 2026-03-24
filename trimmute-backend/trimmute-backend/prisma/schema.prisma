@@ -43,6 +43,7 @@ model shops {
   lng              Float?
   base_price_pence Int?
   image_url        String?
+  cover_url        String?
   styles           String[]   @default([])
   is_partner       Boolean?   @default(false)
   external_url     String?
