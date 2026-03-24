@@ -84,7 +84,7 @@ app.get('/shops', async (req, res) => {
       basePrice: shop.base_price_pence ?? shop.basePrice ?? 2000,
       isPartner: shop.is_partner ?? false,
       imageUrl: shop.image_url ?? shop.imageUrl ?? null,
-      cover_url: shop.cover_url ?? shop.coverurl ?? null,
+      cover_url: shop.cover_url ?? shop.coverurl ?? shop.coverUrl ?? null,
       externalUrl: shop.external_url ?? null,
       supportsSilent: shop.supports_silent ?? false,
     }));
@@ -119,7 +119,7 @@ app.get('/barbers/near', async (req, res) => {
         basePrice: shop.base_price_pence ?? shop.basePrice ?? 2000,
         isPartner: shop.is_partner ?? false,
         imageUrl: shop.image_url ?? shop.imageUrl ?? null,
-        cover_url: shop.cover_url ?? shop.coverurl ?? null,
+        cover_url: shop.cover_url ?? shop.coverurl ?? shop.coverUrl ?? null,
         externalUrl: shop.external_url ?? null,
         supportsSilent: shop.supports_silent ?? false,
         distance
