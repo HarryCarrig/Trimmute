@@ -55,6 +55,7 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
   const [loadingTimes, setLoadingTimes] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
+  const [silentAcknowledged, setSilentAcknowledged] = useState(false);
   const [isSilentRequest, setIsSilentRequest] = useState(false);
 
   const supportsSilent = shop.supportsSilent ?? false;
@@ -187,12 +188,92 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   <div style={{ textAlign: "center", padding: "2rem 1rem", backgroundColor: THEME.cardBg, borderRadius: "16px", border: `1px solid ${THEME.border}` }}>
   <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem" }}>Ready to book?</h3>
   
-  <p style={{ color: THEME.textMuted, marginBottom: "1.5rem", fontSize: "0.95rem" }}>
-    <span style={{ color: "#fbbf24", fontWeight: "bold" }}>⚠️ IMPORTANT</span><br/>
-    Please add "SILENT" to your booking notes.
+  <div
+  style={{
+    background: "rgba(94, 234, 212, 0.08)",
+    border: "1px solid rgba(94, 234, 212, 0.45)",
+    borderRadius: "14px",
+    padding: "14px",
+    marginBottom: "14px",
+    textAlign: "left",
+  }}
+>
+  <div
+    style={{
+      fontSize: "0.8rem",
+      fontWeight: 800,
+      color: "#5eead4",
+      marginBottom: "8px",
+      letterSpacing: "0.03em",
+      textTransform: "uppercase",
+      textAlign: "center",
+    }}
+  >
+    Quiet appointment reminder
+  </div>
+
+  <p
+    style={{
+      margin: "0 0 10px 0",
+      color: THEME.textMuted,
+      fontSize: "0.95rem",
+      lineHeight: 1.5,
+      textAlign: "center",
+    }}
+  >
+    When you arrive, just say:
   </p>
 
-  <a href={shop.externalUrl} target="_blank" rel="noreferrer" style={{ display: "block", width: "100%", maxWidth: "300px", margin: "0 auto", backgroundColor: "#000000", color: "white", textDecoration: "none", fontSize: "1.1rem", fontWeight: "bold", padding: "1rem", borderRadius: "12px", border: "1px solid #333" }}>
+  <div
+    style={{
+      background: "rgba(0, 0, 0, 0.35)",
+      border: "1px solid rgba(255, 255, 255, 0.12)",
+      borderRadius: "10px",
+      padding: "10px",
+      color: "#ffffff",
+      fontSize: "0.95rem",
+      fontWeight: 700,
+      lineHeight: 1.4,
+      marginBottom: "12px",
+      textAlign: "center",
+    }}
+  >
+    “I’d like a silent appointment please — no small talk.”
+  </div>
+
+  <button
+    type="button"
+    onClick={() => setSilentAcknowledged(true)}
+    style={{
+      width: "100%",
+      padding: "0.75rem 1rem",
+      borderRadius: "10px",
+      border: silentAcknowledged
+        ? "1px solid rgba(94, 234, 212, 0.8)"
+        : "1px solid rgba(255, 255, 255, 0.18)",
+      background: silentAcknowledged
+        ? "rgba(94, 234, 212, 0.18)"
+        : "rgba(255, 255, 255, 0.06)",
+      color: silentAcknowledged ? "#5eead4" : "#ffffff",
+      fontWeight: 800,
+      cursor: "pointer",
+    }}
+  >
+    {silentAcknowledged ? "✓ Got it" : "I'll request this on arrival"}
+  </button>
+</div>
+
+  <a
+  href={silentAcknowledged ? shop.externalUrl : undefined}
+  target="_blank"
+  rel="noreferrer"
+  onClick={(e) => {
+    if (!silentAcknowledged) {
+      e.preventDefault();
+      alert("Please confirm the quiet appointment reminder before booking.");
+    }
+  }}
+  style={{ display: "block", width: "100%", maxWidth: "300px", margin: "0 auto", backgroundColor: "#000000", color: "white", textDecoration: "none", fontSize: "1.1rem", fontWeight: "bold", padding: "1rem", borderRadius: "12px", border: "1px solid #333" }}>
     Book Externally ↗
   </a>
 </div>
