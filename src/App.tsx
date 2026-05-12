@@ -590,13 +590,13 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
       </div>
 
       {/* Details (This is the wrapper that went missing!) */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <div style={{ flex: 1, minWidth: 0, width: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
         
         {/* 👇 The new Title, Price & Heart Row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
-          <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: THEME.textMain }}>{shop.name}</h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", gap: "0.75rem", marginBottom: "0.3rem" }}>
+          <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: THEME.textMain, flex: 1, minWidth: 0 }}>{shop.name}</h3>
           
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0, marginLeft: "auto" }}>
             <span style={{ fontWeight: 400, color: THEME.textMain, fontSize: "0.9rem" }}>
               £{(shop.basePrice / 100).toFixed(2).replace(/\.00$/, '')}
             </span>
