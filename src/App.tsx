@@ -448,9 +448,24 @@ export default function App() {
                                   {shop.isPartner && <span>⭐</span>} {shop.name}
                                 </strong>
                                 {shop.isPartner && (
-                                  <div style={{ marginBottom: "8px", fontSize: "11px", fontWeight: "bold", color: "#b8860b", backgroundColor: "#fff8dc", padding: "3px 6px", borderRadius: "4px", display: "inline-block", border: "1px solid #FFC107" }}>
-                                    ✓ Trimmute Verified
-                                  </div>
+                                 <div
+  style={{
+    marginBottom: "8px",
+    fontSize: "11px",
+    fontWeight: "bold",
+    color: "#fff3b0",
+    background: "linear-gradient(135deg, #2b2108 0%, #6f5413 45%, #caa84a 100%)",
+    padding: "3px 8px",
+    borderRadius: "4px",
+    display: "inline-block",
+    border: "1px solid rgba(255, 215, 100, 0.45)",
+    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18)",
+    letterSpacing: "0.2px",
+    textShadow: "0 1px 1px rgba(0,0,0,0.6)",
+  }}
+>
+  ★ Trimmute Verified
+</div>
                                 )}
                                 <div style={{ color: "#555", fontSize: "12px", marginTop: "4px", marginBottom: "8px" }}>{shop.address}</div>
                                 <button
@@ -569,6 +584,7 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
       style={{
         display: "flex",
         padding: "1.2rem",
+        paddingRight: "5.5rem",
         borderRadius: "0px", 
         borderBottom: `1px solid ${THEME.border}`,
         cursor: "pointer",
@@ -596,7 +612,17 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", gap: "0.75rem", marginBottom: "0.3rem" }}>
           <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600, color: THEME.textMain, flex: 1, minWidth: 0 }}>{shop.name}</h3>
           
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0, marginLeft: "auto" }}>
+          <div
+  style={{
+    position: "absolute",
+    right: "2.4rem",
+    top: "1.1rem",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    flexShrink: 0,
+  }}
+>
             <span style={{ fontWeight: 400, color: THEME.textMain, fontSize: "0.9rem" }}>
               £{(shop.basePrice / 100).toFixed(2).replace(/\.00$/, '')}
             </span>
@@ -650,9 +676,22 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
                 </span>
             )}
             {shop.isPartner && (
-              <span style={{ backgroundColor: "rgba(255, 193, 7, 0.15)", color: "#FFC107", padding: "4px 8px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: "bold" }}>
-                ★ Trimmute Verified
-              </span>
+             <span
+  style={{
+   background: "linear-gradient(135deg, #2b2108 0%, #6f5413 45%, #caa84a 100%)",
+    color: "#fff3b0",
+    padding: "4px 9px",
+    borderRadius: "6px",
+    fontSize: "0.75rem",
+    fontWeight: "bold",
+    border: "1px solid rgba(255, 215, 0, 0.65)",
+    boxShadow: "0 0 8px rgba(255, 193, 7, 0.25), inset 0 1px 0 rgba(255,255,255,0.35)",
+    textShadow: "0 1px 1px rgba(0,0,0,0.7)",
+    letterSpacing: "0.2px",
+  }}
+>
+  ★ Trimmute Verified
+</span>
             )}
         </div>
       </div>
@@ -660,7 +699,18 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
      {/* 👇 Added minWidth: "55px" right here! */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: "10px", minWidth: "55px" }}>
         {shop.isPartner ? (
-          <div style={{color: THEME.border, fontSize: "1.5rem"}}>›</div>
+          <div
+  style={{
+    position: "absolute",
+    right: "2.4rem",
+    top: "50%",
+    transform: "translateY(-50%)",
+    color: THEME.border,
+    fontSize: "1.5rem",
+  }}
+>
+  ›
+</div>
         ) : (
           <>
             <div style={{color: THEME.textMain, fontSize: "0.8rem", fontWeight: 600}}>↗</div>
