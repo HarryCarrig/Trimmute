@@ -678,19 +678,23 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
             {shop.isPartner && (
              <span
   style={{
-   background: "linear-gradient(135deg, #2b2108 0%, #6f5413 45%, #caa84a 100%)",
+    background: "linear-gradient(135deg, #2b2108 0%, #6f5413 45%, #caa84a 100%)",
     color: "#fff3b0",
-    padding: "4px 9px",
-    borderRadius: "6px",
-    fontSize: "0.75rem",
+    padding: "3px 7px",
+    borderRadius: "5px",
+    fontSize: "0.68rem",
     fontWeight: "bold",
-    border: "1px solid rgba(255, 215, 0, 0.65)",
-    boxShadow: "0 0 8px rgba(255, 193, 7, 0.25), inset 0 1px 0 rgba(255,255,255,0.35)",
-    textShadow: "0 1px 1px rgba(0,0,0,0.7)",
-    letterSpacing: "0.2px",
+    border: "1px solid rgba(255, 215, 100, 0.45)",
+    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18)",
+    letterSpacing: "0.1px",
+    textShadow: "0 1px 1px rgba(0,0,0,0.6)",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "3px",
+    whiteSpace: "nowrap",
   }}
 >
-  ★ Trimmute Verified
+  ★ Verified
 </span>
             )}
         </div>
