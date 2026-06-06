@@ -669,11 +669,45 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
           </div>
         )}
 
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+        <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    flexWrap: "wrap",
+  }}
+>
             {shop.supportsSilent && (
-                <span style={{ fontSize: "0.7rem", fontWeight: 700, color: THEME.silent, background: THEME.silentBg, padding: "3px 8px", borderRadius: "4px", display: "inline-flex", alignItems: "center", gap: "4px", lineHeight: 1.2, border: `1px solid ${THEME.silent}40` }}>
-                    ● SILENT
-                </span>
+                <span
+  style={{
+    fontSize: "0.7rem",
+    fontWeight: 700,
+    color: THEME.silent,
+    background: THEME.silentBg,
+    padding: "3px 8px",
+    borderRadius: "4px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "6px",
+    border: "1px solid rgba(45, 212, 191, 0.35)",
+    whiteSpace: "nowrap",
+    lineHeight: 1,
+    minHeight: "22px",
+  }}
+>
+  <span
+    style={{
+      width: "8px",
+      height: "8px",
+      borderRadius: "999px",
+      background: THEME.silent,
+      display: "inline-block",
+      flexShrink: 0,
+    }}
+  />
+  <span>SILENT</span>
+</span>
             )}
             {shop.isPartner && (
  <span
@@ -681,18 +715,20 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
     background: "linear-gradient(135deg, #2b2108 0%, #6f5413 45%, #caa84a 100%)",
     color: "#fff3b0",
     padding: "3px 8px",
-    borderRadius: "5px",
+    borderRadius: "4px",
     fontSize: "0.7rem",
     fontWeight: 700,
     border: "1px solid rgba(255, 215, 100, 0.45)",
     boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18)",
-    letterSpacing: "0.1px",
     textShadow: "0 1px 1px rgba(0,0,0,0.6)",
+    letterSpacing: "0.1px",
     display: "inline-flex",
     alignItems: "center",
-    gap: "4px",
+    justifyContent: "center",
+    gap: "5px",
     whiteSpace: "nowrap",
-    lineHeight: 1.2,
+    lineHeight: 1,
+    minHeight: "22px",
   }}
 >
   ★ Verified Partner
