@@ -1,7 +1,7 @@
 // index.js (backend)
-import express from 'express';
-import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
+import express from "express";
+import cors from "cors";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const app = express();
@@ -9,41 +9,43 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/health', (req, res) => {
+app.get("/health", (req, res) => {
   res.json({ ok: true });
 });
 
-// ── SHOPS ───────────────────────────────────────────
+// ── SHOPS / BARBERS ─────────────────────────────────
+
 // Math formula to calculate the distance between two GPS coordinates in miles
 function getDistanceInMiles(lat1, lon1, lat2, lon2) {
   if (!lat1 || !lon1 || !lat2 || !lon2) return null;
+
   const R = 3958.8; // Radius of the earth in miles
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
+
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
-app.get('/shops', async (req, res) => {
+// Shared handler for /shops and /barbers
+async function getShops(req, res) {
   try {
-    // 1. Check if the frontend sent GPS coordinates in the URL
     const userLat = parseFloat(req.query.lat);
     const userLng = parseFloat(req.query.lng);
 
-    // 2. Fetch all shops from Supabase
     const shops = await prisma.shops.findMany();
 
-    // 3. Format the shops and calculate distance if coordinates exist
-    let formattedShops = shops.map(shop => {
+    let formattedShops = shops.map((shop) => {
       let distance = null;
 
-      // Make sure we have user coords AND the shop has coords in the DB
       if (!isNaN(userLat) && !isNaN(userLng) && shop.lat && shop.lng) {
-        // Use shop.lat and shop.lng to match your Supabase column names!
         distance = getDistanceInMiles(userLat, userLng, shop.lat, shop.lng);
       }
 
@@ -52,51 +54,38 @@ app.get('/shops', async (req, res) => {
         basePrice: shop.base_price_pence ?? shop.basePrice ?? 2000,
         isPartner: shop.is_partner ?? false,
         imageUrl: shop.image_url ?? shop.imageUrl ?? null,
+        cover_url: shop.cover_url ?? shop.image_url ?? shop.imageUrl ?? null,
         externalUrl: shop.external_url ?? null,
         supportsSilent: shop.supports_silent ?? false,
-        distance: distance // Send the exact distance back to the frontend!
+        distance,
       };
     });
 
-    // 4. If we have a user location, sort the array (closest shops at the top)
     if (!isNaN(userLat) && !isNaN(userLng)) {
       formattedShops.sort((a, b) => {
-        if (a.distance === null) return 1; // Push shops with no location to the bottom
+        if (a.distance === null) return 1;
         if (b.distance === null) return -1;
         return a.distance - b.distance;
       });
     } else {
-      // Fallback: If no location sent, sort alphabetically
       formattedShops.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     res.json(formattedShops);
   } catch (error) {
-    console.error("Database error:", error);
+    console.error("GET shops/barbers error:", error);
     res.status(500).json({ error: "Failed to fetch shops" });
   }
-  app.get('/barbers', async (req, res) => {
-  try {
-    const shops = await prisma.shops.findMany();
+}
 
-    const formatted = shops.map(shop => ({
-      ...shop,
-      basePrice: shop.base_price_pence ?? shop.basePrice ?? 2000,
-      isPartner: shop.is_partner ?? false,
-      imageUrl: shop.image_url ?? shop.imageUrl ?? null,
-      cover_url: shop.cover_url ?? shop.image_url ?? shop.imageUrl ?? null,
-      externalUrl: shop.external_url ?? null,
-      supportsSilent: shop.supports_silent ?? false,
-    }));
+// Main current route
+app.get("/shops", getShops);
 
-    res.json(formatted);
-  } catch (error) {
-    console.error("GET /barbers error:", error);
-    res.status(500).json({ error: "Failed to fetch barbers" });
-  }
-});
+// Old/fallback route, so cached frontend bundles do not break
+app.get("/barbers", getShops);
 
-app.get('/barbers/near', async (req, res) => {
+// Nearby route
+app.get("/barbers/near", async (req, res) => {
   try {
     const userLat = parseFloat(req.query.lat);
     const userLng = parseFloat(req.query.lng);
@@ -107,7 +96,7 @@ app.get('/barbers/near', async (req, res) => {
 
     const shops = await prisma.shops.findMany();
 
-    const formatted = shops.map(shop => {
+    const formatted = shops.map((shop) => {
       let distance = null;
 
       if (shop.lat && shop.lng) {
@@ -122,7 +111,7 @@ app.get('/barbers/near', async (req, res) => {
         cover_url: shop.cover_url ?? shop.image_url ?? shop.imageUrl ?? null,
         externalUrl: shop.external_url ?? null,
         supportsSilent: shop.supports_silent ?? false,
-        distance
+        distance,
       };
     });
 
@@ -138,59 +127,69 @@ app.get('/barbers/near', async (req, res) => {
     res.status(500).json({ error: "Failed to fetch nearby barbers" });
   }
 });
-});
 
-app.post('/shops', async (req, res) => {
+// ── CREATE / DELETE SHOPS ───────────────────────────
+
+app.post("/shops", async (req, res) => {
   try {
     const { name, address, imageUrl, basePrice, styles } = req.body || {};
-    if (!name || !address || typeof basePrice !== 'number') {
-      return res.status(400).json({ error: 'name, address, basePrice (number) required' });
+
+    if (!name || !address || typeof basePrice !== "number") {
+      return res
+        .status(400)
+        .json({ error: "name, address, basePrice (number) required" });
     }
-    const shop = await prisma.shop.create({
-      data: { name, address, imageUrl: imageUrl ?? null, basePrice, styles: styles ?? [] },
+
+    const shop = await prisma.shops.create({
+      data: {
+        name,
+        address,
+        image_url: imageUrl ?? null,
+        base_price_pence: basePrice,
+        styles: styles ?? [],
+      },
     });
+
     res.status(201).json(shop);
   } catch (e) {
     console.error(e);
-    res.status(500).json({ error: 'Failed to create shop' });
+    res.status(500).json({ error: "Failed to create shop" });
   }
 });
 
-app.delete('/shops/:id', async (req, res) => {
-  const { id } = req.params;
-  await prisma.booking.deleteMany({ where: { shopId: id } });
-  await prisma.slot.deleteMany({ where: { shopId: id } });
-  const result = await prisma.shop.delete({ where: { id } });
-  res.json({ removed: result.id });
-});
-
-// ── SLOTS (read only for now) ───────────────────────
-app.get('/slots', async (req, res) => {
-  const { shopId } = req.query;
-  if (!shopId) return res.status(400).json({ error: 'shopId required' });
-  const slots = await prisma.slot.findMany({
-    where: { shopId, isBooked: false },
-    orderBy: { startsAt: 'asc' },
-  });
-  res.json(slots);
-});
-
-// ── BOOKINGS (simple create) ────────────────────────
-app.post('/bookings', async (req, res) => {
-  const { shopId, slotId, customer } = req.body || {};
-  if (!shopId || !slotId) return res.status(400).json({ error: 'shopId and slotId required' });
-
+app.delete("/shops/:id", async (req, res) => {
   try {
-    const booking = await prisma.booking.create({
-      data: { shopId, slotId, customer: customer ?? null },
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid shop id" });
+    }
+
+    const result = await prisma.shops.delete({
+      where: { id },
     });
-    await prisma.slot.update({ where: { id: slotId }, data: { isBooked: true } });
-    res.status(201).json(booking);
+
+    res.json({ removed: result.id });
   } catch (e) {
-    // Unique constraint on slotId prevents double-book
-    return res.status(400).json({ error: 'Slot is already booked' });
+    console.error(e);
+    res.status(500).json({ error: "Failed to delete shop" });
   }
 });
 
-const port = 3001;
-app.listen(port, () => console.log(`✅ API running on port ${port}`));
+// ── BOOKINGS / SLOTS PLACEHOLDER ROUTES ─────────────
+
+app.get("/slots", async (req, res) => {
+  res.status(501).json({ error: "Slots route not currently active" });
+});
+
+app.post("/bookings", async (req, res) => {
+  res.status(501).json({ error: "Bookings route not currently active" });
+});
+
+// ── START SERVER ────────────────────────────────────
+
+const port = process.env.PORT || 3001;
+
+app.listen(port, () => {
+  console.log(`✅ API running on port ${port}`);
+});
