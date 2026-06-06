@@ -673,7 +673,7 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
   style={{
     display: "flex",
     alignItems: "center",
-    gap: "0.5rem",
+    gap: "0.35rem",
     flexWrap: "wrap",
   }}
 >
@@ -731,7 +731,7 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
     minHeight: "22px",
   }}
 >
-  ★ Verified Partner
+  ★ Verified
 </span>
             )}
         </div>
