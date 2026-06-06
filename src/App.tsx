@@ -669,12 +669,13 @@ const ShopCard = ({ shop, onClick, isFavorited, onFavorite }: { shop: Shop; onCl
           </div>
         )}
 
-        <div
+    <div
   style={{
     display: "flex",
     alignItems: "center",
     gap: "0.35rem",
-    flexWrap: "wrap",
+    flexWrap: "nowrap",
+    whiteSpace: "nowrap",
   }}
 >
             {shop.supportsSilent && (
