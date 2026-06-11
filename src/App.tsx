@@ -50,19 +50,18 @@ const BACKEND_NEAR_URL = `${API_BASE}/barbers/near`;
 
 const THEME = {
   bodyBg: "#000000",
-  bg: "#020202",
-  panel: "rgba(255,255,255,0.045)",
-  panelStrong: "rgba(255,255,255,0.075)",
-  border: "rgba(255,255,255,0.12)",
-  borderStrong: "rgba(255,255,255,0.22)",
+  bg: "#050505",
+  panel: "rgba(255,255,255,0.03)",
+  panelStrong: "rgba(255,255,255,0.08)",
+  border: "rgba(255,255,255,0.08)",
+  borderStrong: "rgba(255,255,255,0.15)",
   textMain: "#ffffff",
-  textSoft: "#d4d4d8",
-  textMuted: "#77777f",
-  textFaint: "#4b4b52",
-  silent: "#5eead4",
-  silent2: "#2dd4bf",
-  silentBg: "rgba(94, 234, 212, 0.105)",
-  gold: "#d4af37",
+  textSoft: "#a1a1aa",
+  textMuted: "#71717a",
+  silent: "#5eead4", // Teal
+  silentGradient: "linear-gradient(135deg, #5eead4 0%, #0ea5e9 100%)",
+  gold: "#eab308", // Bright Gold
+  goldGradient: "linear-gradient(135deg, #facc15 0%, #ca8a04 100%)",
   danger: "#ef4444",
 };
 
@@ -296,25 +295,19 @@ export default function App() {
             <div className="tm-hero-copy">
               <div className="tm-eyebrow">
                 <span className="tm-pulse-dot" />
-                Canterbury live now
+                Canterbury Live Now
               </div>
 
               <h1>
                 Book the cut.
                 <br />
-                <span>Skip the chat.</span>
+                <span className="tm-text-gradient">Skip the chat.</span>
               </h1>
 
               <p>
                 Find quiet-friendly barbers before you book. Verified local
-                shops, calmer appointments, less awkward small talk.
+                shops, calmer appointments, zero awkward small talk.
               </p>
-
-              <div className="tm-hero-chips" aria-label="Trimmute highlights">
-                <span>4 verified Canterbury partners</span>
-                <span>Low-conversation friendly</span>
-                <span>Built by a local student</span>
-              </div>
             </div>
           </header>
 
@@ -365,43 +358,45 @@ export default function App() {
 
                 <div className="tm-search-heading">
                   <h2>
-                    Find your <span>quiet place.</span>
+                    Find your <span className="tm-text-gradient">quiet place.</span>
                   </h2>
-                  <p>
-                    Search by shop, area, or postcode. Save favourites to your
-                    roster.
-                  </p>
                 </div>
 
                 <div className="tm-search-bar">
-                  <input
-                    placeholder="Area or shop..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
+                  <div className="tm-input-group">
+                    <span className="tm-input-icon">🔍</span>
+                    <input
+                      placeholder="Area or shop..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
 
                   <div className="tm-divider" />
 
-                  <input
-                    className="tm-postcode-input"
-                    placeholder="Postcode..."
-                    value={postcode}
-                    onChange={(e) => setPostcode(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") searchByPostcode();
-                    }}
-                  />
+                  <div className="tm-input-group tm-postcode-group">
+                    <span className="tm-input-icon">📍</span>
+                    <input
+                      className="tm-postcode-input"
+                      placeholder="Postcode"
+                      value={postcode}
+                      onChange={(e) => setPostcode(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") searchByPostcode();
+                      }}
+                    />
+                  </div>
 
-                  <button onClick={searchByPostcode}>Go</button>
+                  <button className="tm-go-btn" onClick={searchByPostcode}>
+                    Search
+                  </button>
                 </div>
 
                 <div className="tm-filters">
                   <div className="tm-filter-block">
                     <label>
-                      <span>Max price</span>
-                      <strong>£{maxPrice}</strong>
+                      <span>Max Price: <strong className="tm-price-text">£{maxPrice}</strong></span>
                     </label>
-
                     <input
                       type="range"
                       min="10"
@@ -414,64 +409,44 @@ export default function App() {
 
                   <div className="tm-filter-block">
                     <label>
-                      <span>Sort by</span>
+                      <span>Sort By</span>
                     </label>
-
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                    >
-                      <option value="recommended">Recommended</option>
-                      <option value="price_low">Lowest Price</option>
-                      <option value="distance">Closest to Me</option>
-                    </select>
+                    <div className="tm-select-wrapper">
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                      >
+                        <option value="recommended">Recommended</option>
+                        <option value="price_low">Lowest Price</option>
+                        <option value="distance">Closest to Me</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 
                 <div className="tm-micro-stats">
-                  <span>
-                    <strong>{visibleShops.length}</strong> visible shops
+                  <span><strong>{visibleShops.length}</strong> spots visible</span>
+                  <span className="tm-stat-verified">
+                    <strong>{shops.filter((shop) => shop.isPartner).length}</strong> verified partners
                   </span>
-                  <span>
-                    <strong>
-                      {shops.filter((shop) => shop.isPartner).length}
-                    </strong>{" "}
-                    verified partners
-                  </span>
-                  <span>
-                    <strong>{favorites.length}</strong> saved
-                  </span>
+                  <span><strong>{favorites.length}</strong> saved to roster</span>
                 </div>
               </section>
 
               {loading && (
-                <section className="tm-loading-stack" aria-label="Loading shops">
-                  <div className="tm-results-topline">
-                    <span>Finding quiet-friendly shops</span>
-                    <span>Loading</span>
-                  </div>
-
-                  {[0, 1, 2].map((item) => (
-                    <div className="tm-skeleton-card" key={item}>
-                      <div className="tm-skeleton-img" />
-                      <div className="tm-skeleton-lines">
-                        <span />
-                        <span />
-                        <span />
-                      </div>
-                      <div className="tm-skeleton-side" />
-                    </div>
-                  ))}
-                </section>
+                <div className="tm-status-card tm-loading-card">
+                  <div className="tm-spinner"></div>
+                  Finding quiet-friendly shops…
+                </div>
               )}
 
-              {error && <div className="tm-error-card">{error}</div>}
+              {error && <div className="tm-status-card tm-error-card">⚠️ {error}</div>}
 
               {!loading && !error && visibleShops.length === 0 && (
-                <div className="tm-empty-card">
+                <div className="tm-status-card tm-empty-card">
                   {showRosterOnly
                     ? "Your roster is empty. Tap a heart to save a barber."
-                    : "No locations found."}
+                    : "No locations found matching your search."}
                 </div>
               )}
 
@@ -487,8 +462,7 @@ export default function App() {
               ) : (
                 <section className="tm-results">
                   <div className="tm-results-topline">
-                    <span>Quiet-friendly options</span>
-                    <span>{showRosterOnly ? "Roster view" : "Live list"}</span>
+                    <span>{showRosterOnly ? "Your Roster" : "Live Directory"}</span>
                   </div>
 
                   <div className="tm-card-list">
@@ -539,13 +513,7 @@ const MapView = ({
         {userLoc && (
           <Marker position={userLoc} icon={userPin}>
             <Popup>
-              <strong
-                style={{
-                  color: "#000",
-                  fontSize: "14px",
-                  fontFamily: "sans-serif",
-                }}
-              >
+              <strong style={{ color: "#000", fontSize: "14px", fontFamily: "sans-serif" }}>
                 You are here
               </strong>
             </Popup>
@@ -562,57 +530,22 @@ const MapView = ({
               icon={shop.isPartner ? goldPin : cyanPin}
             >
               <Popup>
-                <div
-                  style={{
-                    textAlign: "center",
-                    fontFamily: "sans-serif",
-                    minWidth: "150px",
-                  }}
-                >
-                  <strong
-                    style={{
-                      color: "#000",
-                      fontSize: "14px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "4px",
-                    }}
-                  >
+                <div style={{ textAlign: "center", fontFamily: "sans-serif", minWidth: "150px" }}>
+                  <strong style={{ color: "#000", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
                     {shop.isPartner && <span>⭐</span>} {shop.name}
                   </strong>
 
                   {shop.isPartner && (
-                    <div
-                      style={{
-                        marginTop: "6px",
-                        marginBottom: "8px",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                        color: "#fff3b0",
-                        background:
-                          "linear-gradient(135deg, #2b2108 0%, #6f5413 45%, #caa84a 100%)",
-                        padding: "3px 8px",
-                        borderRadius: "4px",
-                        display: "inline-block",
-                        border: "1px solid rgba(255, 215, 100, 0.45)",
-                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18)",
-                        letterSpacing: "0.2px",
-                        textShadow: "0 1px 1px rgba(0,0,0,0.6)",
-                      }}
-                    >
+                    <div style={{
+                      marginTop: "6px", marginBottom: "8px", fontSize: "11px", fontWeight: "bold",
+                      color: "#000", background: THEME.goldGradient, padding: "3px 8px",
+                      borderRadius: "6px", display: "inline-block"
+                    }}>
                       ★ Verified
                     </div>
                   )}
 
-                  <div
-                    style={{
-                      color: "#555",
-                      fontSize: "12px",
-                      marginTop: "4px",
-                      marginBottom: "8px",
-                    }}
-                  >
+                  <div style={{ color: "#555", fontSize: "12px", marginTop: "4px", marginBottom: "8px" }}>
                     {shop.address}
                   </div>
 
@@ -620,23 +553,14 @@ const MapView = ({
                     onClick={() => {
                       if (shop.isPartner) onSelectShop(shop);
                       else if (shop.externalUrl) {
-                        window.open(
-                          shop.externalUrl,
-                          "_blank",
-                          "noopener,noreferrer"
-                        );
+                        window.open(shop.externalUrl, "_blank", "noopener,noreferrer");
                       }
                     }}
                     style={{
-                      background: shop.isPartner ? "#D4AF37" : THEME.silent,
-                      color: "#000",
-                      border: "none",
-                      padding: "6px 10px",
-                      borderRadius: "6px",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      width: "100%",
-                      fontSize: "12px",
+                      background: shop.isPartner ? "#000" : THEME.silent,
+                      color: shop.isPartner ? THEME.gold : "#000",
+                      border: "none", padding: "8px 10px", borderRadius: "8px",
+                      fontWeight: "bold", cursor: "pointer", width: "100%", fontSize: "12px"
                     }}
                   >
                     {shop.isPartner ? "View Details" : "Book External"}
@@ -651,6 +575,7 @@ const MapView = ({
   );
 };
 
+// ... Keep existing Pins and Icons identical to original ...
 const cyanPin = L.divIcon({
   className: "custom-cyan-pin",
   html: `<svg width="28" height="28" viewBox="0 0 24 24" fill="${THEME.silent}" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="#000"></circle></svg>`,
@@ -661,13 +586,13 @@ const cyanPin = L.divIcon({
 
 const goldPin = L.divIcon({
   className: "custom-gold-pin",
-  html: `<svg width="28" height="28" viewBox="0 0 24 24" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <defs><linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFE066" /><stop offset="50%" stop-color="#F5B700" /><stop offset="100%" stop-color="#9E7600" /></linearGradient></defs>
+  html: `<svg width="32" height="32" viewBox="0 0 24 24" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <defs><linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fef08a" /><stop offset="50%" stop-color="#eab308" /><stop offset="100%" stop-color="#a16207" /></linearGradient></defs>
           <path fill="url(#goldGradient)" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="#000"></circle>
         </svg>`,
-  iconSize: [28, 28],
-  iconAnchor: [14, 28],
-  popupAnchor: [0, -28],
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
 });
 
 const userPin = L.divIcon({
@@ -680,32 +605,14 @@ const userPin = L.divIcon({
 
 const Icons: any = {
   MapFold: (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
       <line x1="9" y1="3" x2="9" y2="21" />
       <line x1="15" y1="3" x2="15" y2="21" />
     </svg>
   ),
   List: (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <line x1="8" y1="6" x2="21" y2="6" />
       <line x1="8" y1="12" x2="21" y2="12" />
       <line x1="8" y1="18" x2="21" y2="18" />
@@ -715,31 +622,13 @@ const Icons: any = {
     </svg>
   ),
   MapPin: (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
       <circle cx="12" cy="10" r="3" />
     </svg>
   ),
   Scissors: (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="6" cy="6" r="3" />
       <circle cx="6" cy="18" r="3" />
       <line x1="20" y1="4" x2="8.12" y2="15.88" />
@@ -767,8 +656,7 @@ const ShopCard = ({
   isFavorited: boolean;
   onFavorite: () => void;
 }) => {
-  const hasDistance =
-    typeof shop.distance === "number" && !Number.isNaN(shop.distance);
+  const hasDistance = typeof shop.distance === "number" && !Number.isNaN(shop.distance);
 
   const handleCardClick = () => {
     if (shop.isPartner) {
@@ -781,27 +669,31 @@ const ShopCard = ({
   const price = `£${(shop.basePrice / 100).toFixed(2).replace(/\.00$/, "")}`;
 
   return (
-    <article
-      onClick={handleCardClick}
-      className={`tm-shop-card ${shop.isPartner ? "partner" : ""}`}
-    >
-      <div className="tm-shop-glow" />
+    <article onClick={handleCardClick} className={`tm-shop-card ${shop.isPartner ? "partner" : ""}`}>
+      {shop.isPartner && <div className="tm-shop-glow" />}
 
-      <div className="tm-shop-image">
+      <div className="tm-shop-image-wrap">
         {shop.imageUrl ? (
-          <img src={shop.imageUrl} alt={shop.name} />
+          <img src={shop.imageUrl} alt={shop.name} className="tm-shop-image" />
         ) : (
-          <span>✂️</span>
+          <div className="tm-shop-placeholder">✂️</div>
         )}
       </div>
 
-      <div className="tm-shop-main">
-        <div className="tm-shop-title-row">
-          <div>
+      <div className="tm-shop-content">
+        <div className="tm-shop-header">
+          <div className="tm-shop-title">
             <h3>{shop.name}</h3>
             <p>{shop.address}</p>
           </div>
+          <div className="tm-shop-price-tag">{price}</div>
         </div>
+
+        {hasDistance && (
+          <div className="tm-distance-badge">
+            <span>📍</span> {shop.distance?.toFixed(1)} miles
+          </div>
+        )}
 
         {(shop as any).deal && (
           <div className="tm-deal-badge">
@@ -809,1105 +701,759 @@ const ShopCard = ({
           </div>
         )}
 
-        {hasDistance && (
-          <div className="tm-distance">📍 {shop.distance?.toFixed(1)} miles away</div>
-        )}
-
         {!shop.isPartner && (
           <div className="tm-community-note">
-            ⚠️ <strong>Community Listing:</strong> request “Silent Cut Please”
-            in booking notes.
+            <strong>Community Listing:</strong> Request “Silent Cut” in booking notes.
           </div>
         )}
 
-        <div className="tm-badge-row">
-          {shop.supportsSilent && (
-            <span className="tm-badge tm-badge-silent">
-              <span className="tm-badge-dot" />
-              SILENT
-            </span>
-          )}
+        <div className="tm-card-footer">
+          <div className="tm-badges">
+            {shop.supportsSilent && (
+              <span className="tm-badge tm-badge-silent">
+                SILENT CUT
+              </span>
+            )}
+            {shop.isPartner && (
+              <span className="tm-badge tm-badge-verified">
+                ★ VERIFIED
+              </span>
+            )}
+          </div>
 
-          {shop.isPartner && (
-            <span className="tm-badge tm-badge-verified">★ Verified</span>
-          )}
+          <div className="tm-actions">
+            <button
+              className={`tm-heart-btn ${isFavorited ? "saved" : ""}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onFavorite();
+              }}
+            >
+              {isFavorited ? "❤️" : "🤍"}
+            </button>
+            <span className="tm-card-arrow">{shop.isPartner ? "→" : "↗"}</span>
+          </div>
         </div>
-      </div>
-
-      <div className="tm-shop-action">
-        <span className="tm-price">{price}</span>
-
-        <button
-          className={`tm-heart ${isFavorited ? "saved" : ""}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onFavorite();
-          }}
-          aria-label={isFavorited ? "Remove from roster" : "Add to roster"}
-        >
-          {isFavorited ? "❤️" : "🤍"}
-        </button>
-
-        <span className="tm-chevron">{shop.isPartner ? "›" : "↗"}</span>
       </div>
     </article>
   );
 };
 
 const trimmuteStyles = `
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
   * {
     box-sizing: border-box;
-  }
-
-  html,
-  body {
-    margin: 0;
-    background: #000;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
   }
 
-  button,
-  input,
-  select {
-    font: inherit;
+  html, body {
+    margin: 0;
+    background: ${THEME.bodyBg};
   }
 
   .tm-shell {
     min-height: 100vh;
     width: 100%;
     color: ${THEME.textMain};
-    background:
-      radial-gradient(circle at 50% -18%, rgba(94,234,212,0.18), transparent 31%),
-      radial-gradient(circle at 100% 12%, rgba(212,175,55,0.12), transparent 28%),
-      linear-gradient(180deg, #000 0%, #020403 48%, #000 100%);
+    background-color: ${THEME.bodyBg};
     display: flex;
     justify-content: center;
-    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     position: relative;
     overflow-x: hidden;
   }
 
-  .tm-shell::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.15;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 46px 46px;
-    mask-image: linear-gradient(to bottom, black, transparent 58%);
-  }
-
+  /* Animated Ambient Glows */
   .tm-bg-orb {
     position: fixed;
-    width: 360px;
-    height: 360px;
-    border-radius: 999px;
+    width: 50vw;
+    height: 50vw;
+    max-width: 600px;
+    max-height: 600px;
+    border-radius: 50%;
     filter: blur(100px);
-    opacity: 0.16;
+    opacity: 0.15;
     pointer-events: none;
-    transform: translateZ(0);
+    z-index: 0;
   }
 
   .tm-bg-orb-one {
     background: ${THEME.silent};
-    top: 5rem;
-    left: -12rem;
+    top: -10%;
+    left: -10%;
+    animation: float 10s ease-in-out infinite alternate;
   }
 
   .tm-bg-orb-two {
     background: ${THEME.gold};
-    bottom: 9rem;
-    right: -13rem;
+    bottom: -10%;
+    right: -10%;
+    animation: float 12s ease-in-out infinite alternate-reverse;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px) scale(1); }
+    100% { transform: translateY(30px) scale(1.05); }
   }
 
   .tm-app {
     width: 100%;
-    max-width: 1050px;
+    max-width: 800px; /* Tighter width for modern startup feel */
     min-height: 100vh;
     position: relative;
+    z-index: 1;
   }
 
   .tm-inner {
-    padding: 1.6rem;
-    position: relative;
-    z-index: 2;
+    padding: 2rem;
+    padding-top: 5rem;
   }
 
+  /* AUTH BUTTON */
   .tm-auth {
     position: absolute;
-    top: 1.4rem;
-    right: 1.4rem;
+    top: 1.5rem;
+    right: 1.5rem;
     z-index: 50;
   }
 
   .tm-signin-btn {
-    padding: 0.72rem 1.18rem;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #8ff4ea 0%, #5eead4 100%);
-    color: #00100e;
-    border: 1px solid rgba(255,255,255,0.32);
-    font-weight: 900;
+    padding: 0.6rem 1.2rem;
+    border-radius: 99px;
+    background: ${THEME.panelStrong};
+    color: #fff;
+    border: 1px solid ${THEME.border};
+    font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
-    box-shadow:
-      0 16px 44px rgba(94,234,212,0.20),
-      inset 0 1px 0 rgba(255,255,255,0.35);
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+  }
+  .tm-signin-btn:hover {
+    background: #fff;
+    color: #000;
   }
 
+  /* HERO SECTION */
   .tm-hero {
-    min-height: 292px;
-    display: grid;
-    grid-template-columns: 0.82fr 1.18fr;
-    gap: 2rem;
-    align-items: center;
-    padding: 3.15rem 0 1.35rem;
+    margin-bottom: 2.5rem;
   }
 
   .tm-logo-wrap {
-    text-align: center;
-    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 2rem;
   }
 
   .tm-logo {
-    height: 72px;
-    display: block;
-    margin: 0 auto 0.9rem;
-    filter:
-      brightness(0) invert(1)
-      drop-shadow(0 16px 32px rgba(0,0,0,0.52));
+    height: 38px;
+    filter: brightness(0) invert(1);
+    margin-bottom: 0.5rem;
   }
 
   .tm-tagline {
-    font-size: 0.76rem;
-    letter-spacing: 0.28rem;
-    color: rgba(255,255,255,0.46);
+    font-size: 0.75rem;
+    letter-spacing: 0.2rem;
+    color: ${THEME.textMuted};
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .tm-hero-copy {
     position: relative;
-    padding: 1.3rem;
-    border: 1px solid rgba(255,255,255,0.11);
-    border-radius: 30px;
-    background:
-      radial-gradient(circle at 15% 0%, rgba(94,234,212,0.11), transparent 33%),
-      radial-gradient(circle at 100% 100%, rgba(212,175,55,0.11), transparent 35%),
-      linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.022));
-    box-shadow:
-      0 28px 90px rgba(0,0,0,0.46),
-      inset 0 1px 0 rgba(255,255,255,0.08);
-    overflow: hidden;
-  }
-
-  .tm-hero-copy::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    background: linear-gradient(120deg, rgba(255,255,255,0.10), transparent 22%, transparent 78%, rgba(255,255,255,0.04));
-    opacity: 0.38;
   }
 
   .tm-eyebrow {
-    position: relative;
-    z-index: 1;
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0.5rem;
     color: ${THEME.silent};
-    border: 1px solid rgba(94,234,212,0.26);
-    background: rgba(94,234,212,0.082);
-    border-radius: 999px;
-    padding: 0.5rem 0.82rem;
-    font-size: 0.76rem;
-    font-weight: 900;
-    letter-spacing: 0.035rem;
+    border: 1px solid rgba(94,234,212,0.3);
+    background: rgba(94,234,212,0.1);
+    border-radius: 99px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
   }
 
   .tm-pulse-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     background: ${THEME.silent};
-    border-radius: 999px;
-    box-shadow: 0 0 0 7px rgba(94,234,212,0.12);
-    flex: 0 0 auto;
+    border-radius: 50%;
+    box-shadow: 0 0 10px ${THEME.silent};
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(94,234,212, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(94,234,212, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(94,234,212, 0); }
   }
 
   .tm-hero h1 {
-    position: relative;
-    z-index: 1;
-    margin: 1rem 0 0.72rem;
-    font-size: clamp(2.55rem, 5vw, 4.9rem);
-    line-height: 0.9;
-    letter-spacing: -0.09em;
-    font-weight: 750;
+    margin: 0 0 1rem;
+    font-size: clamp(3rem, 8vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
   }
 
-  .tm-hero h1 span {
-    color: rgba(255,255,255,0.46);
-    font-weight: 650;
+  .tm-text-gradient {
+    background: ${THEME.silentGradient};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
   }
 
   .tm-hero p {
-    position: relative;
-    z-index: 1;
     margin: 0;
-    max-width: 560px;
-    color: rgba(255,255,255,0.74);
-    line-height: 1.56;
-    font-size: 1rem;
+    max-width: 500px;
+    color: ${THEME.textSoft};
+    font-size: 1.1rem;
+    line-height: 1.5;
+    font-weight: 400;
   }
 
-  .tm-hero-chips {
-    position: relative;
-    z-index: 1;
-    margin-top: 1rem;
-    display: flex;
-    gap: 0.45rem;
-    flex-wrap: wrap;
-  }
-
-  .tm-hero-chips span {
-    color: rgba(255,255,255,0.72);
-    background: rgba(0,0,0,0.24);
-    border: 1px solid rgba(255,255,255,0.105);
-    border-radius: 999px;
-    padding: 0.43rem 0.66rem;
-    font-size: 0.72rem;
-    font-weight: 800;
-  }
-
+  /* CONTROL PANEL (BENTO) */
   .tm-control-panel {
-    border: 1px solid rgba(255,255,255,0.115);
-    background:
-      radial-gradient(circle at 0% 100%, rgba(94,234,212,0.075), transparent 32%),
-      linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.021));
-    border-radius: 30px;
-    padding: 1.16rem;
-    box-shadow:
-      0 24px 74px rgba(0,0,0,0.44),
-      inset 0 1px 0 rgba(255,255,255,0.06);
-    backdrop-filter: blur(18px);
-    margin-bottom: 1.42rem;
+    background: ${THEME.panel};
+    border: 1px solid ${THEME.border};
+    border-radius: 28px;
+    padding: 1.5rem;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
   }
 
   .tm-nav {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 1.35rem;
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: rgba(0,0,0,0.4);
+    padding: 0.4rem;
+    border-radius: 16px;
+    border: 1px solid ${THEME.border};
   }
 
   .tm-nav-btn {
-    border: 1px solid rgba(255,255,255,0.11);
-    background: rgba(0,0,0,0.36);
-    color: rgba(255,255,255,0.42);
-    border-radius: 18px;
-    padding: 0.83rem 0.92rem;
-    display: inline-flex;
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: ${THEME.textMuted};
+    padding: 0.8rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.55rem;
+    gap: 0.5rem;
     cursor: pointer;
-    font-size: 0.88rem;
-    font-weight: 850;
-    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-    min-height: 52px;
+    transition: all 0.2s;
   }
 
   .tm-nav-btn:hover {
     color: #fff;
-    border-color: rgba(255,255,255,0.26);
-    transform: translateY(-1px);
   }
 
   .tm-nav-btn.active {
+    background: ${THEME.panelStrong};
     color: #fff;
-    border-color: rgba(255,255,255,0.72);
-    background:
-      linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.035));
-    box-shadow:
-      0 14px 36px rgba(0,0,0,0.25),
-      inset 0 1px 0 rgba(255,255,255,0.12);
-  }
-
-  .tm-search-heading {
-    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
   }
 
   .tm-search-heading h2 {
-    margin: 0;
-    font-size: clamp(1.9rem, 4vw, 2.8rem);
-    letter-spacing: -0.07em;
-    font-weight: 760;
-    line-height: 0.98;
+    margin: 0 0 1rem;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
   }
 
-  .tm-search-heading h2 span {
-    color: rgba(255,255,255,0.45);
-    font-weight: 560;
-  }
-
-  .tm-search-heading p {
-    margin: 0.52rem 0 0;
-    color: rgba(255,255,255,0.46);
-    font-size: 0.92rem;
-  }
-
+  /* SLEEK SEARCH BAR */
   .tm-search-bar {
     display: flex;
-    align-items: stretch;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.12);
+    background: #000;
+    border: 1px solid ${THEME.borderStrong};
     border-radius: 20px;
-    background: rgba(0,0,0,0.48);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+    padding: 0.4rem;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .tm-search-bar:focus-within {
+    border-color: ${THEME.silent};
   }
 
-  .tm-search-bar input {
-    background: transparent;
-    border: 0;
-    color: #fff;
-    outline: 0;
-    padding: 0.98rem 1rem;
-    font-size: 0.98rem;
-    min-width: 0;
+  .tm-input-group {
+    display: flex;
+    align-items: center;
+    flex: 2;
+    padding: 0 1rem;
   }
 
-  .tm-search-bar input:first-child {
+  .tm-postcode-group {
     flex: 1;
   }
 
-  .tm-postcode-input {
-    width: 132px;
+  .tm-input-icon {
+    font-size: 1.1rem;
+    opacity: 0.5;
+    margin-right: 0.5rem;
   }
 
+  .tm-search-bar input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    font-family: inherit;
+  }
   .tm-search-bar input::placeholder {
-    color: rgba(255,255,255,0.38);
+    color: ${THEME.textMuted};
   }
 
   .tm-divider {
     width: 1px;
-    background: rgba(255,255,255,0.11);
-    margin: 0.75rem 0;
+    background: ${THEME.border};
+    margin: 0.5rem 0;
   }
 
-  .tm-search-bar button {
-    background: #fff;
+  .tm-go-btn {
+    background: ${THEME.silentGradient};
     color: #000;
-    border: 0;
-    padding: 0 1.35rem;
-    font-weight: 950;
+    border: none;
+    padding: 0 1.5rem;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 0.95rem;
     cursor: pointer;
-    min-width: 78px;
+    transition: transform 0.1s;
+  }
+  .tm-go-btn:active {
+    transform: scale(0.96);
   }
 
+  /* FILTERS */
   .tm-filters {
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: 1rem;
-    margin-top: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid ${THEME.border};
   }
 
   .tm-filter-block label {
-    display: flex;
-    justify-content: space-between;
-    color: rgba(255,255,255,0.42);
-    font-size: 0.86rem;
-    margin-bottom: 0.55rem;
-    font-weight: 650;
+    display: block;
+    color: ${THEME.textSoft};
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
   }
 
-  .tm-filter-block label strong {
+  .tm-price-text {
     color: ${THEME.silent};
+    float: right;
   }
 
-  .tm-filter-block input[type="range"] {
+  input[type=range] {
+    -webkit-appearance: none;
     width: 100%;
-    accent-color: ${THEME.silent};
+    background: transparent;
   }
-
-  .tm-filter-block select {
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: ${THEME.silent};
+    cursor: pointer;
+    margin-top: -8px;
+    box-shadow: 0 0 10px rgba(94,234,212,0.5);
+  }
+  input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
-    padding: 0.75rem;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(0,0,0,0.56);
-    color: #fff;
-    outline: 0;
+    height: 4px;
+    cursor: pointer;
+    background: ${THEME.borderStrong};
+    border-radius: 2px;
   }
 
-  .tm-filter-block option {
+  .tm-select-wrapper select {
+    width: 100%;
+    appearance: none;
     background: #000;
+    border: 1px solid ${THEME.borderStrong};
     color: #fff;
+    padding: 0.8rem 1rem;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    outline: none;
   }
 
   .tm-micro-stats {
     display: flex;
-    gap: 0.65rem;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
     flex-wrap: wrap;
-    margin-top: 1rem;
   }
 
   .tm-micro-stats span {
-    border: 1px solid rgba(255,255,255,0.105);
-    background: rgba(255,255,255,0.033);
-    color: rgba(255,255,255,0.50);
-    border-radius: 999px;
-    padding: 0.45rem 0.7rem;
+    background: #000;
+    border: 1px solid ${THEME.border};
+    padding: 0.4rem 0.8rem;
+    border-radius: 99px;
     font-size: 0.75rem;
-    font-weight: 650;
+    color: ${THEME.textMuted};
   }
-
   .tm-micro-stats strong {
     color: #fff;
   }
-
-  .tm-status-card,
-  .tm-error-card,
-  .tm-empty-card {
-    border-radius: 20px;
-    padding: 1rem;
-    margin: 1rem 0;
-    border: 1px solid rgba(255,255,255,0.11);
-    color: rgba(255,255,255,0.58);
-    background: rgba(255,255,255,0.035);
+  .tm-stat-verified strong {
+    color: ${THEME.gold};
   }
 
-  .tm-error-card {
-    border-color: rgba(239,68,68,0.75);
-    color: #ff8a8a;
-  }
-
-  .tm-loading-stack {
-    margin: 1.4rem 0;
-  }
-
-  .tm-skeleton-card {
-    display: grid;
-    grid-template-columns: 74px 1fr 52px;
-    gap: 1rem;
-    align-items: center;
-    border: 1px solid rgba(255,255,255,0.105);
-    background: linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018));
+  /* STATE CARDS */
+  .tm-status-card {
+    background: ${THEME.panel};
+    border: 1px solid ${THEME.border};
     border-radius: 24px;
-    padding: 1rem;
-    margin-bottom: 0.85rem;
-    overflow: hidden;
+    padding: 2rem;
+    text-align: center;
+    color: ${THEME.textSoft};
+    font-weight: 500;
+    margin-top: 1rem;
   }
 
-  .tm-skeleton-img,
-  .tm-skeleton-lines span,
-  .tm-skeleton-side {
-    background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.15), rgba(255,255,255,0.06));
-    background-size: 220% 100%;
-    animation: tm-shimmer 1.25s linear infinite;
-  }
-
-  .tm-skeleton-img {
-    width: 74px;
-    height: 74px;
-    border-radius: 18px;
-  }
-
-  .tm-skeleton-lines {
+  .tm-loading-card {
     display: flex;
     flex-direction: column;
-    gap: 0.58rem;
+    align-items: center;
+    gap: 1rem;
   }
 
-  .tm-skeleton-lines span {
-    height: 13px;
-    border-radius: 999px;
-    display: block;
+  .tm-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(94,234,212,0.2);
+    border-top-color: ${THEME.silent};
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  .tm-skeleton-lines span:nth-child(1) {
-    width: 72%;
-    height: 17px;
-  }
-
-  .tm-skeleton-lines span:nth-child(2) {
-    width: 92%;
-  }
-
-  .tm-skeleton-lines span:nth-child(3) {
-    width: 42%;
-  }
-
-  .tm-skeleton-side {
-    width: 40px;
-    height: 40px;
-    border-radius: 14px;
-    justify-self: end;
-  }
-
-  @keyframes tm-shimmer {
-    from {
-      background-position: 220% 0;
-    }
-    to {
-      background-position: -220% 0;
-    }
-  }
-
-  .tm-map-wrap {
-    height: 520px;
-    width: 100%;
-    border-radius: 26px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.11);
-    box-shadow: 0 22px 60px rgba(0,0,0,0.38);
-  }
-
-  .tm-results {
-    margin-top: 1.45rem;
-  }
-
+  /* CARDS LIST */
   .tm-results-topline {
-    display: flex;
-    justify-content: space-between;
-    color: rgba(255,255,255,0.44);
-    font-size: 0.78rem;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: ${THEME.textSoft};
     text-transform: uppercase;
-    letter-spacing: 0.13rem;
-    font-weight: 900;
-    margin-bottom: 0.78rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
   }
 
   .tm-card-list {
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
+    gap: 1rem;
   }
 
+  /* PREMIUM SHOP CARD */
   .tm-shop-card {
-    position: relative;
-    display: grid;
-    grid-template-columns: 80px 1fr auto;
-    gap: 1rem;
-    align-items: center;
-    border: 1px solid rgba(255,255,255,0.105);
-    background:
-      radial-gradient(circle at 0% 100%, rgba(94,234,212,0.045), transparent 28%),
-      linear-gradient(135deg, rgba(255,255,255,0.062), rgba(255,255,255,0.018));
-    border-radius: 25px;
-    padding: 1rem;
+    background: ${THEME.panel};
+    border: 1px solid ${THEME.border};
+    border-radius: 24px;
+    padding: 1.25rem;
+    display: flex;
+    gap: 1.25rem;
     cursor: pointer;
+    position: relative;
     overflow: hidden;
-    transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
-    box-shadow:
-      0 18px 54px rgba(0,0,0,0.25),
-      inset 0 1px 0 rgba(255,255,255,0.045);
+    backdrop-filter: blur(12px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .tm-shop-card:hover {
-    border-color: rgba(255,255,255,0.27);
-    transform: translateY(-2px);
-    background:
-      radial-gradient(circle at 0% 100%, rgba(94,234,212,0.07), transparent 30%),
-      linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.025));
+    transform: translateY(-2px) scale(1.01);
+    border-color: ${THEME.borderStrong};
+    background: ${THEME.panelStrong};
   }
 
   .tm-shop-card.partner {
-    border-color: rgba(212,175,55,0.28);
+    border-color: rgba(234,179,8,0.3);
+    background: linear-gradient(180deg, rgba(234,179,8,0.05) 0%, rgba(0,0,0,0) 100%);
+  }
+  .tm-shop-card.partner:hover {
+    border-color: rgba(234,179,8,0.6);
   }
 
   .tm-shop-glow {
     position: absolute;
-    inset: auto auto -42px -64px;
-    width: 170px;
-    height: 170px;
-    border-radius: 999px;
-    background: rgba(94,234,212,0.065);
-    filter: blur(42px);
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(234,179,8,0.15) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
     pointer-events: none;
   }
 
-  .tm-shop-card.partner .tm-shop-glow {
-    background: rgba(212,175,55,0.08);
+  .tm-shop-image-wrap {
+    flex-shrink: 0;
   }
 
   .tm-shop-image {
-    width: 80px;
-    height: 80px;
-    border-radius: 20px;
-    overflow: hidden;
-    background: #101010;
-    border: 1px solid rgba(255,255,255,0.12);
+    width: 88px;
+    height: 88px;
+    border-radius: 18px;
+    object-fit: cover;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
+
+  .tm-shop-placeholder {
+    width: 88px;
+    height: 88px;
+    border-radius: 18px;
+    background: #111;
+    border: 1px solid ${THEME.borderStrong};
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255,255,255,0.42);
-    font-size: 1.25rem;
-    z-index: 1;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+    font-size: 1.5rem;
   }
 
-  .tm-shop-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .tm-shop-main {
+  .tm-shop-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     min-width: 0;
-    z-index: 1;
   }
 
-  .tm-shop-title-row h3 {
+  .tm-shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.25rem;
+  }
+
+  .tm-shop-title h3 {
     margin: 0;
-    font-size: 1.14rem;
-    line-height: 1.16;
-    letter-spacing: -0.035em;
+    font-size: 1.25rem;
+    font-weight: 800;
     color: #fff;
-    font-weight: 770;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .tm-shop-title-row p {
-    margin: 0.42rem 0 0;
-    color: rgba(255,255,255,0.46);
-    font-size: 0.92rem;
-    line-height: 1.34;
+  .tm-shop-title p {
+    margin: 0.2rem 0 0;
+    font-size: 0.85rem;
+    color: ${THEME.textMuted};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .tm-deal-badge {
-    margin-top: 0.6rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: rgba(34,197,94,0.13);
-    border: 1px solid rgba(34,197,94,0.38);
-    color: #6ee7a0;
-    font-size: 0.72rem;
-    font-weight: 850;
-    padding: 0.3rem 0.55rem;
-    border-radius: 999px;
+  .tm-shop-price-tag {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    padding: 0.3rem 0.6rem;
+    border-radius: 10px;
   }
 
-  .tm-distance {
-    margin-top: 0.55rem;
-    color: ${THEME.silent};
-    font-size: 0.82rem;
-    font-weight: 850;
+  .tm-distance-badge {
+    font-size: 0.8rem;
+    color: ${THEME.textSoft};
+    margin-top: 0.4rem;
+    font-weight: 600;
   }
 
   .tm-community-note {
-    margin-top: 0.7rem;
-    max-width: 560px;
-    padding: 0.55rem 0.65rem;
-    background: rgba(234,179,8,0.09);
-    border: 1px solid rgba(234,179,8,0.25);
-    border-radius: 12px;
-    color: #fde047;
-    font-size: 0.74rem;
-    line-height: 1.35;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: ${THEME.textSoft};
+    background: rgba(255,255,255,0.05);
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    border-left: 2px solid ${THEME.textMuted};
   }
 
-  .tm-badge-row {
-    margin-top: 0.72rem;
+  .tm-card-footer {
+    margin-top: auto;
+    padding-top: 1rem;
     display: flex;
-    align-items: center;
-    gap: 0.42rem;
-    flex-wrap: nowrap;
-    white-space: nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .tm-badges {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
   }
 
   .tm-badge {
-    min-height: 25px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 9px;
-    padding: 0.24rem 0.58rem;
-    font-size: 0.72rem;
-    font-weight: 950;
-    line-height: 1;
-    letter-spacing: 0.025em;
+    font-size: 0.7rem;
+    font-weight: 900;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    letter-spacing: 0.05em;
   }
 
   .tm-badge-silent {
-    gap: 0.38rem;
-    color: ${THEME.silent};
-    background: rgba(94,234,212,0.095);
-    border: 1px solid rgba(45,212,191,0.38);
-  }
-
-  .tm-badge-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 999px;
     background: ${THEME.silent};
-    flex-shrink: 0;
-    box-shadow: 0 0 10px rgba(94,234,212,0.45);
+    color: #000;
   }
 
   .tm-badge-verified {
-    gap: 0.3rem;
-    color: #fff3bd;
-    border: 1px solid rgba(255,215,100,0.52);
-    background:
-      linear-gradient(135deg, #251c07 0%, #765a13 44%, #d1b253 100%);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.24),
-      0 10px 30px rgba(212,175,55,0.13);
-    text-shadow: 0 1px 1px rgba(0,0,0,0.7);
+    background: ${THEME.gold};
+    color: #000;
   }
 
-  .tm-shop-action {
-    min-width: 94px;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-areas:
-      "price heart"
-      "chev chev";
-    gap: 0.42rem 0.65rem;
-    justify-items: end;
+  .tm-actions {
+    display: flex;
     align-items: center;
+    gap: 0.8rem;
   }
 
-  .tm-price {
-    grid-area: price;
-    font-size: 1rem;
-    font-weight: 900;
-    color: #fff;
-  }
-
-  .tm-heart {
-    grid-area: heart;
-    background: transparent;
-    border: 0;
-    padding: 0;
+  .tm-heart-btn {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
     cursor: pointer;
-    font-size: 1.38rem;
-    line-height: 1;
-    transition: transform 0.12s ease;
-    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.36));
+    padding: 0;
+    transition: transform 0.2s;
+  }
+  .tm-heart-btn:hover {
+    transform: scale(1.2);
   }
 
-  .tm-heart:hover {
-    transform: scale(1.12);
+  .tm-card-arrow {
+    background: #fff;
+    color: #000;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.1rem;
   }
 
-  .tm-chevron {
-    grid-area: chev;
-    color: rgba(255,255,255,0.23);
-    font-size: 2rem;
-    line-height: 1;
+  .tm-shop-card.partner .tm-card-arrow {
+    background: ${THEME.goldGradient};
   }
 
-  @media (max-width: 760px) {
+  .tm-map-wrap {
+    height: 500px;
+    border-radius: 28px;
+    overflow: hidden;
+    border: 1px solid ${THEME.borderStrong};
+  }
+
+  /* MOBILE RESPONSIVENESS */
+  @media (max-width: 640px) {
     .tm-inner {
       padding: 1rem;
-    }
-
-    .tm-auth {
-      top: 0.95rem;
-      right: 0.95rem;
-    }
-
-    .tm-signin-btn {
-      padding: 0.7rem 1rem;
-      border-radius: 18px;
-      font-size: 0.88rem;
+      padding-top: 4.5rem;
     }
 
     .tm-hero {
-      min-height: auto;
-      display: block;
-      padding: 3.55rem 0 0.9rem;
+      margin-bottom: 2rem;
     }
 
     .tm-logo-wrap {
-      padding: 0.8rem 0 0.25rem;
-    }
-
-    .tm-logo {
-      height: 58px;
-    }
-
-    .tm-tagline {
-      font-size: 0.68rem;
-      letter-spacing: 0.21rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
     }
 
     .tm-hero-copy {
-      margin-top: 1.4rem;
-      padding: 1rem;
-      border-radius: 25px;
-    }
-
-    .tm-eyebrow {
-      padding: 0.44rem 0.72rem;
-      font-size: 0.68rem;
+      text-align: center;
     }
 
     .tm-hero h1 {
-      font-size: 3.05rem;
-      margin: 0.88rem 0 0.62rem;
+      font-size: 2.8rem;
     }
 
     .tm-hero p {
-      font-size: 0.91rem;
-      line-height: 1.52;
-    }
-
-    .tm-hero-chips {
-      display: none;
-    }
-
-    .tm-control-panel {
-      padding: 0.95rem;
-      border-radius: 26px;
-      margin-bottom: 1.18rem;
-    }
-
-    .tm-nav {
-      gap: 0.52rem;
-      margin-bottom: 1.12rem;
-    }
-
-    .tm-nav-btn {
-      padding: 0.75rem 0.48rem;
-      font-size: 0.8rem;
-      border-radius: 18px;
-      min-height: 48px;
-      gap: 0.42rem;
-    }
-
-    .tm-search-heading {
-      margin-bottom: 0.85rem;
-    }
-
-    .tm-search-heading h2 {
-      font-size: 2rem;
-    }
-
-    .tm-search-heading p {
-      display: none;
-    }
-
-    .tm-search-bar {
-      border-radius: 19px;
-    }
-
-    .tm-search-bar input {
-      padding: 0.86rem 0.72rem;
-      font-size: 0.9rem;
-    }
-
-    .tm-postcode-input {
-      width: 104px;
-    }
-
-    .tm-search-bar button {
-      padding: 0 0.92rem;
-      min-width: 58px;
-    }
-
-    .tm-filters {
-      grid-template-columns: 1fr 0.86fr;
-      gap: 0.75rem;
-      margin-top: 0.82rem;
-    }
-
-    .tm-filter-block label {
-      font-size: 0.8rem;
-      margin-bottom: 0.48rem;
-    }
-
-    .tm-filter-block select {
-      padding: 0.68rem;
-    }
-
-    .tm-micro-stats {
-      display: none;
-    }
-
-    .tm-results {
-      margin-top: 1.12rem;
-    }
-
-    .tm-results-topline {
-      padding: 0 0.12rem;
-      font-size: 0.66rem;
-      letter-spacing: 0.085rem;
-      margin-bottom: 0.68rem;
-    }
-
-    .tm-card-list {
-      gap: 0.78rem;
-    }
-
-    .tm-shop-card {
-      grid-template-columns: 72px 1fr 68px;
-      gap: 0.82rem;
-      padding: 0.88rem;
-      border-radius: 23px;
-      align-items: center;
-    }
-
-    .tm-shop-image {
-      width: 72px;
-      height: 72px;
-      border-radius: 18px;
-    }
-
-    .tm-shop-title-row h3 {
+      margin: 0 auto;
       font-size: 1rem;
     }
 
-    .tm-shop-title-row p {
-      font-size: 0.82rem;
+    .tm-control-panel {
+      padding: 1.25rem;
+      border-radius: 24px;
     }
 
-    .tm-badge-row {
-      gap: 0.32rem;
-      margin-top: 0.62rem;
+    /* Stack search bar on mobile */
+    .tm-search-bar {
+      flex-direction: column;
+      background: transparent;
+      border: none;
+      padding: 0;
+      gap: 0.5rem;
     }
 
-    .tm-badge {
-      min-height: 24px;
-      padding: 0.22rem 0.5rem;
-      font-size: 0.67rem;
-      border-radius: 8px;
-    }
-
-    .tm-shop-action {
-      min-width: 64px;
-      gap: 0.34rem;
-    }
-
-    .tm-price {
-      font-size: 0.9rem;
-    }
-
-    .tm-heart {
-      font-size: 1.42rem;
-    }
-
-    .tm-chevron {
-      font-size: 1.6rem;
-    }
-
-    .tm-map-wrap {
-      height: 440px;
-      border-radius: 22px;
-    }
-
-    .tm-skeleton-card {
-      grid-template-columns: 64px 1fr 38px;
-      padding: 0.85rem;
-      border-radius: 22px;
-    }
-
-    .tm-skeleton-img {
-      width: 64px;
-      height: 64px;
+    .tm-input-group {
+      background: #000;
+      border: 1px solid ${THEME.borderStrong};
       border-radius: 16px;
-    }
-  }
-
-  @media (max-width: 430px) {
-    .tm-inner {
-      padding: 0.86rem;
+      padding: 0.8rem 1rem;
     }
 
-    .tm-hero {
-      padding-top: 3.2rem;
+    .tm-divider {
+      display: none;
     }
 
-    .tm-logo {
-      height: 54px;
-    }
-
-    .tm-tagline {
-      font-size: 0.64rem;
-      letter-spacing: 0.18rem;
-    }
-
-    .tm-hero-copy {
-      margin-top: 1.15rem;
-      padding: 0.95rem;
-    }
-
-    .tm-hero h1 {
-      font-size: 2.62rem;
-    }
-
-    .tm-hero p {
-      font-size: 0.88rem;
-    }
-
-    .tm-nav-btn span:last-child {
-      display: inline;
-    }
-
-    .tm-search-bar input:first-child {
-      width: 48%;
-    }
-
-    .tm-postcode-input {
-      width: 92px;
+    .tm-go-btn {
+      padding: 1rem;
+      border-radius: 16px;
+      width: 100%;
     }
 
     .tm-filters {
       grid-template-columns: 1fr;
-      gap: 0.72rem;
+      gap: 1rem;
     }
 
-    .tm-filter-block select {
-      min-height: 48px;
+    .tm-micro-stats {
+      display: none; /* Clean up mobile UI */
     }
 
     .tm-shop-card {
-      grid-template-columns: 64px 1fr 56px;
-      gap: 0.72rem;
-      padding: 0.82rem;
+      padding: 1rem;
+      gap: 1rem;
+      border-radius: 20px;
     }
 
-    .tm-shop-image {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
+    .tm-shop-image, .tm-shop-placeholder {
+      width: 72px;
+      height: 72px;
+      border-radius: 14px;
     }
 
-    .tm-shop-title-row h3 {
-      font-size: 0.96rem;
+    .tm-shop-title h3 {
+      font-size: 1.1rem;
     }
 
-    .tm-shop-title-row p {
-      font-size: 0.8rem;
-    }
-
-    .tm-badge {
-      font-size: 0.63rem;
-      padding: 0.2rem 0.43rem;
-    }
-
-    .tm-shop-action {
-      min-width: 52px;
-      grid-template-columns: 1fr;
-      grid-template-areas:
-        "price"
-        "heart"
-        "chev";
-      justify-items: end;
-    }
-
-    .tm-price {
-      font-size: 0.86rem;
-    }
-
-    .tm-chevron {
-      display: none;
+    .tm-shop-price-tag {
+      font-size: 1rem;
     }
   }
 `;
