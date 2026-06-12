@@ -46,6 +46,7 @@ model shops {
   cover_url        String?
   styles           String[]   @default([])
   is_partner       Boolean?   @default(false)
+  walk_ins_only   Boolean?   @default(false)
   external_url     String?
   services         services[]
 }

@@ -58,8 +58,9 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
   const [silentAcknowledged, setSilentAcknowledged] = useState(false);
   const [isSilentRequest, setIsSilentRequest] = useState(false);
 
-  const supportsSilent = shop.supportsSilent ?? false;
-  const isExternal = shop.externalUrl
+const supportsSilent = shop.supportsSilent ?? false;
+const isWalkInOnly = Boolean(shop.walkInsOnly);
+const isExternal = Boolean(shop.externalUrl);
 
 
   const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"];
@@ -184,7 +185,85 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
         </div>
       )}
 
-      {isExternal ? (
+      {isWalkInOnly ? (
+  <div style={{ textAlign: "center", padding: "2rem 1rem", backgroundColor: THEME.cardBg, borderRadius: "16px", border: `1px solid ${THEME.border}` }}>
+    <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem" }}>
+      Walk-ins welcome
+    </h3>
+
+    <p style={{ color: THEME.textMuted, fontSize: "0.95rem", lineHeight: 1.5, marginBottom: "1.25rem" }}>
+      <b>{shop.name}</b> is walk-in only, so no booking is needed.
+      <br />
+      Visit the shop directly and ask for a quieter appointment if preferred.
+    </p>
+
+    <div
+      style={{
+        background: "rgba(94, 234, 212, 0.08)",
+        border: "1px solid rgba(94, 234, 212, 0.45)",
+        borderRadius: "14px",
+        padding: "14px",
+        marginBottom: "14px",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          fontSize: "0.8rem",
+          fontWeight: 800,
+          color: "#5eead4",
+          marginBottom: "8px",
+          letterSpacing: "0.03em",
+          textTransform: "uppercase",
+        }}
+      >
+        Quiet appointment reminder
+      </div>
+
+      <div
+        style={{
+          background: "rgba(0, 0, 0, 0.35)",
+          border: "1px solid rgba(255, 255, 255, 0.12)",
+          borderRadius: "10px",
+          padding: "10px",
+          color: "#ffffff",
+          fontSize: "0.95rem",
+          fontWeight: 700,
+          lineHeight: 1.4,
+        }}
+      >
+        “I’d like a quieter cut today please — no small talk.”
+      </div>
+    </div>
+
+    <button
+      onClick={() => {
+        if (shop.lat && shop.lng) {
+          window.open(
+            `https://www.google.com/maps/search/?api=1&query=${shop.lat},${shop.lng}`,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        } else if (shop.externalUrl) {
+          window.open(shop.externalUrl, "_blank", "noopener,noreferrer");
+        }
+      }}
+      style={{
+        width: "100%",
+        padding: "1rem",
+        backgroundColor: "#ffffff",
+        color: "#000000",
+        fontWeight: "700",
+        fontSize: "1rem",
+        borderRadius: "8px",
+        border: "none",
+        cursor: "pointer",
+      }}
+    >
+      View location ↗
+    </button>
+  </div>
+) : isExternal ? (
   <div style={{ textAlign: "center", padding: "2rem 1rem", backgroundColor: THEME.cardBg, borderRadius: "16px", border: `1px solid ${THEME.border}` }}>
   <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem" }}>Ready to book?</h3>
   

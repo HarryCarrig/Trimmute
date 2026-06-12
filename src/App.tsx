@@ -36,6 +36,7 @@ export type Shop = {
   price?: string;
   deal?: string;
   distance?: number;
+  walkInsOnly?: boolean;
 };
 
 type View = "home" | "barber" | "detail" | "bookings";
@@ -125,6 +126,7 @@ export default function App() {
       lng: typeof b.lng === "number" ? b.lng : undefined,
       isPartner: patchedIsPartner,
       externalUrl: patchedUrl,
+      walkInsOnly: Boolean(b.walkInsOnly ?? b.walk_ins_only ?? false),
       deal: b.deal ?? undefined,
       distance: typeof b.distance === "number" ? b.distance : undefined,
     };
