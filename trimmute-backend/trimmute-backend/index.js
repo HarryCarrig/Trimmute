@@ -57,6 +57,8 @@ async function getShops(req, res) {
         cover_url: shop.cover_url ?? shop.image_url ?? shop.imageUrl ?? null,
         externalUrl: shop.external_url ?? null,
         supportsSilent: shop.supports_silent ?? false,
+        walk_ins_only: shop.walk_ins_only ?? false,
+walkInsOnly: shop.walk_ins_only ?? false,
         distance,
       };
     });
@@ -111,6 +113,8 @@ app.get("/barbers/near", async (req, res) => {
         cover_url: shop.cover_url ?? shop.image_url ?? shop.imageUrl ?? null,
         externalUrl: shop.external_url ?? null,
         supportsSilent: shop.supports_silent ?? false,
+        walk_ins_only: shop.walk_ins_only ?? false,
+walkInsOnly: shop.walk_ins_only ?? false,
         distance,
       };
     });
