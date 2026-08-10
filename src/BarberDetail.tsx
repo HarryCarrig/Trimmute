@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import CopySilentCutButton from "./components/CopySilentCutButton";
 import type { Shop } from "./App";
+import OpenFreeMapLayer from "./OpenFreeMapLayer";
 
 // DARK MODE THEME 🌑
 const THEME = {
@@ -240,10 +241,7 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
             }}
             zoomControl={false}
           >
-            <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-              attribution="&copy; CARTO"
-            />
+            <OpenFreeMapLayer />
 
             <Marker
               position={[shop.lat, shop.lng]}

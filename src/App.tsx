@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import BarberMode from "./BarberMode";
 import BarberDetail from "./BarberDetail";
 import logo from "./assets/trimmute-logo.png";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import OpenFreeMapLayer from "./OpenFreeMapLayer";
 
 // 🛠️ FIX FOR REACT LEAFLET MISSING ICONS
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -516,10 +517,7 @@ const MapView = ({
         zoom={13}
         style={{ height: "100%", width: "100%" }}
       >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          attribution='&copy; CARTO'
-        />
+        <OpenFreeMapLayer />
 
         {userLoc && (
           <Marker position={userLoc} icon={userPin}>

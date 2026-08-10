@@ -258,25 +258,30 @@ export default function CookiesPage() {
             database as part of a user profile.
           </p>
 
-          <h3>CARTO map tiles</h3>
+          <h3>OpenFreeMap maps</h3>
 
-          <p style={paragraphStyle}>
-            Trimmute uses CARTO map tiles through the map interface.
-          </p>
+<p style={paragraphStyle}>
+  Trimmute uses OpenFreeMap to display interactive maps.
+</p>
 
-          <p style={paragraphStyle}>
-            When a map is displayed, your browser requests map tiles directly
-            from CARTO's map-tile infrastructure. CARTO may receive ordinary
-            technical request information such as your IP address,
-            browser or device information and the map-tile requests necessary
-            to render the map.
-          </p>
+<p style={paragraphStyle}>
+  When a map is displayed, your browser requests map data directly from
+  OpenFreeMap&apos;s infrastructure. OpenFreeMap may receive ordinary technical
+  request information needed to deliver the map. According to OpenFreeMap&apos;s
+  current privacy policy, its regular server logs do not store IP addresses,
+  although temporary IP logging may be enabled for a limited period where
+  necessary to investigate security incidents or misuse.
+</p>
 
-          <p style={paragraphStyle}>
-            Our current code audit did not identify Trimmute sending names or
-            account records to CARTO. Trimmute does not currently upload a
-            user-account database to CARTO.
-          </p>
+<p style={paragraphStyle}>
+  OpenFreeMap states that it does not use cookies or tracking technologies as
+  part of its public service.
+</p>
+
+<p style={paragraphStyle}>
+  Our current code audit did not identify Trimmute sending names, account
+  information or Trimmute database records to OpenFreeMap.
+</p>
 
           <h3>External booking and third-party links</h3>
 

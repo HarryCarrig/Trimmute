@@ -289,11 +289,11 @@ export default function TermsPage() {
           </p>
 
           <p style={paragraphStyle}>
-            For example, a postcode you enter may be sent to postcodes.io for
-            geocoding, and map tiles may be loaded from CARTO. Location-based
-            searches may send your device coordinates to the Trimmute backend
-            when you choose to use the Near Me feature.
-          </p>
+  For example, a postcode you enter may be sent to postcodes.io for
+  geocoding, and map data may be loaded directly from OpenFreeMap.
+  Location-based searches may send your device coordinates to the
+  Trimmute backend when you choose to use the Near Me feature.
+</p>
 
           <p style={paragraphStyle}>
             These third-party services may process technical request

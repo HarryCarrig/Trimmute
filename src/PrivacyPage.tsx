@@ -150,12 +150,12 @@ export default function PrivacyPage() {
           </p>
 
           <p style={paragraphStyle}>
-            When you view maps on Trimmute, your browser loads map tiles
-            directly from CARTO's map-tile infrastructure. CARTO may therefore
-            receive ordinary technical request data such as your IP address,
-            browser or device information and the map-tile requests needed to
-            display the map. Trimmute does not currently upload user account
-            data to CARTO.
+            When you view maps on Trimmute, your browser loads map data
+            directly from OpenFreeMap's infrastructure. OpenFreeMap may
+            therefore receive ordinary technical request information such as
+            your IP address, browser or device information and the map requests
+            needed to display the map. Trimmute does not currently upload user
+            account data to OpenFreeMap.
           </p>
 
           <h3>Account and sign-in information</h3>
@@ -367,7 +367,7 @@ export default function PrivacyPage() {
             <li>authentication providers;</li>
             <li>analytics providers;</li>
             <li>postcode and location lookup services;</li>
-            <li>map and tile providers;</li>
+            <li>map providers;</li>
             <li>email or communication providers, if used;</li>
             <li>professional advisers;</li>
             <li>regulators or authorities where required by law.</li>
@@ -410,9 +410,10 @@ export default function PrivacyPage() {
             </li>
 
             <li>
-              <strong>CARTO</strong> — an external map-tile service. In the
-              current implementation, map tiles are loaded directly by the
-              user's browser.
+              <strong>OpenFreeMap</strong> — an external map service used to
+              display Trimmute's interactive maps. In the current
+              implementation, map data is loaded directly by the user's
+              browser.
             </li>
 
             <li>
@@ -514,8 +515,8 @@ export default function PrivacyPage() {
           <h2 style={headingStyle}>7. Cookies, analytics and localStorage</h2>
 
           <p style={paragraphStyle}>
-            Trimmute uses or may use cookies, localStorage and similar
-            storage or access technologies to provide website functionality.
+            Trimmute uses or may use cookies, localStorage and similar storage
+            or access technologies to provide website functionality.
           </p>
 
           <p style={paragraphStyle}>These technologies may be used to:</p>
@@ -541,8 +542,8 @@ export default function PrivacyPage() {
             Trimmute does not currently use advertising pixels such as Meta
             Pixel or TikTok Pixel, and our current technical audit has not
             identified Google Analytics or Hotjar. If our use of storage or
-            access technologies changes, we will review and update our
-            notices and consent arrangements where required.
+            access technologies changes, we will review and update our notices
+            and consent arrangements where required.
           </p>
 
           <p style={paragraphStyle}>
