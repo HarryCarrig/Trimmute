@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BarberMode from "./BarberMode";
 import BarberDetail from "./BarberDetail";
-import MyBookings from "./mybookings";
 import logo from "./assets/trimmute-logo.png";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
@@ -39,7 +38,7 @@ export type Shop = {
   walkInsOnly?: boolean;
 };
 
-type View = "home" | "barber" | "detail" | "bookings";
+type View = "home" | "barber" | "detail";
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL || "https://trimmute.onrender.com";
@@ -108,7 +107,7 @@ export default function App() {
         ? b.image_url
         : null;
     const patchedSupportsSilent = Boolean(
-      b.supportsSilent ?? b.supports_silent ?? true
+      b.supportsSilent ?? b.supports_silent ?? false
     );
 
     return {
@@ -128,7 +127,12 @@ export default function App() {
       externalUrl: patchedUrl,
       walkInsOnly: Boolean(b.walkInsOnly ?? b.walk_ins_only ?? false),
       deal: b.deal ?? undefined,
-      distance: typeof b.distance === "number" ? b.distance : undefined,
+      distance:
+  typeof b.distance === "number"
+    ? b.distance
+    : typeof b.distanceKm === "number"
+    ? b.distanceKm * 0.621371
+    : undefined,
     };
   };
 
@@ -266,7 +270,6 @@ export default function App() {
   const showHome = view === "home";
   const showBarberMode = view === "barber";
   const showDetail = view === "detail" && selectedShop !== null;
-  const showBookings = view === "bookings";
 
   return (
     <div className="tm-shell">
@@ -308,8 +311,8 @@ export default function App() {
               </h1>
 
               <p>
-                Find quiet-friendly barbers before you book. Verified local
-                shops, calmer appointments, less awkward small talk.
+                Find quiet-friendly barbers before you book. Clear listings,
+calmer appointments, less awkward small talk.
               </p>
             </div>
           </header>
@@ -326,9 +329,7 @@ export default function App() {
             />
           )}
 
-          {showBookings && <MyBookings onBack={() => setView("home")} />}
-
-          {showHome && !showDetail && !showBookings && (
+          {showHome && !showDetail && (
             <>
               <section className="tm-control-panel">
                 <nav className="tm-nav">
@@ -489,6 +490,17 @@ export default function App() {
             </>
           )}
         </div>
+
+        <footer className="tm-legal-footer">
+          <a href="/privacy">Privacy Policy</a>
+          <span>•</span>
+          <a href="/terms">Terms of Use</a>
+          <span>•</span>
+          <a href="/cookies">Cookie & Storage Notice</a>
+          <span>•</span>
+          <a href="mailto:trimmute@gmail.com">Contact</a>
+        </footer>
+
       </div>
     </div>
   );
@@ -1648,4 +1660,23 @@ const trimmuteStyles = `
       display: none;
     }
   }
+    .tm-legal-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 1.5rem 1rem 2rem;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.tm-legal-footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.tm-legal-footer a:hover {
+  text-decoration: underline;
+}
 `;
