@@ -52,7 +52,7 @@ export default function PrivacyPage() {
         </h1>
 
         <p style={{ color: "#77777f", marginTop: 0 }}>
-          Version 1.1 | Last updated: 10 August 2026
+          Version 1.2 | Last updated: 10 August 2026
         </p>
 
         <p style={paragraphStyle}>
@@ -62,13 +62,23 @@ export default function PrivacyPage() {
         </p>
 
         <p style={paragraphStyle}>
+          Trimmute currently operates as a discovery and directory service.
+          Trimmute does not currently process haircut bookings itself. Where a
+          listing contains an external booking link, the user is directed to
+          the relevant provider or third-party booking service to make their
+          booking.
+        </p>
+
+        <p style={paragraphStyle}>
           This Privacy Policy explains what personal information Trimmute
           collects, how we use it, who we share it with, how international
           transfers are handled, and what rights you have.
         </p>
 
         <p style={paragraphStyle}>
-          <strong>Trimmute is operated by Harry Carrig, trading as Trimmute.</strong>
+          <strong>
+            Trimmute is operated by Harry Carrig, trading as Trimmute.
+          </strong>
         </p>
 
         <p style={paragraphStyle}>
@@ -87,43 +97,30 @@ export default function PrivacyPage() {
           <h2 style={headingStyle}>1. What information we collect</h2>
 
           <p style={paragraphStyle}>
-            We only collect personal information where it is needed to run
-            Trimmute, provide requested or optional features, improve and
-            secure the service, manage business relationships, or comply with
-            legal obligations.
+            We only collect or process personal information where it is needed
+            to run Trimmute, provide requested or optional features, improve
+            and secure the service, manage business relationships, or comply
+            with legal obligations.
           </p>
 
           <h3>Information you provide directly</h3>
 
-          <ul style={listStyle}>
-            <li>your name, if you make or request a booking through Trimmute;</li>
-            <li>your selected barber, salon, or haircut provider;</li>
-            <li>appointment date and time;</li>
-            <li>whether you request a quiet or low-conversation appointment;</li>
-            <li>
-              any booking notes or requirements you choose to provide, if this
-              feature is available;
-            </li>
-            <li>
-              information you provide when contacting us by email, message,
-              social media, or other communication channels.
-            </li>
-          </ul>
-
           <p style={paragraphStyle}>
-            Please do not include medical information, diagnoses, disability
-            information, or other sensitive personal information in booking
-            notes or messages unless we specifically ask for it and explain
-            why. A quiet or low-conversation request is not, by itself, used
-            by Trimmute to infer a medical diagnosis, disability, or health
-            condition.
+            Depending on how you interact with Trimmute, this may include
+            information you provide when contacting us by email, message,
+            social media, or another communication channel.
           </p>
 
           <p style={paragraphStyle}>
-            If you voluntarily provide sensitive information that we did not
-            request, we will handle it only as reasonably necessary to deal
-            with your request, protect the service, comply with law, or delete
-            it as appropriate.
+            Please do not send medical information, diagnoses, disability
+            information, or other sensitive personal information unless it is
+            genuinely necessary for your communication with us.
+          </p>
+
+          <p style={paragraphStyle}>
+            Trimmute does not use a person's interest in a quiet or
+            low-conversation haircut to infer a medical diagnosis, disability,
+            or health condition.
           </p>
 
           <h3>Location and postcode information</h3>
@@ -147,18 +144,18 @@ export default function PrivacyPage() {
             directly from your browser to postcodes.io so that it can be
             converted into geographic coordinates. postcodes.io may also
             receive ordinary technical request information associated with
-            that request, such as your IP address and browser/network
-            information. The returned coordinates are then used by Trimmute
-            to request nearby haircut providers.
+            that request, such as your IP address and browser or network
+            information. The returned coordinates are then used by Trimmute to
+            request nearby haircut providers.
           </p>
 
           <p style={paragraphStyle}>
             When you view maps on Trimmute, your browser loads map tiles
-            directly from CARTO’s map-tile infrastructure. CARTO may therefore
+            directly from CARTO's map-tile infrastructure. CARTO may therefore
             receive ordinary technical request data such as your IP address,
-            browser/device information and the map-tile requests needed to
-            display the map. Trimmute does not currently upload its customer or
-            booking database to CARTO.
+            browser or device information and the map-tile requests needed to
+            display the map. Trimmute does not currently upload user account
+            data to CARTO.
           </p>
 
           <h3>Account and sign-in information</h3>
@@ -170,11 +167,9 @@ export default function PrivacyPage() {
 
           <p style={paragraphStyle}>
             If you use sign-in features, Clerk may process account and
-            authentication information such as your email address, name, login
-            or authentication identifiers, and related technical information.
-            Clerk generally acts as a processor for end-user authentication
-            data provided through Trimmute, while acting separately as an
-            independent controller for certain Clerk account information.
+            authentication information such as your email address, name,
+            login or authentication identifiers, and related technical
+            information.
           </p>
 
           <p style={paragraphStyle}>
@@ -186,30 +181,30 @@ export default function PrivacyPage() {
 
           <p style={paragraphStyle}>
             Trimmute allows you to save favourite shops to your roster. Your
-            roster/favourites are currently stored in your browser using
+            roster or favourites are currently stored in your browser using
             localStorage. This means the saved roster is stored on your
-            device/browser and is not currently saved to Trimmute’s database.
+            device or browser and is not currently saved to Trimmute's
+            database.
           </p>
 
-          <h3>Booking information</h3>
+          <h3>External booking services</h3>
 
           <p style={paragraphStyle}>
-            If booking features are available through Trimmute, we may collect
-            and store booking information such as:
+            Trimmute does not currently process haircut bookings itself.
           </p>
 
-          <ul style={listStyle}>
-            <li>your name;</li>
-            <li>the selected haircut provider;</li>
-            <li>booking date and time;</li>
-            <li>whether a quiet or low-conversation request was made;</li>
-            <li>any booking notes or requirements you provide;</li>
-            <li>a booking token used to retrieve or manage your booking.</li>
-          </ul>
+          <p style={paragraphStyle}>
+            Where a provider has an external booking link, Trimmute may direct
+            you to that provider's website or to a third-party booking
+            platform. The booking is then made outside Trimmute and is subject
+            to the privacy policy, terms and data-handling practices of that
+            external provider.
+          </p>
 
           <p style={paragraphStyle}>
-            A booking token may be stored in your browser using localStorage
-            so bookings can be shown again on the same device.
+            Trimmute does not currently collect your appointment date, time,
+            booking notes or booking details from those external platforms as
+            part of the normal booking-link process.
           </p>
 
           <h3>Technical and usage information</h3>
@@ -232,9 +227,7 @@ export default function PrivacyPage() {
 
           <p style={paragraphStyle}>
             We currently use Vercel Web Analytics to understand general site
-            usage and improve the website. Vercel states that its Web Analytics
-            product stores anonymised analytics data and does not use cookies
-            for Web Analytics.
+            usage and improve the website.
           </p>
 
           <h3>Business and partner information</h3>
@@ -249,7 +242,7 @@ export default function PrivacyPage() {
             <li>address;</li>
             <li>postcode;</li>
             <li>contact details;</li>
-            <li>booking link;</li>
+            <li>external booking link;</li>
             <li>shop images or logos;</li>
             <li>whether you have agreed to be listed as quiet-friendly;</li>
             <li>service and pricing information;</li>
@@ -271,15 +264,14 @@ export default function PrivacyPage() {
             <li>operate and display the Trimmute website;</li>
             <li>show nearby haircut providers;</li>
             <li>allow postcode and location-based searches;</li>
-            <li>display shop details, maps, prices, and booking links;</li>
+            <li>display shop details, maps, prices and external booking links;</li>
             <li>allow users to save favourites to their roster;</li>
-            <li>provide optional booking features, where available;</li>
-            <li>help users request quiet or low-conversation appointments;</li>
-            <li>manage verified partner listings and permissions;</li>
-            <li>communicate with users, shops, and partners;</li>
+            <li>help users find quiet or low-conversation haircut options;</li>
+            <li>manage partner listings and permissions;</li>
+            <li>communicate with users, shops and partners;</li>
             <li>improve the website and user experience;</li>
-            <li>monitor performance, bugs, and security;</li>
-            <li>prevent misuse, spam, fraud, or unauthorised access;</li>
+            <li>monitor performance, bugs and security;</li>
+            <li>prevent misuse, spam, fraud or unauthorised access;</li>
             <li>maintain appropriate business and compliance records;</li>
             <li>comply with legal obligations.</li>
           </ul>
@@ -290,7 +282,9 @@ export default function PrivacyPage() {
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>3. Lawful bases for using your information</h2>
+          <h2 style={headingStyle}>
+            3. Lawful bases for using your information
+          </h2>
 
           <p style={paragraphStyle}>
             Under UK data protection law, we need a lawful basis to use
@@ -301,10 +295,10 @@ export default function PrivacyPage() {
           <h3>Consent</h3>
 
           <p style={paragraphStyle}>
-            We rely on consent where you choose to allow browser/device
+            We rely on consent where you choose to allow browser or device
             location access for the Near Me feature, where consent is the
             appropriate lawful basis. You can refuse location access or
-            withdraw the relevant browser/device permission through your
+            withdraw the relevant browser or device permission through your
             settings.
           </p>
 
@@ -312,10 +306,10 @@ export default function PrivacyPage() {
 
           <p style={paragraphStyle}>
             We may rely on this basis where processing is necessary for a
-            contract between you and Trimmute, or to take steps at your request
-            before entering into such a contract. We do not rely on this basis
-            merely because you click through to a third-party haircut provider
-            or booking platform.
+            contract between you and Trimmute, or to take steps at your
+            request before entering into such a contract. We do not rely on
+            this basis merely because you click through to a third-party
+            haircut provider or booking platform.
           </p>
 
           <h3>Legitimate interests</h3>
@@ -324,15 +318,20 @@ export default function PrivacyPage() {
 
           <ul style={listStyle}>
             <li>run and improve Trimmute;</li>
-            <li>provide search, directory and related platform functionality;</li>
+            <li>
+              provide search, directory and related platform functionality;
+            </li>
             <li>understand general site usage;</li>
             <li>keep the website secure;</li>
             <li>manage partner relationships and permissions;</li>
             <li>maintain business and compliance records;</li>
             <li>communicate with shops and users;</li>
-            <li>display business listings and quiet-friendly provider information;</li>
             <li>
-              use trusted service providers to host, operate, analyse, and
+              display business listings and quiet-friendly provider
+              information;
+            </li>
+            <li>
+              use trusted service providers to host, operate, analyse and
               secure the website.
             </li>
           </ul>
@@ -363,16 +362,15 @@ export default function PrivacyPage() {
 
           <ul style={listStyle}>
             <li>website and frontend hosting providers;</li>
-            <li>backend/API hosting providers;</li>
+            <li>backend and API hosting providers;</li>
             <li>database and storage providers;</li>
             <li>authentication providers;</li>
             <li>analytics providers;</li>
-            <li>postcode/location lookup services;</li>
+            <li>postcode and location lookup services;</li>
             <li>map and tile providers;</li>
             <li>email or communication providers, if used;</li>
             <li>professional advisers;</li>
-            <li>regulators or authorities where required by law;</li>
-            <li>listed haircut providers where needed for a booking or enquiry.</li>
+            <li>regulators or authorities where required by law.</li>
           </ul>
 
           <p style={paragraphStyle}>
@@ -385,64 +383,55 @@ export default function PrivacyPage() {
 
           <ul style={listStyle}>
             <li>
-              <strong>Vercel</strong> — frontend hosting and Web Analytics. For
-              relevant customer personal data on Trimmute’s Pro plan, Vercel
-              may act as a processor. Vercel separately acts as a controller
-              for certain account/contact and service-generated data.
+              <strong>Vercel</strong> — frontend hosting and Web Analytics.
             </li>
+
             <li>
-              <strong>Render</strong> — backend/API hosting and associated
-              server/request logs. Render acts as a processor for relevant
-              personal data processed through the Trimmute backend.
+              <strong>Render</strong> — backend and API hosting and associated
+              server or request logs.
             </li>
+
             <li>
               <strong>Supabase</strong> — database and storage services.
-              Supabase acts as a processor for relevant Trimmute data.
-              Trimmute’s primary production database is currently hosted in
+              Trimmute's primary production database is currently hosted in
               West EU (Ireland), eu-west-1.
             </li>
+
             <li>
-              <strong>Clerk</strong> — sign-in and authentication. Clerk
-              generally acts as a processor for end-user authentication data
-              processed on Trimmute’s behalf and separately as a controller for
-              certain Clerk account information.
+              <strong>Clerk</strong> — sign-in, authentication and related
+              account functionality.
             </li>
+
             <li>
-              <strong>postcodes.io</strong> — an external postcode/geocoding
-              service. In the current implementation, a postcode entered by a
-              user is sent directly from the user’s browser to postcodes.io.
-              We do not currently treat postcodes.io as a core database
-              processor for Trimmute.
+              <strong>postcodes.io</strong> — an external postcode and
+              geocoding service. In the current implementation, a postcode
+              entered by a user is sent directly from the user's browser to
+              postcodes.io.
             </li>
+
             <li>
               <strong>CARTO</strong> — an external map-tile service. In the
               current implementation, map tiles are loaded directly by the
-              user’s browser. We do not currently upload Trimmute’s account or
-              booking database to CARTO.
+              user's browser.
             </li>
+
             <li>
               <strong>External booking platforms</strong> — if you follow a
-              provider’s external booking link, you leave Trimmute and the
-              third party’s own privacy policy and terms apply.
+              provider's external booking link, you leave Trimmute and the
+              third party's own privacy policy and terms apply. Trimmute does
+              not currently operate the resulting booking.
             </li>
           </ul>
-
-          <p style={paragraphStyle}>
-            Where a booking is made through Trimmute or relevant details are
-            passed to a haircut provider, the information reasonably necessary
-            to manage or fulfil the booking may be shared with that provider.
-          </p>
         </section>
 
         <section style={sectionStyle}>
           <h2 style={headingStyle}>5. International transfers</h2>
 
           <p style={paragraphStyle}>
-            Some of our service providers may process, access, or store
-            personal information outside the UK. A transfer outside the UK is
-            not automatically unlawful; where UK data protection rules treat a
-            transfer as a restricted transfer, we use or rely on an appropriate
-            transfer mechanism where required.
+            Some of our service providers may process, access or store
+            personal information outside the UK. Where UK data protection law
+            treats this as a restricted transfer, an appropriate transfer
+            mechanism or safeguard is used or relied upon where required.
           </p>
 
           <p style={paragraphStyle}>
@@ -452,11 +441,13 @@ export default function PrivacyPage() {
           <ul style={listStyle}>
             <li>UK adequacy regulations;</li>
             <li>
-              the UK Extension to the EU-U.S. Data Privacy Framework, where the
-              recipient is appropriately certified and the mechanism applies;
+              the UK Extension to the EU-U.S. Data Privacy Framework, where
+              applicable;
             </li>
             <li>the UK Addendum to the EU Standard Contractual Clauses;</li>
-            <li>the UK International Data Transfer Agreement, where appropriate;</li>
+            <li>
+              the UK International Data Transfer Agreement, where appropriate;
+            </li>
             <li>
               other safeguards or exceptions permitted by UK data protection
               law.
@@ -464,18 +455,11 @@ export default function PrivacyPage() {
           </ul>
 
           <p style={paragraphStyle}>
-            For example, Trimmute’s primary Supabase database is currently
-            hosted in Ireland. Other providers may use infrastructure, support
-            teams or subprocessors outside the UK. We maintain a Data
-            Processors & Transfers register and retain relevant provider
-            data-processing and legal documentation as part of our compliance
-            records.
-          </p>
-
-          <p style={paragraphStyle}>
-            Where an appropriate transfer safeguard requires a transfer risk
-            assessment or equivalent data protection test, this is considered
-            as part of our provider and transfer review.
+            Trimmute's primary Supabase database is currently hosted in
+            Ireland. Other providers may use infrastructure, support teams or
+            subprocessors outside the UK. We maintain internal records
+            relating to relevant service providers and transfers as part of
+            our compliance documentation.
           </p>
         </section>
 
@@ -494,41 +478,34 @@ export default function PrivacyPage() {
               nearby results and not intentionally stored in our database as
               part of a user profile.
             </li>
+
             <li>
               <strong>Postcode searches:</strong> used to generate nearby
               results and not intentionally stored as a user profile by
               Trimmute.
             </li>
+
             <li>
               <strong>Saved roster/favourites:</strong> stored in your browser
               until you remove favourites or clear the relevant browser data.
             </li>
-            <li>
-              <strong>Booking tokens:</strong> stored in your browser until you
-              clear the relevant browser data, remove them through available
-              functionality, or they otherwise cease to be required.
-            </li>
-            <li>
-              <strong>Booking records:</strong> kept for as long as reasonably
-              needed to manage bookings, resolve issues, maintain business
-              records and protect legal rights. We currently expect to review
-              booking records after up to 24 months, unless a longer period is
-              justified or required.
-            </li>
+
             <li>
               <strong>Partner/business records:</strong> kept while the
               business is listed and for a reasonable period afterwards for
               record-keeping, permissions, disputes and compliance.
             </li>
+
             <li>
               <strong>Messages and emails:</strong> kept for as long as needed
               to respond and maintain appropriate business records.
             </li>
+
             <li>
               <strong>Analytics and technical logs:</strong> kept according to
-              the purpose of the logs and the settings/retention periods of the
-              relevant service provider, subject to Trimmute’s own legal and
-              security requirements.
+              the purpose of the logs and the settings or retention periods of
+              the relevant service provider, subject to Trimmute's own legal
+              and security requirements.
             </li>
           </ul>
         </section>
@@ -538,7 +515,7 @@ export default function PrivacyPage() {
 
           <p style={paragraphStyle}>
             Trimmute uses or may use cookies, localStorage and similar
-            storage/access technologies to provide website functionality.
+            storage or access technologies to provide website functionality.
           </p>
 
           <p style={paragraphStyle}>These technologies may be used to:</p>
@@ -546,15 +523,13 @@ export default function PrivacyPage() {
           <ul style={listStyle}>
             <li>provide sign-in and security functionality;</li>
             <li>remember saved favourites;</li>
-            <li>remember booking tokens where booking features are used;</li>
             <li>support website functionality and reliability;</li>
             <li>display maps and shop locations.</li>
           </ul>
 
           <p style={paragraphStyle}>
             Vercel Web Analytics is currently used to understand general site
-            usage. Vercel states that its Web Analytics product does not use
-            cookies and stores anonymised analytics data.
+            usage.
           </p>
 
           <p style={paragraphStyle}>
@@ -564,10 +539,10 @@ export default function PrivacyPage() {
 
           <p style={paragraphStyle}>
             Trimmute does not currently use advertising pixels such as Meta
-            Pixel or TikTok Pixel, and our current audit has not identified
-            Google Analytics or Hotjar. If our use of storage/access
-            technologies changes, we will update our notices and obtain
-            consent where required.
+            Pixel or TikTok Pixel, and our current technical audit has not
+            identified Google Analytics or Hotjar. If our use of storage or
+            access technologies changes, we will review and update our
+            notices and consent arrangements where required.
           </p>
 
           <p style={paragraphStyle}>
@@ -593,22 +568,20 @@ export default function PrivacyPage() {
           <p style={paragraphStyle}>
             However, no website, database or online service can be guaranteed
             to be completely secure. You should avoid submitting sensitive
-            personal information through Trimmute unless clearly necessary and
-            specifically requested.
+            personal information through Trimmute unless clearly necessary.
           </p>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>9. Terms of Use and liability</h2>
+          <h2 style={headingStyle}>9. Terms of Use and third-party services</h2>
 
           <p style={paragraphStyle}>
-            Your use of Trimmute is also subject to our{" "}
+            Your use of Trimmute may also be subject to our{" "}
             <a href="/terms" style={{ color: "#5eead4" }}>
               Terms of Use
             </a>
-            , including provisions dealing with availability of the service,
-            third-party providers and external booking services, and
-            limitations of liability.
+            , including provisions relating to availability of the service,
+            third-party haircut providers and external booking services.
           </p>
 
           <p style={paragraphStyle}>
@@ -631,7 +604,9 @@ export default function PrivacyPage() {
             <li>ask us to correct inaccurate or incomplete information;</li>
             <li>ask us to delete information in certain circumstances;</li>
             <li>object to certain uses of your information;</li>
-            <li>restrict how we use your information in certain circumstances;</li>
+            <li>
+              restrict how we use your information in certain circumstances;
+            </li>
             <li>
               ask for information to be transferred to you or another provider
               where the right to data portability applies;
@@ -642,7 +617,7 @@ export default function PrivacyPage() {
             </li>
             <li>
               make a data protection complaint to Trimmute and complain to the
-              Information Commissioner’s Office.
+              Information Commissioner's Office.
             </li>
           </ul>
 
@@ -678,7 +653,8 @@ export default function PrivacyPage() {
               respond to the complaint;
             </li>
             <li>
-              make appropriate enquiries and keep you informed where necessary;
+              make appropriate enquiries and keep you informed where
+              necessary;
             </li>
             <li>
               without undue delay, tell you the outcome of the complaint.
@@ -688,7 +664,7 @@ export default function PrivacyPage() {
           <p style={paragraphStyle}>
             If you remain unhappy with the way we have handled your complaint,
             you also have the right to complain to the Information
-            Commissioner’s Office (ICO), the UK data protection regulator.
+            Commissioner's Office (ICO), the UK data protection regulator.
           </p>
 
           <p style={paragraphStyle}>
@@ -706,17 +682,17 @@ export default function PrivacyPage() {
 
           <p style={paragraphStyle}>
             Trimmute is not specifically directed at children. We do not
-            currently design our account, booking or data-collection features
+            currently design our account or data-collection features
             specifically for children.
           </p>
 
           <p style={paragraphStyle}>
-            If we become aware that we are processing a child’s personal
+            If we become aware that we are processing a child's personal
             information in circumstances requiring additional protections, we
             will assess the processing and take appropriate steps under
             applicable data protection law. If you believe a child has
-            provided personal information to us inappropriately, please contact
-            us.
+            provided personal information to us inappropriately, please
+            contact us.
           </p>
         </section>
 
@@ -724,8 +700,9 @@ export default function PrivacyPage() {
           <h2 style={headingStyle}>13. Changes to this Privacy Policy</h2>
 
           <p style={paragraphStyle}>
-            We may update this Privacy Policy from time to time, including when
-            our services, providers, data flows or legal obligations change.
+            We may update this Privacy Policy from time to time, including
+            when our services, providers, data flows or legal obligations
+            change.
           </p>
 
           <p style={paragraphStyle}>
@@ -747,8 +724,8 @@ export default function PrivacyPage() {
           <p>Harry Carrig trading as Trimmute</p>
           <p>trimmute@gmail.com</p>
           <p>
-            Lytchett House, 13 Freeland Park, Wareham Road, Poole, Dorset, BH16
-            6FA
+            Lytchett House, 13 Freeland Park, Wareham Road, Poole, Dorset,
+            BH16 6FA
           </p>
         </div>
       </div>

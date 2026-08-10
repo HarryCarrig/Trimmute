@@ -180,16 +180,6 @@ app.delete("/shops/:id", async (req, res) => {
   }
 });
 
-// ── BOOKINGS / SLOTS PLACEHOLDER ROUTES ─────────────
-
-app.get("/slots", async (req, res) => {
-  res.status(501).json({ error: "Slots route not currently active" });
-});
-
-app.post("/bookings", async (req, res) => {
-  res.status(501).json({ error: "Bookings route not currently active" });
-});
-
 // ── START SERVER ────────────────────────────────────
 
 const port = process.env.PORT || 3001;

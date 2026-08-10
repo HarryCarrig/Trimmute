@@ -57,7 +57,7 @@ export default function CookiesPage() {
         </h1>
 
         <p style={{ color: "#77777f", marginTop: 0 }}>
-          Version 1.1 | Last updated: 10 August 2026
+          Version 1.2 | Last updated: 10 August 2026
         </p>
 
         <p style={paragraphStyle}>
@@ -65,6 +65,12 @@ export default function CookiesPage() {
           and related technical services to provide website functionality,
           remember choices, secure accounts and understand general website
           usage.
+        </p>
+
+        <p style={paragraphStyle}>
+          Trimmute currently operates as a discovery and directory service.
+          Haircut bookings are completed on external provider or third-party
+          booking services rather than through Trimmute itself.
         </p>
 
         <p style={paragraphStyle}>
@@ -84,24 +90,23 @@ export default function CookiesPage() {
           <p style={paragraphStyle}>
             Cookies are small pieces of information stored on or accessed from
             your device when you use a website. Similar technologies can
-            include localStorage, sessionStorage, authentication tokens, pixels,
+            include localStorage, sessionStorage, authentication tokens,
             scripts, device identifiers and other technologies that store
-            information on, or access information from, a user’s device.
+            information on, or access information from, a user's device.
           </p>
 
           <p style={paragraphStyle}>
             The UK Privacy and Electronic Communications Regulations (PECR)
             apply not only to conventional cookies but also to other
             technologies that store information on, or access information from,
-            a user’s device.
+            a user's device.
           </p>
 
           <p style={paragraphStyle}>
-            Some uses require consent. Others can be used without consent where
-            a statutory exception applies, for example where the technology is
-            strictly necessary to provide a service you requested, or where the
-            conditions for certain statistical or appearance/functionality
-            purposes are met.
+            Some uses require consent. Others may be used without consent where
+            a statutory exception applies, including certain technologies that
+            are necessary to provide a service requested by the user, or where
+            the statutory conditions for other permitted purposes are met.
           </p>
         </section>
 
@@ -120,18 +125,19 @@ export default function CookiesPage() {
 
           <p style={paragraphStyle}>
             <span style={labelStyle}>Purpose:</span> to remember the favourites
-            you deliberately save and show them again on the same browser/device.
+            you deliberately save and show them again on the same browser or
+            device.
           </p>
 
           <p style={paragraphStyle}>
-            <span style={labelStyle}>Storage location:</span> your
-            browser/device. Trimmute does not currently store this favourites
-            list in its database.
+            <span style={labelStyle}>Storage location:</span> your browser or
+            device. Trimmute does not currently store this favourites list in
+            its database.
           </p>
 
           <p style={paragraphStyle}>
             <span style={labelStyle}>Removal:</span> remove favourites through
-            Trimmute where available, or clear the site’s browser storage.
+            Trimmute where available, or clear the site's browser storage.
           </p>
 
           <p style={paragraphStyle}>
@@ -141,66 +147,38 @@ export default function CookiesPage() {
             for advertising or cross-site tracking.
           </p>
 
-          <h3>localStorage — trimmute_customer_token</h3>
-
-          <p style={paragraphStyle}>
-            Where the in-platform booking feature is active, Trimmute may store
-            a booking access token in localStorage.
-          </p>
-
-          <p style={paragraphStyle}>
-            <span style={labelStyle}>Purpose:</span> to allow bookings
-            associated with that browser/device to be retrieved or managed
-            without requiring a full account.
-          </p>
-
-          <p style={paragraphStyle}>
-            The token is an access identifier; booking records themselves are
-            stored separately through Trimmute’s backend/database services.
-          </p>
-
-          <p style={paragraphStyle}>
-            <span style={labelStyle}>Removal:</span> clear the relevant
-            site/browser storage. Doing so may prevent the browser from
-            retrieving previous bookings.
-          </p>
-
-          <p style={paragraphStyle}>
-            <span style={labelStyle}>Current classification:</span> storage
-            used to provide booking-retrieval functionality requested by the
-            user.
-          </p>
-
           <h3>Clerk authentication</h3>
 
           <p style={paragraphStyle}>
-            If you choose to create an account or sign in, Trimmute uses Clerk
-            to provide authentication and account functionality.
+            Trimmute uses Clerk to provide authentication and account
+            functionality.
           </p>
 
           <p style={paragraphStyle}>
-  Clerk sets and accesses authentication/session cookies and may also use
-  browser storage or other technical storage necessary to initialise, secure
-  and operate its authentication service. These technologies are used to
-  authenticate requests, maintain sessions, protect account access and support
-  authentication functionality.
-</p>
-
-<p style={paragraphStyle}>
-  Depending on Clerk’s current configuration and infrastructure, additional
-  technical cookies or storage items may be set in connection with
-  authentication, security, abuse prevention or service operation. Their exact
-  names may change over time as Clerk updates its service.
-</p>
+            Clerk sets and accesses authentication or session cookies and may
+            also use browser storage or other technical storage necessary to
+            initialise, secure and operate its authentication service. These
+            technologies are used to authenticate requests, maintain sessions,
+            protect account access and support authentication functionality.
+          </p>
 
           <p style={paragraphStyle}>
-  <span style={labelStyle}>Current classification:</span>{" "}
-  authentication, account and security functionality. Clerk may initialise
-  certain technical cookies or browser-storage items when Trimmute loads,
-  including before a user signs in. Additional authentication/session
-  technologies are used if the user chooses to sign in. Trimmute does not use
-  these technologies for advertising.
-</p>
+            Depending on Clerk's current configuration and infrastructure,
+            additional technical cookies or storage items may be set in
+            connection with authentication, security, abuse prevention or
+            service operation. Their exact names may change over time as Clerk
+            updates its service.
+          </p>
+
+          <p style={paragraphStyle}>
+            <span style={labelStyle}>Current classification:</span>{" "}
+            authentication, account and security functionality. Clerk may
+            initialise certain technical cookies or browser-storage items when
+            Trimmute loads, including before a user signs in. Additional
+            authentication or session technologies are used if the user chooses
+            to sign in. Trimmute does not use these technologies for
+            advertising.
+          </p>
 
           <h3>Vercel Web Analytics</h3>
 
@@ -211,10 +189,8 @@ export default function CookiesPage() {
 
           <p style={paragraphStyle}>
             Vercel currently states that Web Analytics does not use cookies and
-            stores anonymised analytics data. Vercel identifies visitors for
-            analytics using a request-derived hash rather than a persistent
-            third-party cookie, and states that the visitor-session information
-            used for this purpose is discarded after 24 hours.
+            uses privacy-focused technical measures to distinguish website
+            visits for analytics purposes.
           </p>
 
           <p style={paragraphStyle}>
@@ -230,9 +206,9 @@ export default function CookiesPage() {
 
           <p style={paragraphStyle}>
             We will keep this implementation under review against the live site
-            and current PECR rules. If Trimmute later uses storage/access
-            technologies for statistical purposes under a statutory exception,
-            we will provide any simple objection mechanism required by law.
+            and current PECR requirements. Where a statutory exception requires
+            a simple and free means of objecting, we will provide one where
+            applicable.
           </p>
 
           <h3>Postcode search — postcodes.io</h3>
@@ -246,21 +222,21 @@ export default function CookiesPage() {
           <p style={paragraphStyle}>
             postcodes.io may also receive ordinary technical information
             associated with the web request, such as your IP address and
-            browser/network information.
+            browser or network information.
           </p>
 
           <p style={paragraphStyle}>
             Our current code audit did not identify postcodes.io setting a
             Trimmute cookie or localStorage item. The service is included in
-            this Notice because it is part of Trimmute’s browser-side
+            this Notice because it is part of Trimmute's browser-side
             postcode-search flow and may receive technical request information.
           </p>
 
           <h3>Near Me / device location</h3>
 
           <p style={paragraphStyle}>
-            If you select the Near Me feature, your browser/device may ask for
-            permission to access your location.
+            If you select the Near Me feature, your browser or device may ask
+            for permission to access your location.
           </p>
 
           <p style={paragraphStyle}>
@@ -270,7 +246,7 @@ export default function CookiesPage() {
           </p>
 
           <p style={paragraphStyle}>
-            Browser/device location permission is controlled through your
+            Browser or device location permission is controlled through your
             browser or operating-system settings. Trimmute does not activate
             location access unless you choose the feature and grant the
             relevant permission.
@@ -290,17 +266,16 @@ export default function CookiesPage() {
 
           <p style={paragraphStyle}>
             When a map is displayed, your browser requests map tiles directly
-            from CARTO’s map-tile infrastructure. CARTO may receive ordinary
+            from CARTO's map-tile infrastructure. CARTO may receive ordinary
             technical request information such as your IP address,
-            browser/device information and the map-tile requests necessary to
-            render the map.
+            browser or device information and the map-tile requests necessary
+            to render the map.
           </p>
 
           <p style={paragraphStyle}>
-            Our current code audit did not identify Trimmute sending names,
-            email addresses, booking records or account records to CARTO, and
-            Trimmute does not currently upload its customer or booking database
-            to CARTO.
+            Our current code audit did not identify Trimmute sending names or
+            account records to CARTO. Trimmute does not currently upload a
+            user-account database to CARTO.
           </p>
 
           <h3>External booking and third-party links</h3>
@@ -311,6 +286,7 @@ export default function CookiesPage() {
           </p>
 
           <p style={paragraphStyle}>
+            Trimmute does not currently process the resulting haircut booking.
             Once you leave Trimmute, those third parties may use their own
             cookies, analytics, advertising technologies or other
             storage/access technologies. Their own privacy policies, cookie
@@ -324,7 +300,7 @@ export default function CookiesPage() {
 
           <p style={paragraphStyle}>
             PECR generally requires clear information and prior consent before
-            storing information on, or accessing information from, a user’s
+            storing information on, or accessing information from, a user's
             device unless a statutory exception applies.
           </p>
 
@@ -332,39 +308,38 @@ export default function CookiesPage() {
 
           <ul style={listStyle}>
             <li>
-              storage/access that is strictly necessary to provide an online
-              service or feature the user requested;
+              storage or access that is necessary to provide an online service
+              or feature requested by the user;
             </li>
             <li>
-              certain storage/access used solely to collect statistical
+              certain storage or access used solely to collect statistical
               information about use of a service or website with a view to
               improving it, subject to the statutory conditions;
             </li>
             <li>
-              certain storage/access used to adapt how a service appears or
-              functions in line with the user’s preferences, subject to the
+              certain storage or access used to adapt how a service appears or
+              functions in line with the user's preferences, subject to the
               statutory conditions.
             </li>
           </ul>
 
           <p style={paragraphStyle}>
-            The statistical-purpose and appearance/functionality exceptions
-            include conditions such as giving users a simple, free means of
-            objecting.
+            Some exceptions have additional requirements, which may include
+            giving users a simple and free means of objecting.
           </p>
 
           <p style={paragraphStyle}>
-            Trimmute’s current storage technologies are intended primarily to
-            provide user-requested functionality and authentication/security.
+            Trimmute's current storage technologies are intended primarily to
+            provide user-requested functionality and authentication or security.
             Vercel Web Analytics currently states that it does not use cookies.
-            We will confirm the final consent/objection mechanism against the
-            live production site before publication.
+            We will confirm the final consent and objection arrangements against
+            the production site before public launch.
           </p>
 
           <p style={paragraphStyle}>
             If Trimmute introduces non-exempt advertising, tracking, profiling
-            or other storage/access technologies, we will obtain consent before
-            using them where required.
+            or other storage or access technologies, we will obtain consent
+            before using them where required.
           </p>
         </section>
 
@@ -399,7 +374,7 @@ export default function CookiesPage() {
           </h2>
 
           <p style={paragraphStyle}>
-            Depending on your browser/device, you can usually:
+            Depending on your browser or device, you can usually:
           </p>
 
           <ul style={listStyle}>
@@ -410,16 +385,15 @@ export default function CookiesPage() {
               is available;
             </li>
             <li>block or withdraw device-location permission;</li>
-            <li>use private/incognito browsing;</li>
+            <li>use private or incognito browsing;</li>
             <li>
               use any Trimmute consent or objection control that is provided.
             </li>
           </ul>
 
           <p style={paragraphStyle}>
-            Clearing browser storage may remove saved favourites, booking
-            tokens or other locally stored preferences, and may cause you to be
-            signed out.
+            Clearing browser storage may remove saved favourites and other
+            locally stored preferences, and may cause you to be signed out.
           </p>
         </section>
 
@@ -427,23 +401,21 @@ export default function CookiesPage() {
           <h2 style={headingStyle}>6. Retention</h2>
 
           <p style={paragraphStyle}>
-            Browser-storage items remain on the user’s device according to the
+            Browser-storage items remain on the user's device according to the
             way the relevant feature and browser operate, until they expire,
             are replaced, are removed through the service where available, or
-            the user clears site/browser data.
+            the user clears site or browser data.
           </p>
 
           <p style={paragraphStyle}>
             Clerk authentication cookies and session information are retained
-            according to the authentication/session settings and Clerk’s
+            according to the authentication or session settings and Clerk's
             applicable service configuration.
           </p>
 
           <p style={paragraphStyle}>
-            Vercel states that the request-derived visitor-session information
-            used by Web Analytics is discarded after 24 hours.
-            Aggregated/anonymised analytics information may be retained
-            according to Vercel’s service settings and documentation.
+            Analytics and related technical information is retained according to
+            Vercel's applicable service settings and documentation.
           </p>
         </section>
 
@@ -452,8 +424,8 @@ export default function CookiesPage() {
 
           <p style={paragraphStyle}>
             We may update this Cookie & Storage Notice when Trimmute changes
-            its features, providers or use of storage/access technologies, or
-            when relevant legal requirements change.
+            its features, providers or use of storage or access technologies,
+            or when relevant legal requirements change.
           </p>
 
           <p style={paragraphStyle}>
@@ -466,7 +438,7 @@ export default function CookiesPage() {
           <h2 style={headingStyle}>8. Contact</h2>
 
           <p style={paragraphStyle}>
-            If you have questions about Trimmute’s use of cookies, browser
+            If you have questions about Trimmute's use of cookies, browser
             storage, analytics or similar technologies, contact:
           </p>
 
@@ -490,8 +462,8 @@ export default function CookiesPage() {
           <p>Harry Carrig trading as Trimmute</p>
           <p>trimmute@gmail.com</p>
           <p>
-            Lytchett House, 13 Freeland Park, Wareham Road, Poole, Dorset, BH16
-            6FA
+            Lytchett House, 13 Freeland Park, Wareham Road, Poole, Dorset,
+            BH16 6FA
           </p>
         </div>
       </div>

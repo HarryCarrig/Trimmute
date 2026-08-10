@@ -52,7 +52,7 @@ export default function TermsPage() {
         </h1>
 
         <p style={{ color: "#77777f", marginTop: 0 }}>
-          Version 1.2 | Last updated: 10 August 2026
+          Version 1.3 | Last updated: 10 August 2026
         </p>
 
         <p style={paragraphStyle}>
@@ -67,7 +67,14 @@ export default function TermsPage() {
         </p>
 
         <p style={paragraphStyle}>
-          <strong>Trimmute is operated by Harry Carrig, trading as Trimmute.</strong>
+          Trimmute currently operates as a discovery, directory and listing
+          service. Trimmute does not currently process haircut bookings itself.
+        </p>
+
+        <p style={paragraphStyle}>
+          <strong>
+            Trimmute is operated by Harry Carrig, trading as Trimmute.
+          </strong>
         </p>
 
         <p style={paragraphStyle}>
@@ -101,10 +108,16 @@ export default function TermsPage() {
           </p>
 
           <p style={paragraphStyle}>
-            Unless we expressly state otherwise for a particular feature, any
-            haircut service, appointment, payment, cancellation, refund,
+            Haircut appointments are made directly with the relevant barber,
+            salon or third-party booking service. Trimmute is not currently the
+            booking provider.
+          </p>
+
+          <p style={paragraphStyle}>
+            Any haircut service, appointment, payment, cancellation, refund,
             customer-service issue or in-shop experience is between you and the
-            relevant barber, salon or haircut provider.
+            relevant barber, salon, haircut provider or external booking
+            service, except where applicable law provides otherwise.
           </p>
 
           <p style={paragraphStyle}>
@@ -122,13 +135,21 @@ export default function TermsPage() {
           <ul style={listStyle}>
             <li>search for haircut providers;</li>
             <li>view quiet-friendly or low-conversation listings;</li>
-            <li>view shop information, prices, locations and booking/contact links;</li>
+            <li>
+              view shop information, prices, locations and external booking or
+              contact links;
+            </li>
             <li>use location or postcode features to find nearby providers;</li>
-            <li>save listings using browser/device storage features;</li>
-            <li>where available, make or request a booking through Trimmute.</li>
+            <li>save listings using browser or device storage features;</li>
+            <li>
+              follow external links to contact or book directly with a
+              provider or third-party booking service.
+            </li>
           </ul>
 
-          <p style={paragraphStyle}>You agree not to misuse Trimmute, including by:</p>
+          <p style={paragraphStyle}>
+            You agree not to misuse Trimmute, including by:
+          </p>
 
           <ul style={listStyle}>
             <li>using the site for unlawful, fraudulent or abusive purposes;</li>
@@ -136,7 +157,10 @@ export default function TermsPage() {
               trying to interfere with, damage, overload, disable or circumvent
               the website or its security;
             </li>
-            <li>attempting to access data, accounts or systems without permission;</li>
+            <li>
+              attempting to access data, accounts or systems without
+              permission;
+            </li>
             <li>
               submitting false, misleading, abusive, discriminatory or harmful
               information;
@@ -174,7 +198,8 @@ export default function TermsPage() {
             </li>
             <li>
               the service is guaranteed to meet any particular sensory,
-              accessibility, anxiety-related, disability-related or health need.
+              accessibility, anxiety-related, disability-related or health
+              need.
             </li>
           </ul>
 
@@ -238,7 +263,7 @@ export default function TermsPage() {
             <li>business names;</li>
             <li>addresses and postcodes;</li>
             <li>prices;</li>
-            <li>booking links;</li>
+            <li>external booking or contact links;</li>
             <li>opening or walk-in arrangements;</li>
             <li>services;</li>
             <li>quiet-friendly status;</li>
@@ -287,7 +312,7 @@ export default function TermsPage() {
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>7. Bookings and external links</h2>
+          <h2 style={headingStyle}>7. External bookings and third-party links</h2>
 
           <p style={paragraphStyle}>
             Some listings may link to external websites, booking platforms,
@@ -295,14 +320,23 @@ export default function TermsPage() {
           </p>
 
           <p style={paragraphStyle}>
-            External websites and booking platforms are not controlled by
-            Trimmute.
+            Trimmute does not currently process haircut bookings itself.
           </p>
 
           <p style={paragraphStyle}>
-            If you click an external link, you leave Trimmute and may become
-            subject to the third party’s terms, privacy policy, booking rules,
-            cancellation policy and payment process.
+            If you click an external booking or contact link, you leave
+            Trimmute and deal directly with the relevant provider or third
+            party.
+          </p>
+
+          <p style={paragraphStyle}>
+            You may then become subject to the third party's own terms, privacy
+            policy, booking rules, cancellation policy and payment process.
+          </p>
+
+          <p style={paragraphStyle}>
+            External websites and booking platforms are not controlled by
+            Trimmute.
           </p>
 
           <p style={paragraphStyle}>
@@ -312,14 +346,8 @@ export default function TermsPage() {
           </p>
 
           <p style={paragraphStyle}>
-            Where Trimmute provides an in-platform booking or request feature,
-            relevant booking information may be passed to the relevant haircut
-            provider so they can manage or fulfil the appointment.
-          </p>
-
-          <p style={paragraphStyle}>
             Unless clearly stated otherwise, Trimmute is not a party to the
-            haircut service itself and does not act as the haircut provider’s
+            haircut service itself and does not act as the haircut provider's
             agent for the provision of the haircut service.
           </p>
         </section>
@@ -328,19 +356,20 @@ export default function TermsPage() {
           <h2 style={headingStyle}>8. Payments, cancellations and refunds</h2>
 
           <p style={paragraphStyle}>
-            At this stage, Trimmute does not usually take payment from users for
-            haircut appointments.
+            Trimmute does not currently take payment from users for haircut
+            appointments.
           </p>
 
           <p style={paragraphStyle}>
             Any payment for a haircut, deposit, cancellation fee, refund,
-            missed-appointment fee or other charge is usually between you and
-            the relevant haircut provider or external booking platform.
+            missed-appointment fee or other appointment-related charge is
+            handled by the relevant haircut provider or external booking
+            platform.
           </p>
 
           <p style={paragraphStyle}>
-            You should check the provider’s own payment, cancellation, refund
-            and appointment policies before booking.
+            You should check the provider's or booking platform's own payment,
+            cancellation, refund and appointment policies before booking.
           </p>
 
           <p style={paragraphStyle}>
@@ -353,8 +382,8 @@ export default function TermsPage() {
           <h2 style={headingStyle}>9. User accounts and saved information</h2>
 
           <p style={paragraphStyle}>
-            Trimmute may offer account, sign-in, booking-history, saved-listing
-            or similar features.
+            Trimmute may offer account, sign-in, saved-listing or similar
+            website features.
           </p>
 
           <p style={paragraphStyle}>
@@ -363,44 +392,38 @@ export default function TermsPage() {
           </p>
 
           <p style={paragraphStyle}>
-            If you believe someone has accessed your account or booking
-            information without permission, please contact us promptly.
+            If you believe someone has accessed your Trimmute account without
+            permission, please contact us promptly.
           </p>
 
           <p style={paragraphStyle}>
-            Some saved features rely on local browser/device storage. If you
+            Some saved features rely on local browser or device storage. If you
             clear browser data, change device or use another browser, saved
             information may no longer be available.
           </p>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>10. User-submitted information</h2>
+          <h2 style={headingStyle}>10. Information you submit to Trimmute</h2>
 
           <p style={paragraphStyle}>
-            If you submit information through Trimmute, including booking
-            details, names, requirements, messages, feedback or business
-            information, you agree that the information you provide will be
+            If you submit information directly to Trimmute, for example
+            through messages, feedback, account functionality or business
+            communications, you agree that the information you provide will be
             accurate, lawful and not misleading.
           </p>
 
           <p style={paragraphStyle}>
             You must not submit information that is abusive, discriminatory,
-            unlawful, harmful, fraudulent, infringes another person’s rights,
+            unlawful, harmful, fraudulent, infringes another person's rights,
             or contains malicious code.
           </p>
 
           <p style={paragraphStyle}>
-            Where you submit information for a booking or request, Trimmute may
-            share relevant details with the haircut provider so they can manage
-            or fulfil the appointment.
-          </p>
-
-          <p style={paragraphStyle}>
             Please do not submit medical diagnoses, disability information or
-            other special category personal data unless it is genuinely
-            necessary, the feature expressly asks for it, and you understand
-            who will receive it.
+            other special-category personal data unless it is genuinely
+            necessary for the communication and you understand why you are
+            providing it.
           </p>
         </section>
 
@@ -428,9 +451,9 @@ export default function TermsPage() {
 
           <p style={paragraphStyle}>
             Trimmute may update, suspend or remove a listing where information
-            appears inaccurate, outdated, misleading, unlawful, unsuitable, or
-            where we reasonably consider removal necessary to protect users,
-            Trimmute or third parties.
+            appears inaccurate, outdated, misleading, unlawful or unsuitable,
+            or where we reasonably consider removal necessary to protect
+            users, Trimmute or third parties.
           </p>
 
           <p style={paragraphStyle}>
@@ -451,7 +474,8 @@ export default function TermsPage() {
 
           <p style={paragraphStyle}>
             Where appropriate, we aim to use content provided by, licensed by
-            or used with permission from the relevant business or rights-holder.
+            or used with permission from the relevant business or
+            rights-holder.
           </p>
 
           <p style={paragraphStyle}>
@@ -465,7 +489,7 @@ export default function TermsPage() {
           <h2 style={headingStyle}>13. Intellectual property</h2>
 
           <p style={paragraphStyle}>
-            Trimmute’s name, branding, website design, original text, layout,
+            Trimmute's name, branding, website design, original text, layout,
             software and original content belong to Trimmute or its licensors
             unless stated otherwise.
           </p>
@@ -531,9 +555,9 @@ export default function TermsPage() {
 
           <p style={paragraphStyle}>
             Subject to the paragraph above and to the fullest extent permitted
-            by law, Trimmute’s total aggregate liability to you arising out of
+            by law, Trimmute's total aggregate liability to you arising out of
             or in connection with your use of Trimmute, whether in contract,
-            tort (including negligence), breach of statutory duty or otherwise,
+            tort including negligence, breach of statutory duty or otherwise,
             will not exceed £1,000.
           </p>
 
@@ -549,7 +573,7 @@ export default function TermsPage() {
             </li>
             <li>
               third-party websites or external booking platforms outside
-              Trimmute’s control;
+              Trimmute's control;
             </li>
             <li>the acts or omissions of a haircut provider;</li>
             <li>
@@ -583,7 +607,8 @@ export default function TermsPage() {
 
           <p style={paragraphStyle}>
             Your use of Trimmute may involve the collection and use of personal
-            information and the use of browser storage or similar technologies.
+            information and the use of browser storage or similar
+            technologies.
           </p>
 
           <p style={paragraphStyle}>
@@ -635,7 +660,7 @@ export default function TermsPage() {
 
           <p style={paragraphStyle}>
             We may update these Terms from time to time, including where
-            Trimmute’s features, business model, third-party services or legal
+            Trimmute's features, business model, third-party services or legal
             obligations change.
           </p>
 
@@ -714,8 +739,8 @@ export default function TermsPage() {
           <p>Harry Carrig trading as Trimmute</p>
           <p>trimmute@gmail.com</p>
           <p>
-            Lytchett House, 13 Freeland Park, Wareham Road, Poole, Dorset, BH16
-            6FA
+            Lytchett House, 13 Freeland Park, Wareham Road, Poole, Dorset,
+            BH16 6FA
           </p>
         </div>
       </div>
