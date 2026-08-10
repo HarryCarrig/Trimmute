@@ -6,7 +6,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://www.trimmute.com",
+  })
+);
 app.use(express.json());
 
 app.get("/health", (req, res) => {
@@ -132,53 +136,6 @@ walkInsOnly: shop.walk_ins_only ?? false,
   }
 });
 
-// ── CREATE / DELETE SHOPS ───────────────────────────
-
-app.post("/shops", async (req, res) => {
-  try {
-    const { name, address, imageUrl, basePrice, styles } = req.body || {};
-
-    if (!name || !address || typeof basePrice !== "number") {
-      return res
-        .status(400)
-        .json({ error: "name, address, basePrice (number) required" });
-    }
-
-    const shop = await prisma.shops.create({
-      data: {
-        name,
-        address,
-        image_url: imageUrl ?? null,
-        base_price_pence: basePrice,
-        styles: styles ?? [],
-      },
-    });
-
-    res.status(201).json(shop);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Failed to create shop" });
-  }
-});
-
-app.delete("/shops/:id", async (req, res) => {
-  try {
-    const id = Number(req.params.id);
-
-    if (isNaN(id)) {
-      return res.status(400).json({ error: "Invalid shop id" });
-    }
-
-    const result = await prisma.shops.delete({
-      where: { id },
-    });
-
-    res.json({ removed: result.id });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Failed to delete shop" });
-  }
-});
 
 // ── START SERVER ────────────────────────────────────
 
