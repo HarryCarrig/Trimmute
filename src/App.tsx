@@ -6,6 +6,7 @@ import { MapContainer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 import OpenFreeMapLayer from "./OpenFreeMapLayer";
+import AnalyticsToggle from "./components/AnalyticsToggle";
 
 // 🛠️ FIX FOR REACT LEAFLET MISSING ICONS
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -493,8 +494,10 @@ calmer appointments, less awkward small talk.
         </div>
 
         <footer className="tm-legal-footer">
-          <a href="mailto:trimmute@gmail.com">Contact</a>
-        </footer>
+  <a href="mailto:trimmute@gmail.com">Contact</a>
+  <span>•</span>
+  <AnalyticsToggle />
+</footer>
 
       </div>
     </div>

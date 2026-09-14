@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react"
 import "leaflet/dist/leaflet.css";
 import { ClerkProvider } from '@clerk/clerk-react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { isAnalyticsOptedOut } from "./analyticsPreference";
 
 // 1. Grab the secret key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -13,6 +14,14 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 // 2. Safety check
 if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key")
+}
+
+function AnalyticsGate() {
+  if (isAnalyticsOptedOut()) {
+    return null;
+  }
+
+  return <Analytics />;
 }
 
 // 3. Render everything together
@@ -23,7 +32,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <Routes>
     <Route path="/" element={<App />} />
   </Routes>
-  <Analytics />
+  <AnalyticsGate />
 </BrowserRouter>
 </ClerkProvider>
   </React.StrictMode>,
