@@ -7,6 +7,7 @@ import L from "leaflet";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 import OpenFreeMapLayer from "./OpenFreeMapLayer";
 import AnalyticsToggle from "./components/AnalyticsToggle";
+import QuietCard from "./components/QuietCard";
 
 // 🛠️ FIX FOR REACT LEAFLET MISSING ICONS
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -81,6 +82,7 @@ export default function App() {
   const [sortBy, setSortBy] = useState<string>("recommended");
   const [userLoc, setUserLoc] = useState<[number, number] | null>(null);
   const [showRosterOnly, setShowRosterOnly] = useState(false);
+  const [showQuietCard, setShowQuietCard] = useState(false);
 
   const [favorites, setFavorites] = useState<string[]>(() => {
     const saved = localStorage.getItem("trimmute_favorites");
@@ -281,17 +283,26 @@ export default function App() {
       <div className="tm-bg-orb tm-bg-orb-two" />
 
       <div className="tm-app">
-        <div className="tm-auth">
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="tm-signin-btn">Sign In</button>
-            </SignInButton>
-          </SignedOut>
+       <div className="tm-top-actions">
+  <button
+    className="tm-quiet-card-btn"
+    onClick={() => setShowQuietCard(true)}
+  >
+    My Quiet Card
+  </button>
 
-          <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
-        </div>
+  <div className="tm-auth">
+    <SignedOut>
+      <SignInButton mode="modal">
+        <button className="tm-signin-btn">Sign In</button>
+      </SignInButton>
+    </SignedOut>
+
+    <SignedIn>
+      <UserButton afterSignOutUrl="/" />
+    </SignedIn>
+  </div>
+</div>
 
         <div className="tm-inner">
           <header className="tm-hero">
@@ -492,6 +503,11 @@ calmer appointments, less awkward small talk.
             </>
           )}
         </div>
+
+{showQuietCard && (
+  <QuietCard onClose={() => setShowQuietCard(false)} />
+)}
+
 
         <footer className="tm-legal-footer">
   <a href="mailto:trimmute@gmail.com">Contact</a>
@@ -900,12 +916,118 @@ const trimmuteStyles = `
     z-index: 2;
   }
 
-  .tm-auth {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    z-index: 50;
-  }
+ .tm-top-actions {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tm-top-actions .tm-auth {
+  position: static;
+}
+
+.tm-quiet-card-btn {
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(94, 234, 212, 0.25);
+  background: rgba(94, 234, 212, 0.08);
+  color: #5eead4;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.tm-quiet-card-btn:hover {
+  background: rgba(94, 234, 212, 0.14);
+  border-color: rgba(94, 234, 212, 0.4);
+}
+
+.tm-quiet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(10px);
+}
+
+.tm-quiet-modal {
+  position: relative;
+  width: min(100%, 430px);
+  text-align: center;
+}
+
+.tm-quiet-close {
+  position: absolute;
+  top: -45px;
+  right: 0;
+  border: 0;
+  background: transparent;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.tm-quiet-brand {
+  margin-bottom: 1rem;
+  color: #77777f;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.25rem;
+}
+
+.tm-quiet-card {
+  padding: 2.5rem 2rem;
+  border: 1px solid rgba(94, 234, 212, 0.28);
+  border-radius: 28px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(94, 234, 212, 0.11),
+      rgba(255, 255, 255, 0.04)
+    ),
+    #080909;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.tm-quiet-icon {
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+}
+
+.tm-quiet-card h2 {
+  margin: 0 0 1.25rem;
+  color: #5eead4;
+  font-size: 2rem;
+}
+
+.tm-quiet-main {
+  margin: 0 auto 1.25rem;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.tm-quiet-sub {
+  margin: 0;
+  color: #d4d4d8;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.tm-quiet-hint {
+  margin-top: 1rem;
+  color: #77777f;
+  font-size: 0.8rem;
+}
 
   .tm-signin-btn {
     padding: 0.65rem 1.25rem;
@@ -1428,11 +1550,22 @@ const trimmuteStyles = `
       padding: 1.1rem;
     }
 
-    .tm-auth {
-      top: 1rem;
-      right: 1rem;
-    }
+   .tm-top-actions {
+  top: 1rem;
+  right: 1rem;
+  gap: 0.5rem;
+}
 
+.tm-quiet-card-btn {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.82rem;
+}
+
+.tm-top-actions .tm-signin-btn {
+  padding: 0.6rem 0.8rem;
+  font-size: 0.82rem;
+}
+  
     .tm-signin-btn {
       padding: 0.72rem 1.05rem;
       border-radius: 13px;
