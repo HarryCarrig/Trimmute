@@ -509,9 +509,19 @@ calmer appointments, less awkward small talk.
 )}
 
 
-        <footer className="tm-legal-footer">
+       <footer className="tm-legal-footer">
+  <a href="/terms">Terms of Use</a>
+  <span>•</span>
+
+  <a href="/privacy">Privacy Policy</a>
+  <span>•</span>
+
+  <a href="/cookies">Cookie & Storage Notice</a>
+  <span>•</span>
+
   <a href="mailto:trimmute@gmail.com">Contact</a>
   <span>•</span>
+
   <AnalyticsToggle />
 </footer>
 

@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export default function TermsPage() {
   const sectionStyle = {
     marginTop: "2.25rem",
@@ -18,6 +20,22 @@ export default function TermsPage() {
     paddingLeft: "1.25rem",
     margin: "0.75rem 0",
   };
+
+  const linkStyle = {
+    color: "#5eead4",
+  };
+
+  const Clause = ({
+    number,
+    children,
+  }: {
+    number: string;
+    children: ReactNode;
+  }) => (
+    <p style={paragraphStyle}>
+      <strong>{number}</strong> {children}
+    </p>
+  );
 
   return (
     <main
@@ -52,140 +70,156 @@ export default function TermsPage() {
         </h1>
 
         <p style={{ color: "#77777f", marginTop: 0 }}>
-          Version 1.3 | Last updated: 10 August 2026
+          Version 1.0 | 12 October 2026
         </p>
 
         <p style={paragraphStyle}>
-          These Terms of Use explain the rules that apply when you access or
-          use Trimmute.
+          These Terms of Use (“Terms”) explain the rules that apply when you
+          access or use Trimmute (the “Service”).
         </p>
 
         <p style={paragraphStyle}>
-          Trimmute is a website that helps people find barbers, salons and
+          Trimmute helps adults aged 18 and over find barbers, salons and
           haircut providers who are open to quieter, low-conversation haircut
-          experiences.
+          experiences. Trimmute currently operates as a discovery, directory
+          and listing service only. We do not currently process haircut
+          bookings ourselves.
         </p>
 
         <p style={paragraphStyle}>
-          Trimmute currently operates as a discovery, directory and listing
-          service. Trimmute does not currently process haircut bookings itself.
+          The Service is operated by Harry Carrig, trading as Trimmute
+          (“Trimmute”, “we”, “us” or “our”), of Lytchett House, 13 Freeland
+          Park, Wareham Road, Poole, Dorset, BH16 6FA. Email:
+          {" "}trimmute@gmail.com.
         </p>
 
         <p style={paragraphStyle}>
-          <strong>
-            Trimmute is operated by Harry Carrig, trading as Trimmute.
-          </strong>
-        </p>
-
-        <p style={paragraphStyle}>
-          <strong>Email:</strong> trimmute@gmail.com
-          <br />
-          <strong>Postal address:</strong> Lytchett House, 13 Freeland Park,
-          Wareham Road, Poole, Dorset, BH16 6FA
-        </p>
-
-        <p style={paragraphStyle}>
-          By using Trimmute, you agree to these Terms of Use. If you do not
-          agree with them, please do not use Trimmute.
+          By accessing or using the Service, you agree to these Terms. If you do
+          not agree, please do not use the Service.
         </p>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>1. About Trimmute</h2>
+          <h2 style={headingStyle}>1. Introduction and acceptance</h2>
 
-          <p style={paragraphStyle}>
-            Trimmute is a discovery, directory and listing platform.
-          </p>
+          <Clause number="1.1">
+            These Terms explain the rules that apply when you access or use the
+            Service.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            We help users find haircut providers who may offer quieter,
-            low-conversation or similar haircut experiences.
-          </p>
+          <Clause number="1.2">
+            By accessing or using the Service, you agree to be bound by these
+            Terms. If you do not agree to these Terms, please do not use the
+            Service.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            Trimmute does not itself provide barbering, hairdressing, salon,
-            grooming, medical, therapeutic or professional accessibility
-            services.
-          </p>
-
-          <p style={paragraphStyle}>
-            Haircut appointments are made directly with the relevant barber,
-            salon or third-party booking service. Trimmute is not currently the
-            booking provider.
-          </p>
-
-          <p style={paragraphStyle}>
-            Any haircut service, appointment, payment, cancellation, refund,
-            customer-service issue or in-shop experience is between you and the
-            relevant barber, salon, haircut provider or external booking
-            service, except where applicable law provides otherwise.
-          </p>
-
-          <p style={paragraphStyle}>
-            Nothing in these Terms is intended to remove any statutory rights
-            you have against Trimmute or a haircut provider where those rights
-            apply.
-          </p>
+          <Clause number="1.3">
+            These Terms are written in plain language as far as possible. If
+            anything is unclear, please contact us using the details in clause
+            22.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>2. Using Trimmute</h2>
+          <h2 style={headingStyle}>2. About the Service</h2>
 
-          <p style={paragraphStyle}>You may use Trimmute to:</p>
+          <Clause number="2.1">
+            Trimmute helps adults aged 18 and over find barbers, salons and
+            haircut providers who are open to quieter, low-conversation haircut
+            experiences.
+          </Clause>
+
+          <Clause number="2.2">
+            Trimmute currently operates as a discovery, directory and listing
+            service only. We do not currently process haircut bookings
+            ourselves.
+          </Clause>
+
+          <Clause number="2.3">
+            We do not provide barbering, hairdressing, salon, grooming, medical,
+            therapeutic or professional accessibility services.
+          </Clause>
+
+          <Clause number="2.4">
+            Haircut appointments are made directly with the relevant barber,
+            salon or third-party booking service. We are not currently the
+            booking provider.
+          </Clause>
+
+          <Clause number="2.5">
+            Trimmute does not itself provide, administer or control haircut
+            services, appointments, payments, cancellations, refunds,
+            customer-service issues or in-shop experiences. Those matters are
+            handled by the relevant provider or external booking service.
+          </Clause>
+
+          <Clause number="2.6">
+            Nothing in these Terms removes any statutory right you have against
+            us or against a haircut provider.
+          </Clause>
+        </section>
+
+        <section style={sectionStyle}>
+          <h2 style={headingStyle}>3. Using the Service</h2>
+
+          <Clause number="3.1">You may use the Service to:</Clause>
 
           <ul style={listStyle}>
             <li>search for haircut providers;</li>
             <li>view quiet-friendly or low-conversation listings;</li>
             <li>
-              view shop information, prices, locations and external booking or
-              contact links;
+              view shop information, prices, locations and external
+              booking/contact links;
             </li>
             <li>use location or postcode features to find nearby providers;</li>
-            <li>save listings using browser or device storage features;</li>
+            <li>save listings using browser/device storage features; and</li>
             <li>
-              follow external links to contact or book directly with a
-              provider or third-party booking service.
+              follow external links to contact or book directly with a provider
+              or third-party booking service.
             </li>
           </ul>
 
-          <p style={paragraphStyle}>
-            You agree not to misuse Trimmute, including by:
-          </p>
+          <Clause number="3.2">
+            You must not misuse the Service. In particular, you must not:
+          </Clause>
 
           <ul style={listStyle}>
-            <li>using the site for unlawful, fraudulent or abusive purposes;</li>
+            <li>use the Service for unlawful, fraudulent or abusive purposes;</li>
             <li>
-              trying to interfere with, damage, overload, disable or circumvent
-              the website or its security;
+              interfere with, damage, overload, disable or circumvent the
+              Service or its security;
             </li>
+            <li>attempt to access data, accounts or systems without permission;</li>
             <li>
-              attempting to access data, accounts or systems without
-              permission;
-            </li>
-            <li>
-              submitting false, misleading, abusive, discriminatory or harmful
+              submit false, misleading, abusive, discriminatory or harmful
               information;
             </li>
-            <li>introducing malware or other harmful code;</li>
+            <li>introduce malware or other harmful code; or</li>
             <li>
-              using automated tools to scrape, copy or extract substantial
-              parts of the website without permission, except where the law
-              permits this.
+              use automated tools to scrape, copy or extract substantial parts
+              of the Service without permission, except where the law permits
+              this.
             </li>
           </ul>
+
+          <Clause number="3.3">
+            We may suspend or restrict your access if we reasonably believe you
+            have breached clause 3.2 (see also clause 15).
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
           <h2 style={headingStyle}>
-            3. Quiet-friendly and low-conversation listings
+            4. Quiet-friendly and low-conversation listings
           </h2>
 
-          <p style={paragraphStyle}>
-            Trimmute uses terms such as “quiet-friendly”, “low-conversation”,
-            “silent cut” or similar wording to describe haircut providers who
-            may be open to quieter or lower-conversation haircut experiences.
-          </p>
+          <Clause number="4.1">
+            We use terms such as “quiet-friendly”, “low-conversation”,
+            “minimal-conversation”, “silent cut” or similar wording to describe
+            haircut providers who are open to quieter or lower-conversation
+            haircut experiences.
+          </Clause>
 
-          <p style={paragraphStyle}>These terms do not mean that:</p>
+          <Clause number="4.2">These terms do not mean that:</Clause>
 
           <ul style={listStyle}>
             <li>the whole shop or salon will be silent;</li>
@@ -194,529 +228,500 @@ export default function TermsPage() {
             <li>a particular staff member will always be available;</li>
             <li>
               the provider has been medically, clinically or professionally
-              certified by Trimmute;
+              certified by us; or
             </li>
             <li>
               the service is guaranteed to meet any particular sensory,
-              accessibility, anxiety-related, disability-related or health
-              need.
+              accessibility, anxiety-related, disability-related or health need.
             </li>
           </ul>
 
-          <p style={paragraphStyle}>
+          <Clause number="4.3">
             Quiet-friendly or similar wording means only that the provider has
-            been presented as open to quieter or lower-conversation requests,
-            based on the information available to Trimmute.
-          </p>
+            confirmed or otherwise expressly agreed that it is open to
+            reasonable requests for quieter or lower-conversation haircut
+            experiences.
+          </Clause>
 
-          <p style={paragraphStyle}>
+          <Clause number="4.4">
             If you have specific accessibility, sensory, medical or other
-            requirements, you should contact the haircut provider directly
-            before travelling or booking to check whether they can meet those
-            requirements.
-          </p>
+            requirements, you should contact the provider directly before
+            travelling or booking.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>4. Verified and partner listings</h2>
+          <h2 style={headingStyle}>5. Verified and partner listings</h2>
 
-          <p style={paragraphStyle}>
-            A verified or partner listing means that Trimmute has received
-            confirmation from or relating to the business that it is open to
-            being listed on Trimmute.
-          </p>
+          <Clause number="5.1">
+            A verified listing means we have received confirmation from the
+            business, or from a person reasonably understood to be authorised to
+            act on its behalf, that it is open to being listed on Trimmute. A
+            Partner listing means the business has formally agreed to
+            participate in Trimmute’s Partner programme under the applicable
+            Partner terms.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            Where a business is also described as quiet-friendly,
-            low-conversation, silent-cut friendly or using similar wording,
-            Trimmute will only use that description where the business has
-            separately confirmed or otherwise expressly agreed to that
-            representation.
-          </p>
+          <Clause number="5.2">
+            Where a business is described as quiet-friendly, low-conversation,
+            minimal-conversation, silent-cut friendly or using similar wording,
+            we will only use that description where the business has confirmed
+            or otherwise expressly agreed that it is open to accommodating such
+            requests, including through acceptance of applicable Partner terms.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            A verified or partner label does not mean that Trimmute has
-            inspected, audited, trained, certified, accredited or
-            quality-assured the business.
-          </p>
+          <Clause number="5.3">
+            A verified or partner label does not mean we have inspected,
+            audited, trained, certified, accredited or quality-assured the
+            business.
+          </Clause>
 
-          <p style={paragraphStyle}>
+          <Clause number="5.4">
             Listed businesses remain responsible for their own acts, omissions,
             services, prices, availability, staff, accessibility, legal
             compliance and customer experience.
-          </p>
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>5. Information on Trimmute</h2>
+          <h2 style={headingStyle}>6. Accuracy of information</h2>
 
-          <p style={paragraphStyle}>
-            We take reasonable steps to keep information on Trimmute accurate
-            and up to date, but business information can change without us
-            being notified and we do not guarantee that every listing is
-            complete, accurate or current at all times.
-          </p>
+          <Clause number="6.1">
+            We take reasonable steps to keep information accurate and up to
+            date, but business information may change without us being notified.
+            We do not guarantee that every listing is complete, accurate or
+            current at all times.
+          </Clause>
 
-          <p style={paragraphStyle}>Information may include:</p>
+          <Clause number="6.2">
+            Listing information may include business names, addresses,
+            postcodes, prices, external booking/contact links, opening or
+            walk-in arrangements, services, quiet-friendly or low-conversation
+            status, photos, logos and images.
+          </Clause>
 
-          <ul style={listStyle}>
-            <li>business names;</li>
-            <li>addresses and postcodes;</li>
-            <li>prices;</li>
-            <li>external booking or contact links;</li>
-            <li>opening or walk-in arrangements;</li>
-            <li>services;</li>
-            <li>quiet-friendly status;</li>
-            <li>photos, logos or images.</li>
-          </ul>
-
-          <p style={paragraphStyle}>
+          <Clause number="6.3">
             You should check important details directly with the relevant
-            haircut provider before travelling, booking, paying, relying on
-            availability or making decisions based on a listing.
-          </p>
+            provider before travelling, booking, paying, relying on
+            availability, or making decisions based on a listing.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
           <h2 style={headingStyle}>
-            6. Location, maps and third-party technical services
+            7. Location, maps and third-party technical services
           </h2>
 
-          <p style={paragraphStyle}>
-            Trimmute uses third-party technical services to provide certain
-            website features, including location search, postcode lookup, maps,
-            hosting, authentication, analytics and database services.
-          </p>
+          <Clause number="7.1">
+            We use third-party technical services to provide features including
+            location search, postcode lookup, maps, hosting, authentication,
+            analytics and database services.
+          </Clause>
 
-          <p style={paragraphStyle}>
-  For example, a postcode you enter may be sent to postcodes.io for
-  geocoding, and map data may be loaded directly from OpenFreeMap.
-  Location-based searches may send your device coordinates to the
-  Trimmute backend when you choose to use the Near Me feature.
-</p>
+          <Clause number="7.2">
+            For example, a postcode you enter may be sent to postcodes.io for
+            geocoding, map tiles may be loaded from OpenFreeMap, and
+            location-based searches may send device coordinates to our backend
+            when you choose to use your location.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            These third-party services may process technical request
-            information in accordance with their own legal terms and privacy
-            notices. For more detail about how personal information is handled,
-            please read the{" "}
-            <a href="/privacy" style={{ color: "#5eead4" }}>
-              Trimmute Privacy Policy
+          <Clause number="7.3">
+            These services may process technical request information in
+            accordance with their own legal terms and privacy notices. See our{" "}
+            <a href="/privacy" style={linkStyle}>
+              Privacy Policy
             </a>{" "}
             and{" "}
-            <a href="/cookies" style={{ color: "#5eead4" }}>
+            <a href="/cookies" style={linkStyle}>
               Cookie & Storage Notice
-            </a>
-            .
-          </p>
-        </section>
-
-        <section style={sectionStyle}>
-          <h2 style={headingStyle}>7. External bookings and third-party links</h2>
-
-          <p style={paragraphStyle}>
-            Some listings may link to external websites, booking platforms,
-            maps, social-media pages or other third-party services.
-          </p>
-
-          <p style={paragraphStyle}>
-            Trimmute does not currently process haircut bookings itself.
-          </p>
-
-          <p style={paragraphStyle}>
-            If you click an external booking or contact link, you leave
-            Trimmute and deal directly with the relevant provider or third
-            party.
-          </p>
-
-          <p style={paragraphStyle}>
-            You may then become subject to the third party's own terms, privacy
-            policy, booking rules, cancellation policy and payment process.
-          </p>
-
-          <p style={paragraphStyle}>
-            External websites and booking platforms are not controlled by
-            Trimmute.
-          </p>
-
-          <p style={paragraphStyle}>
-            Trimmute is not responsible for third-party websites, third-party
-            content or services provided by third parties, except to the extent
-            that applicable law makes Trimmute responsible.
-          </p>
-
-          <p style={paragraphStyle}>
-            Unless clearly stated otherwise, Trimmute is not a party to the
-            haircut service itself and does not act as the haircut provider's
-            agent for the provision of the haircut service.
-          </p>
-        </section>
-
-        <section style={sectionStyle}>
-          <h2 style={headingStyle}>8. Payments, cancellations and refunds</h2>
-
-          <p style={paragraphStyle}>
-            Trimmute does not currently take payment from users for haircut
-            appointments.
-          </p>
-
-          <p style={paragraphStyle}>
-            Any payment for a haircut, deposit, cancellation fee, refund,
-            missed-appointment fee or other appointment-related charge is
-            handled by the relevant haircut provider or external booking
-            platform.
-          </p>
-
-          <p style={paragraphStyle}>
-            You should check the provider's or booking platform's own payment,
-            cancellation, refund and appointment policies before booking.
-          </p>
-
-          <p style={paragraphStyle}>
-            Where a consumer right or legal remedy applies directly against
-            Trimmute, nothing in these Terms removes that right or remedy.
-          </p>
-        </section>
-
-        <section style={sectionStyle}>
-          <h2 style={headingStyle}>9. User accounts and saved information</h2>
-
-          <p style={paragraphStyle}>
-            Trimmute may offer account, sign-in, saved-listing or similar
-            website features.
-          </p>
-
-          <p style={paragraphStyle}>
-            You are responsible for taking reasonable steps to keep your
-            account credentials and device access secure.
-          </p>
-
-          <p style={paragraphStyle}>
-            If you believe someone has accessed your Trimmute account without
-            permission, please contact us promptly.
-          </p>
-
-          <p style={paragraphStyle}>
-            Some saved features rely on local browser or device storage. If you
-            clear browser data, change device or use another browser, saved
-            information may no longer be available.
-          </p>
-        </section>
-
-        <section style={sectionStyle}>
-          <h2 style={headingStyle}>10. Information you submit to Trimmute</h2>
-
-          <p style={paragraphStyle}>
-            If you submit information directly to Trimmute, for example
-            through messages, feedback, account functionality or business
-            communications, you agree that the information you provide will be
-            accurate, lawful and not misleading.
-          </p>
-
-          <p style={paragraphStyle}>
-            You must not submit information that is abusive, discriminatory,
-            unlawful, harmful, fraudulent, infringes another person's rights,
-            or contains malicious code.
-          </p>
-
-          <p style={paragraphStyle}>
-            Please do not submit medical diagnoses, disability information or
-            other special-category personal data unless it is genuinely
-            necessary for the communication and you understand why you are
-            providing it.
-          </p>
+            </a>{" "}
+            for more information.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
           <h2 style={headingStyle}>
-            11. Business listings and partner businesses
+            8. External bookings and third-party links
           </h2>
 
-          <p style={paragraphStyle}>
+          <Clause number="8.1">
+            Some listings may link to external websites, booking platforms,
+            maps, social-media pages or other third-party services.
+          </Clause>
+
+          <Clause number="8.2">
+            We do not currently process haircut bookings ourselves. If you click
+            an external booking or contact link, you leave the Service and deal
+            directly with the relevant provider or third party.
+          </Clause>
+
+          <Clause number="8.3">
+            You may then become subject to that third party’s own terms, privacy
+            policy, booking rules, cancellation policy and payment process.
+          </Clause>
+
+          <Clause number="8.4">
+            External websites and booking platforms are not controlled by us. We
+            are not responsible for third-party websites, third-party content or
+            services provided by third parties, except to the extent applicable
+            law makes us responsible.
+          </Clause>
+
+          <Clause number="8.5">
+            Unless clearly stated otherwise, we are not a party to the haircut
+            service itself and do not act as a haircut provider’s agent for the
+            provision of the haircut service.
+          </Clause>
+        </section>
+
+        <section style={sectionStyle}>
+          <h2 style={headingStyle}>9. Payments, cancellations and refunds</h2>
+
+          <Clause number="9.1">
+            We do not currently take payment from you for haircut appointments.
+          </Clause>
+
+          <Clause number="9.2">
+            Any payment for a haircut, deposit, cancellation fee, refund,
+            missed-appointment fee or other appointment-related charge is
+            handled by the relevant provider or external booking platform.
+          </Clause>
+
+          <Clause number="9.3">
+            You should check the provider’s or booking platform’s own payment,
+            cancellation, refund and appointment policies before booking.
+          </Clause>
+
+          <Clause number="9.4">
+            Nothing in these Terms removes any consumer right or legal remedy
+            that applies directly against us.
+          </Clause>
+        </section>
+
+        <section style={sectionStyle}>
+          <h2 style={headingStyle}>10. Accounts and saved information</h2>
+
+          <Clause number="10.1">
+            Trimmute offers account, sign-in and saved-listing functionality and
+            may introduce similar features from time to time.
+          </Clause>
+
+          <Clause number="10.2">
+            You are responsible for taking reasonable steps to keep your account
+            credentials and device access secure. If you believe someone has
+            accessed your account without permission, please contact us
+            promptly.
+          </Clause>
+
+          <Clause number="10.3">
+            Some saved features rely on local browser or device storage. If you
+            clear your browser data, change device, or use another browser,
+            saved information may no longer be available.
+          </Clause>
+        </section>
+
+        <section style={sectionStyle}>
+          <h2 style={headingStyle}>11. Information you submit to us</h2>
+
+          <Clause number="11.1">
+            If you submit information to us directly, for example through
+            messages, feedback, account functionality or business
+            communications, it must be accurate, lawful and not misleading.
+          </Clause>
+
+          <Clause number="11.2">
+            You must not submit information that is abusive, discriminatory,
+            unlawful, harmful, fraudulent, infringes another person’s rights, or
+            contains malicious code.
+          </Clause>
+
+          <Clause number="11.3">
+            You should not submit medical diagnoses, disability information or
+            other special category personal data.
+          </Clause>
+        </section>
+
+        <section style={sectionStyle}>
+          <h2 style={headingStyle}>
+            12. Business listings and partner businesses
+          </h2>
+
+          <Clause number="12.1">
             Businesses listed on Trimmute are responsible for their own
             services, staff, prices, appointments, customer communications,
             legal compliance and customer experience.
-          </p>
+          </Clause>
 
-          <p style={paragraphStyle}>
-            If you are a listed business and want to update, correct or remove
-            your listing, please contact us.
-          </p>
+          <Clause number="12.2">
+            A listed business may contact us to update, correct or remove its
+            listing.
+          </Clause>
 
-          <p style={paragraphStyle}>
+          <Clause number="12.3">
             Businesses must not claim to be certified, endorsed, guaranteed,
-            medically approved or professionally accredited by Trimmute unless
-            Trimmute has expressly agreed that wording in writing.
-          </p>
+            medically approved or professionally accredited by us unless we
+            have expressly agreed to that wording in writing.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            Trimmute may update, suspend or remove a listing where information
-            appears inaccurate, outdated, misleading, unlawful or unsuitable,
-            or where we reasonably consider removal necessary to protect
-            users, Trimmute or third parties.
-          </p>
+          <Clause number="12.4">
+            We may update, suspend or remove a listing where information appears
+            inaccurate, outdated, misleading, unlawful or unsuitable, or where
+            we reasonably consider removal necessary to protect users,
+            ourselves or third parties.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            Separate Partner Terms or agreements may apply to businesses that
-            enter into a formal partnership or commercial arrangement with
-            Trimmute.
-          </p>
+          <Clause number="12.5">
+            Separate Partner terms or agreements may apply to businesses that
+            formally participate in Trimmute’s Partner programme or enter into a
+            separate commercial arrangement with us.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>12. Images, logos and business content</h2>
+          <h2 style={headingStyle}>13. Images, logos and business content</h2>
 
-          <p style={paragraphStyle}>
-            Trimmute may display business names, logos, images, photographs,
+          <Clause number="13.1">
+            We may display business names, logos, images, photographs,
             descriptions, links and other listing content to identify and
             describe listed haircut providers.
-          </p>
+          </Clause>
 
-          <p style={paragraphStyle}>
-            Where appropriate, we aim to use content provided by, licensed by
-            or used with permission from the relevant business or
+          <Clause number="13.2">
+            We may use content supplied or expressly approved by the relevant
+            business, or otherwise licensed or permitted for use by the relevant
             rights-holder.
-          </p>
+          </Clause>
 
-          <p style={paragraphStyle}>
-            If you own rights in content displayed on Trimmute and believe it
-            is being used without appropriate permission, please contact us so
-            we can investigate and, where appropriate, remove or amend it.
-          </p>
+          <Clause number="13.3">
+            Rights-holders who believe content is being used without appropriate
+            permission should contact us so the issue can be investigated and,
+            where appropriate, the content removed or amended.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>13. Intellectual property</h2>
+          <h2 style={headingStyle}>14. Intellectual property</h2>
 
-          <p style={paragraphStyle}>
-            Trimmute's name, branding, website design, original text, layout,
-            software and original content belong to Trimmute or its licensors
-            unless stated otherwise.
-          </p>
+          <Clause number="14.1">
+            Our name, branding, website design, original text, layout, software
+            and original content belong to us or our licensors unless stated
+            otherwise.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            You may use Trimmute for your own lawful personal use.
-          </p>
+          <Clause number="14.2">
+            You may use the Service for lawful personal use.
+          </Clause>
 
-          <p style={paragraphStyle}>
+          <Clause number="14.3">
             You must not reproduce, sell, commercially exploit, modify,
-            distribute, scrape or reuse a substantial part of Trimmute without
-            permission, except where applicable law permits you to do so.
-          </p>
-
-          <p style={paragraphStyle}>
-            This does not prevent normal linking to Trimmute or individual
-            listings.
-          </p>
-        </section>
-
-        <section style={sectionStyle}>
-          <h2 style={headingStyle}>14. Availability, changes and suspension</h2>
-
-          <p style={paragraphStyle}>
-            We aim to keep Trimmute available and functioning, but we do not
-            guarantee that the website or any particular feature will always
-            be available, uninterrupted, secure or error-free.
-          </p>
-
-          <p style={paragraphStyle}>
-            We may update, modify, suspend or withdraw features or parts of
-            Trimmute where reasonably necessary, including for maintenance,
-            security, legal compliance, business changes or technical reasons.
-          </p>
-
-          <p style={paragraphStyle}>
-            We may suspend or restrict access where we reasonably believe
-            Trimmute is being misused, security is at risk, or continued access
-            could harm Trimmute, its users or third parties.
-          </p>
-
-          <p style={paragraphStyle}>
-            Nothing in this section excludes responsibility that cannot
-            lawfully be excluded.
-          </p>
-        </section>
-
-        <section style={sectionStyle}>
-          <h2 style={headingStyle}>15. Liability</h2>
-
-          <p style={paragraphStyle}>
-            Nothing in these Terms excludes or limits liability where it would
-            be unlawful to do so. In particular, nothing in these Terms
-            excludes or limits liability for death or personal injury caused by
-            negligence, fraud or fraudulent misrepresentation, or any other
-            liability that cannot lawfully be excluded or limited.
-          </p>
-
-          <p style={paragraphStyle}>
-            Trimmute is a discovery and listing platform and does not itself
-            provide the haircut services supplied by listed businesses.
-          </p>
-
-          <p style={paragraphStyle}>
-            Subject to the paragraph above and to the fullest extent permitted
-            by law, Trimmute's total aggregate liability to you arising out of
-            or in connection with your use of Trimmute, whether in contract,
-            tort including negligence, breach of statutory duty or otherwise,
-            will not exceed £1,000.
-          </p>
-
-          <p style={paragraphStyle}>
-            Subject to applicable law, Trimmute is not responsible for loss or
-            damage that results solely from:
-          </p>
-
-          <ul style={listStyle}>
-            <li>
-              inaccurate, outdated or incomplete listing information where
-              Trimmute has taken reasonable care;
-            </li>
-            <li>
-              third-party websites or external booking platforms outside
-              Trimmute's control;
-            </li>
-            <li>the acts or omissions of a haircut provider;</li>
-            <li>
-              the quality, safety, suitability, accessibility, availability or
-              outcome of a haircut service supplied by a third party;
-            </li>
-            <li>
-              events that were not reasonably foreseeable when you agreed to
-              these Terms.
-            </li>
-          </ul>
-
-          <p style={paragraphStyle}>
-            If you use Trimmute for any business or commercial purpose rather
-            than as a consumer, then, to the fullest extent permitted by law,
-            Trimmute will not be liable for loss of profit, loss of business,
-            business interruption or loss of business opportunity.
-          </p>
-
-          <p style={paragraphStyle}>
-            Nothing in this section affects your statutory rights as a
-            consumer, including any rights or remedies that cannot lawfully be
-            limited or excluded.
-          </p>
+            distribute, scrape or reuse a substantial part of the Service
+            without our permission, except where applicable law permits this.
+            Normal linking to Trimmute or individual listings is permitted.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
           <h2 style={headingStyle}>
-            16. Privacy, cookies and personal information
+            15. Availability, changes and suspension
           </h2>
 
-          <p style={paragraphStyle}>
-            Your use of Trimmute may involve the collection and use of personal
-            information and the use of browser storage or similar
-            technologies.
-          </p>
+          <Clause number="15.1">
+            We aim to keep the Service available and functioning but do not
+            guarantee that it, or any feature, will always be available,
+            uninterrupted, secure or error-free.
+          </Clause>
 
-          <p style={paragraphStyle}>
+          <Clause number="15.2">
+            We may update, modify, suspend or withdraw features or parts of the
+            Service where reasonably necessary, including for maintenance,
+            security, legal compliance, business changes or technical reasons.
+          </Clause>
+
+          <Clause number="15.3">
+            We may suspend or restrict your access where we reasonably believe
+            the Service is being misused, security is at risk, or continued
+            access could harm us, other users or third parties.
+          </Clause>
+
+          <Clause number="15.4">
+            Nothing in this clause 15 excludes responsibility that cannot
+            lawfully be excluded.
+          </Clause>
+        </section>
+
+        <section style={sectionStyle}>
+          <h2 style={headingStyle}>16. Liability</h2>
+
+          <Clause number="16.1">
+            Nothing in these Terms excludes or limits liability for: (a) death
+            or personal injury caused by negligence; (b) fraud or fraudulent
+            misrepresentation; or (c) any other liability that cannot lawfully
+            be excluded or limited, including your statutory rights under the
+            Consumer Rights Act 2015.
+          </Clause>
+
+          <Clause number="16.2">
+            We will supply the Service, the discovery, directory and listing
+            platform itself, with reasonable care and skill, as required by
+            section 49 of the Consumer Rights Act 2015. Nothing in this clause
+            16 excludes that obligation. Clause 16.5 instead limits, to the
+            extent reasonable and permitted by section 57 of that Act, the
+            amount we may be required to pay if we fail to do so.
+          </Clause>
+
+          <Clause number="16.3">
+            We are a discovery and listing platform and do not ourselves provide
+            the haircut services supplied by listed businesses. Except as set
+            out in these Terms, we are not responsible for the acts or omissions
+            of a haircut provider, or for the quality, safety, suitability,
+            accessibility, availability or outcome of a haircut service supplied
+            by a third party.
+          </Clause>
+
+          <Clause number="16.4">
+            Subject to clauses 16.1, 16.2 and 16.8, and to the extent permitted
+            by applicable law, we are not liable for any indirect or
+            consequential loss, or for loss or corruption of data, arising out
+            of or in connection with your use of the Service, whether in
+            contract, tort (including negligence), breach of statutory duty or
+            otherwise.
+          </Clause>
+
+          <Clause number="16.5">
+            Subject to clauses 16.1 to 16.4, and to the extent permitted by
+            applicable law, our total aggregate liability to you arising out of
+            or in connection with your use of the Service will not exceed £500
+            or, if higher, the total amount (if any) you have paid us for use of
+            the Service in the twelve (12) months before the event giving rise
+            to the claim. Nothing in this clause limits any minimum recovery or
+            other remedy that applicable consumer law requires to remain
+            available to you.
+          </Clause>
+
+          <Clause number="16.6">
+            Subject to applicable law and to clauses 16.1 and 16.2, we are not
+            responsible for loss or damage that results solely from: (a)
+            inaccurate, outdated or incomplete listing information where we have
+            taken reasonable care; (b) third-party websites or external booking
+            platforms outside our control; (c) the acts or omissions of a
+            haircut provider; (d) the quality, safety, suitability,
+            accessibility, availability or outcome of a haircut service supplied
+            by a third party; or (e) events that were not reasonably foreseeable
+            when you agreed to these Terms.
+          </Clause>
+
+          <Clause number="16.7">
+            If you use the Service for business or commercial purposes rather
+            than as a consumer, then, to the fullest extent permitted by law, we
+            will not be liable to you for loss of profit, loss of business,
+            business interruption or loss of business opportunity, and the
+            reasonableness of this clause 16 as it applies to you will, where
+            relevant, be assessed under the Unfair Contract Terms Act 1977
+            rather than the Consumer Rights Act 2015.
+          </Clause>
+
+          <Clause number="16.8">
+            Nothing in this clause 16 affects your statutory rights as a
+            consumer, including any right or remedy that cannot lawfully be
+            limited or excluded.
+          </Clause>
+        </section>
+
+        <section style={sectionStyle}>
+          <h2 style={headingStyle}>
+            17. Privacy, cookies and personal information
+          </h2>
+
+          <Clause number="17.1">
+            Use of the Service may involve the collection and use of personal
+            information and the use of browser storage or similar technologies.
             Please read our{" "}
-            <a href="/privacy" style={{ color: "#5eead4" }}>
+            <a href="/privacy" style={linkStyle}>
               Privacy Policy
             </a>{" "}
-            for information about what personal information we collect, how we
-            use it, who we share it with, international transfers and your
-            rights.
-          </p>
-
-          <p style={paragraphStyle}>
-            Please also read our{" "}
-            <a href="/cookies" style={{ color: "#5eead4" }}>
+            and{" "}
+            <a href="/cookies" style={linkStyle}>
               Cookie & Storage Notice
             </a>{" "}
-            for information about cookies, localStorage and similar
-            technologies used by Trimmute.
-          </p>
+            for further information.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>17. Children and young users</h2>
+          <h2 style={headingStyle}>18. Children and young users</h2>
 
-          <p style={paragraphStyle}>
-            Trimmute is not specifically directed at children.
-          </p>
+          <Clause number="18.1">
+            Trimmute is solely for use by adults aged 18 and over.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            If you are under 18, you should use Trimmute with the involvement
-            of a parent or guardian where appropriate.
-          </p>
-
-          <p style={paragraphStyle}>
-            We do not knowingly encourage children to submit unnecessary
-            personal information through Trimmute.
-          </p>
-
-          <p style={paragraphStyle}>
-            Additional protections may apply where we know we are providing an
-            online service likely to be accessed by children; we will review
-            those requirements as the service develops.
-          </p>
+          <Clause number="18.2">
+            Trimmute is not specifically directed at children and we do not
+            knowingly collect personal information from children.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>18. Changes to these Terms</h2>
+          <h2 style={headingStyle}>19. Changes to these Terms</h2>
 
-          <p style={paragraphStyle}>
-            We may update these Terms from time to time, including where
-            Trimmute's features, business model, third-party services or legal
-            obligations change.
-          </p>
+          <Clause number="19.1">
+            We may update these Terms where our features, business model,
+            third-party services or legal obligations change.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            If we make a material change, we will update the “Last updated”
-            date and, where appropriate, provide clearer notice on the website
-            or through the relevant service.
-          </p>
-
-          <p style={paragraphStyle}>
-            Where the law requires your agreement to a material contractual
-            change, we will seek that agreement rather than relying only on
-            continued use.
-          </p>
+          <Clause number="19.2">
+            If we make a material change, we will update the version/date and
+            provide clearer notice where appropriate. Where the law requires
+            your agreement to a material contractual change, we will seek that
+            agreement rather than relying only on your continued use.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>19. Governing law and courts</h2>
+          <h2 style={headingStyle}>20. Governing law and jurisdiction</h2>
 
-          <p style={paragraphStyle}>
+          <Clause number="20.1">
             These Terms are governed by the laws of England and Wales.
-          </p>
+          </Clause>
 
-          <p style={paragraphStyle}>
-            If you are a consumer resident in another part of the United
-            Kingdom, you may also be entitled to rely on mandatory consumer
-            protections that apply where you live and to bring proceedings in
-            courts available to you under applicable law.
-          </p>
+          <Clause number="20.2">
+            If you are a consumer resident in Scotland or Northern Ireland, you
+            may also be entitled to rely on mandatory consumer protections that
+            apply where you live, and to bring proceedings in the courts
+            available to you under applicable law.
+          </Clause>
+
+          <Clause number="20.3">
+            Subject to clause 20.2, the courts of England and Wales have
+            non-exclusive jurisdiction over any dispute arising out of or in
+            connection with these Terms.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>20. General</h2>
+          <h2 style={headingStyle}>21. General</h2>
 
-          <p style={paragraphStyle}>
-            If a court or competent authority finds part of these Terms
-            unlawful or unenforceable, the remaining provisions will continue
-            to apply.
-          </p>
+          <Clause number="21.1">
+            If a court or competent authority finds part of these Terms unlawful
+            or unenforceable, the remaining provisions will continue to apply.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            A delay or failure by Trimmute to enforce a provision does not by
-            itself waive our right to enforce it later.
-          </p>
+          <Clause number="21.2">
+            A delay or failure by us to enforce a provision does not by itself
+            waive our right to enforce it later.
+          </Clause>
 
-          <p style={paragraphStyle}>
-            These Terms do not give any third party a right to enforce them
-            unless applicable law provides otherwise.
-          </p>
+          <Clause number="21.3">
+            These Terms do not give a third party a right to enforce them under
+            the Contracts (Rights of Third Parties) Act 1999, unless applicable
+            law provides otherwise.
+          </Clause>
         </section>
 
         <section style={sectionStyle}>
-          <h2 style={headingStyle}>21. Contact</h2>
+          <h2 style={headingStyle}>22. Contact</h2>
 
           <p style={paragraphStyle}>
-            If you have questions about these Terms of Use, please contact:
+            Harry Carrig, trading as Trimmute
           </p>
 
           <p style={paragraphStyle}>
