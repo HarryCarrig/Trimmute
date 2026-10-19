@@ -479,10 +479,14 @@ calmer appointments, less awkward small talk.
                 />
               ) : (
                 <section className="tm-results">
-                  <div className="tm-results-topline">
-                    <span>Quiet-friendly options</span>
-                    <span>{showRosterOnly ? "Roster view" : "Live list"}</span>
-                  </div>
+                 <div className="tm-results-topline">
+  <span>Quiet-friendly options</span>
+  <span>
+    {showRosterOnly
+      ? `${visibleShops.length} saved`
+      : `${visibleShops.length} results`}
+  </span>
+</div>
 
                   <div className="tm-card-list">
                     {visibleShops.map((shop) => (
@@ -915,7 +919,7 @@ const trimmuteStyles = `
 
   .tm-app {
     width: 100%;
-    max-width: 1040px;
+    max-width: 1180px;
     min-height: 100vh;
     position: relative;
   }
@@ -1344,16 +1348,16 @@ const trimmuteStyles = `
   }
 
   .tm-card-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-  }
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
 
   .tm-shop-card {
     position: relative;
     display: grid;
-    grid-template-columns: 78px 1fr auto;
-    gap: 1rem;
+    grid-template-columns: 82px minmax(0, 1fr) 58px;
+gap: 0.9rem;
     align-items: center;
     border: 1px solid ${THEME.border};
     background:
@@ -1393,8 +1397,8 @@ const trimmuteStyles = `
   }
 
   .tm-shop-image {
-    width: 78px;
-    height: 78px;
+  width: 82px;
+  height: 82px;
     border-radius: 18px;
     overflow: hidden;
     background: #121212;
@@ -1514,17 +1518,18 @@ const trimmuteStyles = `
   }
 
   .tm-shop-action {
-    min-width: 92px;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-areas:
-      "price heart"
-      "chev chev";
-    gap: 0.4rem 0.65rem;
-    justify-items: end;
-    align-items: center;
-  }
+  min-width: 58px;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "price"
+    "heart"
+    "chev";
+  gap: 0.3rem;
+  justify-items: end;
+  align-items: center;
+}
 
   .tm-price {
     grid-area: price;
@@ -1534,15 +1539,15 @@ const trimmuteStyles = `
   }
 
   .tm-heart {
-    grid-area: heart;
-    background: transparent;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    font-size: 1.35rem;
-    line-height: 1;
-    transition: transform 0.12s ease;
-  }
+  grid-area: heart;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: transform 0.12s ease;
+}
 
   .tm-heart:hover {
     transform: scale(1.12);
@@ -1670,8 +1675,9 @@ const trimmuteStyles = `
     }
 
     .tm-card-list {
-      gap: 0.85rem;
-    }
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
 
     .tm-shop-card {
       grid-template-columns: 72px 1fr 72px;
