@@ -212,6 +212,7 @@ app.get("/barbers", async (req, res) => {
   supports_silent as "supportsSilent",
   is_partner as "isPartner",
   external_url as "externalUrl",
+  walk_ins_only as "walkInsOnly",
   lat,
   lng,
   styles
@@ -254,6 +255,7 @@ app.get("/barbers/near", async (req, res) => {
   supports_silent as "supportsSilent",
   is_partner as "isPartner",
   external_url as "externalUrl",
+  walk_ins_only as "walkInsOnly",
   lat,
   lng,
   styles

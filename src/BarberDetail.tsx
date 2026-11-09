@@ -188,18 +188,20 @@ const BarberDetail: React.FC<BarberDetailProps> = ({ shop, onBack }) => {
               flexWrap: "wrap",
             }}
           >
-            <span
-              style={{
-                backgroundColor: "rgba(59, 130, 246, 0.15)",
-                color: "#60a5fa",
-                padding: "4px 10px",
-                borderRadius: "6px",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-              }}
-            >
-              £{(shop.basePrice / 100).toFixed(0)} Cut
-            </span>
+            {shop.basePrice != null && (
+  <span
+    style={{
+      backgroundColor: "rgba(59, 130, 246, 0.15)",
+      color: "#60a5fa",
+      padding: "4px 10px",
+      borderRadius: "6px",
+      fontSize: "0.85rem",
+      fontWeight: 600,
+    }}
+  >
+    £{(shop.basePrice / 100).toFixed(0)} Cut
+  </span>
+)}
 
             {supportsSilent && (
               <span
