@@ -27,7 +27,7 @@ export type Shop = {
   imageUrl: string | null;
   cover_url?: string | null;
   supportsSilent: boolean;
-  basePrice: number;
+  basePrice: number | null;
   styles: string[];
   distanceKm?: number;
   postcode?: string;
@@ -102,7 +102,12 @@ export default function App() {
 
   const mapShop = (b: any, index: number): Shop => {
     const patchedUrl = b.externalUrl ?? b.external_url ?? "";
-    const patchedPrice = Number(b.basePrice ?? b.base_price_pence ?? 2000);
+    const rawPrice =
+  b.basePrice ??
+  b.basePricePence ??
+  b.base_price_pence;
+
+const patchedPrice = rawPrice == null ? null : Number(rawPrice);
     const patchedIsPartner = Boolean(b.isPartner ?? b.is_partner ?? false);
     const patchedImageUrl =
       typeof b.imageUrl === "string"
@@ -247,7 +252,8 @@ export default function App() {
         shop.name.toLowerCase().includes(query) ||
         (shop.address && shop.address.toLowerCase().includes(query));
 
-      const matchesPrice = shop.basePrice / 100 <= maxPrice;
+      const matchesPrice =
+  shop.basePrice == null || shop.basePrice / 100 <= maxPrice;
       const matchesRoster = showRosterOnly
         ? favorites.includes(shop.id)
         : true;
@@ -255,7 +261,11 @@ export default function App() {
       return matchesSearch && matchesPrice && matchesRoster;
     })
     .sort((a, b) => {
-      if (sortBy === "price_low") return a.basePrice - b.basePrice;
+      if (sortBy === "price_low") {
+  if (a.basePrice == null) return 1;
+  if (b.basePrice == null) return -1;
+  return a.basePrice - b.basePrice;
+}
 
       if (
         sortBy === "distance" &&
@@ -794,7 +804,10 @@ const ShopCard = ({
     }
   };
 
-  const price = `£${(shop.basePrice / 100).toFixed(2).replace(/\.00$/, "")}`;
+  const price =
+  shop.basePrice == null
+    ? null
+    : `£${(shop.basePrice / 100).toFixed(2).replace(/\.00$/, "")}`;
 
   return (
     <article
@@ -851,7 +864,7 @@ const ShopCard = ({
       </div>
 
       <div className="tm-shop-action">
-        <span className="tm-price">{price}</span>
+        {price && <span className="tm-price">{price}</span>}
 
         <button
           className={`tm-heart ${isFavorited ? "saved" : ""}`}
