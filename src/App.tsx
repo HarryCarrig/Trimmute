@@ -102,10 +102,9 @@ export default function App() {
 
   const mapShop = (b: any, index: number): Shop => {
     const patchedUrl = b.externalUrl ?? b.external_url ?? "";
-    const rawPrice =
-  b.basePrice ??
-  b.basePricePence ??
-  b.base_price_pence;
+    const rawPrice = Object.prototype.hasOwnProperty.call(b, "base_price_pence")
+  ? b.base_price_pence
+  : b.basePricePence ?? b.basePrice;
 
 const patchedPrice = rawPrice == null ? null : Number(rawPrice);
     const patchedIsPartner = Boolean(b.isPartner ?? b.is_partner ?? false);
